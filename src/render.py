@@ -1,6 +1,13 @@
 """
-'돈값하나?' 카드뉴스 렌더러
+'돈값하나?' 카드뉴스 렌더러 v2
 1080x1350 (4:5) PNG 카드를 제목/본문 데이터로부터 자동 생성한다.
+
+v2 변경점
+  - 모든 카드 하단에 계정 핸들 고정 노출
+  - 상단 진행 바(현재 몇 번째 카드인지 한눈에)
+  - 배경 그라데이션 + 타이틀 뒤 소프트 글로우로 깊이감
+  - 타이포 위계 강화(제목 더 크고 타이트하게, 자간/행간 조정)
+  - 본문 카드에 챕터 넘버 마커
 """
 from __future__ import annotations
 
@@ -9,7 +16,7 @@ import subprocess
 from dataclasses import dataclass
 from pathlib import Path
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFilter
 
 # ---------------------------------------------------------------- 폰트 해결
 FONT_CANDIDATES = [
@@ -30,7 +37,7 @@ def _find_ttc(weight: str) -> tuple[str, int]:
             continue
         if not path.endswith(".ttc"):
             return path, 0
-        for idx in range(8):
+        for idx in range(10):
             try:
                 name = ImageFont.truetype(path, 12, index=idx).getname()[0]
             except Exception:
@@ -38,7 +45,6 @@ def _find_ttc(weight: str) -> tuple[str, int]:
             if "KR" in name or "Korean" in name:
                 return path, idx
         return path, 0
-    # 최후: fc-match 로 시스템 한글 폰트 아무거나
     try:
         out = subprocess.check_output(
             ["fc-match", "-f", "%{file}", ":lang=ko"], text=True
@@ -64,17 +70,23 @@ BLACK, BOLD, MED, REG = "Black", "Bold", "Medium", "Regular"
 
 # ---------------------------------------------------------------- 테마
 W, H = 1080, 1350
-PAD = 88
+PAD = 96
+FOOTER_Y = H - 92          # 핸들/브랜드가 놓이는 기준선
+SAFE_BOTTOM = H - 150      # 본문이 침범하면 안 되는 하단 경계
 
 
 @dataclass
 class Theme:
-    bg: str = "#12141A"
-    fg: str = "#FFFFFF"
-    sub: str = "#9AA3B2"
-    accent: str = "#FFD24A"
-    accent_dark: str = "#12141A"
-    card_bg: str = "#1B1E27"
+    bg_top: tuple = (18, 20, 27)
+    bg_bottom: tuple = (11, 12, 17)
+    fg: str = "#F5F7FA"
+    sub: str = "#8E97A8"
+    dim: str = "#5A6272"
+    accent: str = "#FFC93C"        # 시그니처 골드
+    accent_soft: str = "#7A5E12"
+    ink: str = "#0E1015"           # accent 위에 얹는 글자색
+    card_bg: str = "#191C25"
+    hair: str = "#262A36"
 
 
 THEME = Theme()
@@ -82,32 +94,32 @@ THEME = Theme()
 
 # ---------------------------------------------------------------- 텍스트 유틸
 def wrap(draw, text: str, fnt, max_w: int) -> list[str]:
-    """한글은 어절 단위, 어절이 너무 길면 글자 단위로 줄바꿈."""
-    lines, cur = [], ""
-    for word in text.split(" "):
-        trial = f"{cur} {word}".strip()
-        if draw.textlength(trial, font=fnt) <= max_w:
-            cur = trial
-            continue
-        if cur:
-            lines.append(cur)
-        if draw.textlength(word, font=fnt) <= max_w:
-            cur = word
-        else:  # 한 어절이 폭보다 김 → 글자 단위 분해
-            cur = ""
-            for ch in word:
-                if draw.textlength(cur + ch, font=fnt) <= max_w:
-                    cur += ch
-                else:
-                    lines.append(cur)
-                    cur = ch
-    if cur:
+    """한글은 어절 단위, 어절이 너무 길면 글자 단위로 줄바꿈. 명시적 개행 존중."""
+    lines: list[str] = []
+    for para in text.split("\n"):
+        cur = ""
+        for word in para.split(" "):
+            trial = f"{cur} {word}".strip()
+            if draw.textlength(trial, font=fnt) <= max_w:
+                cur = trial
+                continue
+            if cur:
+                lines.append(cur)
+            if draw.textlength(word, font=fnt) <= max_w:
+                cur = word
+            else:
+                cur = ""
+                for ch in word:
+                    if draw.textlength(cur + ch, font=fnt) <= max_w:
+                        cur += ch
+                    else:
+                        lines.append(cur)
+                        cur = ch
         lines.append(cur)
-    return lines
+    return [ln for ln in lines if ln != ""] or [""]
 
 
 def draw_block(draw, text, fnt, x, y, max_w, fill, line_gap=1.35) -> int:
-    """줄바꿈해서 그리고 다음 y 좌표를 반환."""
     lh = int(fnt.size * line_gap)
     for line in wrap(draw, text, fnt, max_w):
         draw.text((x, y), line, font=fnt, fill=fill)
@@ -116,19 +128,17 @@ def draw_block(draw, text, fnt, x, y, max_w, fill, line_gap=1.35) -> int:
 
 
 def block_h(draw, text, fnt, max_w, line_gap=1.35) -> int:
-    """draw_block 이 차지할 높이를 미리 계산."""
     return len(wrap(draw, text, fnt, max_w)) * int(fnt.size * line_gap)
 
 
-def fit_font(draw, text, weight, max_w, max_h, start, min_size=40) -> ImageFont.FreeTypeFont:
+def fit_font(draw, text, weight, max_w, max_h, start, min_size=40, line_gap=1.2):
     """주어진 박스에 들어갈 때까지 폰트 크기를 줄인다."""
     size = start
     while size > min_size:
         f = font(weight, size)
-        lines = wrap(draw, text, f, max_w)
-        if len(lines) * int(size * 1.25) <= max_h:
+        if len(wrap(draw, text, f, max_w)) * int(size * line_gap) <= max_h:
             return f
-        size -= 4
+        size -= 3
     return font(weight, min_size)
 
 
@@ -136,125 +146,196 @@ def rounded(draw, box, r, fill):
     draw.rounded_rectangle(box, radius=r, fill=fill)
 
 
-# ---------------------------------------------------------------- 카드 그리기
-def _base(brand: str, page: str | None) -> tuple[Image.Image, ImageDraw.ImageDraw]:
-    img = Image.new("RGB", (W, H), THEME.bg)
-    d = ImageDraw.Draw(img)
-    # 상단 시리즈 라벨
-    d.text((PAD, 64), brand, font=font(BOLD, 34), fill=THEME.accent)
+# ---------------------------------------------------------------- 배경/공통
+def _gradient_bg() -> Image.Image:
+    """위에서 아래로 아주 미세하게 어두워지는 배경."""
+    top, bot = THEME.bg_top, THEME.bg_bottom
+    grad = Image.new("RGB", (1, H))
+    px = grad.load()
+    for y in range(H):
+        t = y / (H - 1)
+        px[0, y] = tuple(int(top[i] + (bot[i] - top[i]) * t) for i in range(3))
+    return grad.resize((W, H))
+
+
+def _glow(img: Image.Image, cx: int, cy: int, r: int, color=(255, 201, 60), alpha=26):
+    """타이틀 뒤에 은은한 원형 글로우를 깔아 깊이감을 준다."""
+    layer = Image.new("RGB", (W, H), (0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    d.ellipse((cx - r, cy - r, cx + r, cy + r), fill=color)
+    layer = layer.filter(ImageFilter.GaussianBlur(r * 0.75))
+    return Image.blend(img, Image.blend(img, layer, 1.0), alpha / 255 * 1.6)
+
+
+def _progress(d: ImageDraw.ImageDraw, idx: int, total: int):
+    """상단 진행 바 — 현재 몇 번째 카드인지 한눈에."""
+    if total <= 1:
+        return
+    y, gap = 0, 6
+    seg = (W - gap * (total - 1)) / total
+    for i in range(total):
+        x0 = i * (seg + gap)
+        d.rectangle((x0, y, x0 + seg, y + 7),
+                    fill=THEME.accent if i < idx else THEME.hair)
+
+
+def _footer(d: ImageDraw.ImageDraw, handle: str, page: str | None = None):
+    """모든 카드 공통 하단: 브랜드 마크 · 핸들 · 페이지."""
+    d.line((PAD, FOOTER_Y - 34, W - PAD, FOOTER_Y - 34), fill=THEME.hair, width=2)
+
+    dot_r = 7
+    d.ellipse((PAD, FOOTER_Y + 15, PAD + dot_r * 2, FOOTER_Y + 15 + dot_r * 2),
+              fill=THEME.accent)
+    d.text((PAD + dot_r * 2 + 16, FOOTER_Y), handle, font=font(BOLD, 34),
+           fill=THEME.sub)
+
     if page:
         tw = d.textlength(page, font=font(BOLD, 34))
-        d.text((W - PAD - tw, 64), page, font=font(BOLD, 34), fill=THEME.sub)
+        d.text((W - PAD - tw, FOOTER_Y), page, font=font(BOLD, 34), fill=THEME.dim)
+
+
+def _base(brand: str, idx: int, total: int, handle: str,
+          glow_at: tuple[int, int] | None = None):
+    img = _gradient_bg()
+    if glow_at:
+        img = _glow(img, glow_at[0], glow_at[1], 480)
+    d = ImageDraw.Draw(img)
+    _progress(d, idx, total)
+    # 상단 시리즈 라벨
+    d.text((PAD, 74), brand, font=font(BLACK, 34), fill=THEME.accent)
     return img, d
 
 
-def cover(item: dict, brand: str) -> Image.Image:
-    img, d = _base(brand, None)
+# ---------------------------------------------------------------- 카드 그리기
+def cover(item: dict, brand: str, handle: str, total: int) -> Image.Image:
+    img, d = _base(brand, 1, total, handle, glow_at=(W - 120, 300))
     maxw = W - PAD * 2
-    top, bottom = 200, H - 300          # 본문이 놓일 수 있는 영역
+    top, bottom = 230, SAFE_BOTTOM - 260
     price = item.get("price", "")
     hook = item.get("hook", "")
 
-    title_f = fit_font(d, item["product"], BLACK, maxw, 480, 120, 64)
+    title_f = fit_font(d, item["product"], BLACK, maxw, 500, 128, 66, 1.14)
     hook_f = font(MED, 46)
 
-    total = (100 if price else 0)
-    total += block_h(d, item["product"], title_f, maxw, 1.18) + 34
-    total += block_h(d, hook, hook_f, maxw, 1.4)
-    y = max(top, top + (bottom - top - total) // 2)
+    total_h = (108 if price else 0)
+    total_h += block_h(d, item["product"], title_f, maxw, 1.14) + 40
+    total_h += block_h(d, hook, hook_f, maxw, 1.42)
+    y = max(top, top + (bottom - top - total_h) // 2)
 
     if price:
-        tw = d.textlength(price, font=font(BOLD, 40))
-        rounded(d, (PAD, y, PAD + tw + 56, y + 76), 38, THEME.accent)
-        d.text((PAD + 28, y + 14), price, font=font(BOLD, 40), fill=THEME.accent_dark)
-        y += 100
+        tw = d.textlength(price, font=font(BOLD, 38))
+        rounded(d, (PAD, y, PAD + tw + 60, y + 72), 36, THEME.accent)
+        d.text((PAD + 30, y + 13), price, font=font(BOLD, 38), fill=THEME.ink)
+        y += 108
 
-    y = draw_block(d, item["product"], title_f, PAD, y, maxw, THEME.fg, 1.18) + 34
-    draw_block(d, hook, hook_f, PAD, y, maxw, THEME.sub, 1.4)
+    y = draw_block(d, item["product"], title_f, PAD, y, maxw, THEME.fg, 1.14) + 40
+    draw_block(d, hook, hook_f, PAD, y, maxw, THEME.sub, 1.42)
 
     # 하단 시그니처
-    d.line((PAD, H - 262, W - PAD, H - 262), fill="#2A2E3A", width=2)
-    d.text((PAD, H - 224), "돈값하나?", font=font(BLACK, 92), fill=THEME.accent)
-    d.text((PAD, H - 116), "5초 안에 결론부터  →", font=font(MED, 38), fill=THEME.sub)
+    sig_y = SAFE_BOTTOM - 236
+    d.text((PAD, sig_y), "돈값하나?", font=font(BLACK, 104), fill=THEME.accent)
+    d.text((PAD + 4, sig_y + 132), "5초 안에 결론부터", font=font(MED, 38), fill=THEME.sub)
+    aw = d.textlength("5초 안에 결론부터", font=font(MED, 38))
+    d.text((PAD + 4 + aw + 18, sig_y + 130), "→", font=font(BOLD, 40), fill=THEME.accent)
+
+    _footer(d, handle)
     return img
 
 
-def body(card: dict, brand: str, page: str) -> Image.Image:
-    img, d = _base(brand, page)
+def body(card: dict, brand: str, handle: str, idx: int, total: int) -> Image.Image:
+    img, d = _base(brand, idx, total, handle)
     maxw = W - PAD * 2
-    top, bottom = 200, H - 150
+    top, bottom = 240, SAFE_BOTTOM - 40
     note = card.get("note")
 
-    t_f = fit_font(d, card["title"], BLACK, maxw, 240, 84, 54)
-    b_f = fit_font(d, card["body"], MED, maxw, 620, 50, 36)
-    n_f = font(REG, 36)
+    num = f"{idx - 1:02d}"
+    n_f = font(BLACK, 42)
+    t_f = fit_font(d, card["title"], BLACK, maxw, 250, 88, 56, 1.18)
+    b_f = fit_font(d, card["body"], MED, maxw, 600, 50, 36, 1.55)
+    note_f = font(REG, 35)
 
-    total = block_h(d, card["title"], t_f, maxw, 1.2) + 44
-    total += block_h(d, card["body"], b_f, maxw, 1.55)
-    note_lines = wrap(d, note, n_f, maxw - 60) if note else []
+    total_h = 74
+    total_h += block_h(d, card["title"], t_f, maxw, 1.18) + 46
+    total_h += block_h(d, card["body"], b_f, maxw, 1.55)
+    note_lines = wrap(d, note, note_f, maxw - 76) if note else []
     if note:
-        total += 48 + len(note_lines) * 50 + 56
+        total_h += 52 + len(note_lines) * 50 + 60
 
-    y = max(top, top + (bottom - top - total) // 2)
+    y = max(top, top + (bottom - top - total_h) // 2)
 
-    # 제목 왼쪽 강조 바
-    th = block_h(d, card["title"], t_f, maxw, 1.2)
-    rounded(d, (PAD - 30, y + 12, PAD - 18, y + th - 4), 6, THEME.accent)
+    # 챕터 넘버
+    d.text((PAD, y), num, font=n_f, fill=THEME.accent)
+    nw = d.textlength(num, font=n_f)
+    d.line((PAD + nw + 20, y + 26, PAD + nw + 92, y + 26), fill=THEME.accent_soft, width=3)
+    y += 74
 
-    y = draw_block(d, card["title"], t_f, PAD, y, maxw, THEME.accent, 1.2) + 44
-    y = draw_block(d, card["body"], b_f, PAD, y, maxw, THEME.fg, 1.55)
+    y = draw_block(d, card["title"], t_f, PAD, y, maxw, THEME.fg, 1.18) + 46
+    y = draw_block(d, card["body"], b_f, PAD, y, maxw, THEME.sub, 1.55)
 
     if note:
-        y += 48
-        rounded(d, (PAD, y, W - PAD, y + len(note_lines) * 50 + 56), 28, THEME.card_bg)
-        yy = y + 28
+        y += 52
+        box_h = len(note_lines) * 50 + 60
+        rounded(d, (PAD, y, W - PAD, y + box_h), 26, THEME.card_bg)
+        rounded(d, (PAD, y + 16, PAD + 6, y + box_h - 16), 3, THEME.accent)
+        yy = y + 30
         for line in note_lines:
-            d.text((PAD + 30, yy), line, font=n_f, fill=THEME.sub)
+            d.text((PAD + 40, yy), line, font=note_f, fill=THEME.sub)
             yy += 50
+
+    _footer(d, handle, f"{idx}/{total}")
     return img
 
 
-def verdict(item: dict, brand: str, page: str) -> Image.Image:
-    img, d = _base(brand, page)
+def verdict(item: dict, brand: str, handle: str, total: int) -> Image.Image:
+    img, d = _base(brand, total, total, handle, glow_at=(140, H - 560))
     maxw = W - PAD * 2
-    top, bottom = 200, H - 260
+    top, bottom = 240, SAFE_BOTTOM - 200
     score = max(0, min(5, int(item.get("verdict", 3))))
-    v_f = fit_font(d, item["verdict_text"], MED, maxw, 560, 52, 38)
+    v_f = fit_font(d, item["verdict_text"], MED, maxw, 520, 52, 38, 1.5)
 
-    total = 112 + 34 + 40 + 62 + 60 + block_h(d, item["verdict_text"], v_f, maxw, 1.5)
-    y = max(top, top + (bottom - top - total) // 2)
+    total_h = 168 + 40 + 78 + 108 + block_h(d, item["verdict_text"], v_f, maxw, 1.5)
+    y = max(top, top + (bottom - top - total_h) // 2)
 
-    d.text((PAD, y), "결론", font=font(BLACK, 88), fill=THEME.accent)
-    y += 132
+    d.text((PAD, y), "결론", font=font(BLACK, 92), fill=THEME.fg)
+    y += 168
 
-    gw, gap = (maxw - 4 * 22) // 5, 22
+    gw, gap = (maxw - 4 * 20) // 5, 20
     for i in range(5):
         x = PAD + i * (gw + gap)
-        rounded(d, (x, y, x + gw, y + 30), 15,
-                THEME.accent if i < score else THEME.card_bg)
-    y += 60
-    d.text((PAD, y), f"돈값 지수  {score} / 5", font=font(BOLD, 54), fill=THEME.fg)
+        rounded(d, (x, y, x + gw, y + 26), 13,
+                THEME.accent if i < score else THEME.hair)
+    y += 78
+
+    d.text((PAD, y), "돈값 지수", font=font(MED, 40), fill=THEME.sub)
+    lw = d.textlength("돈값 지수", font=font(MED, 40))
+    d.text((PAD + lw + 22, y - 12), str(score), font=font(BLACK, 62), fill=THEME.accent)
+    sw = d.textlength(str(score), font=font(BLACK, 62))
+    d.text((PAD + lw + 22 + sw + 8, y + 4), "/ 5", font=font(BOLD, 40), fill=THEME.dim)
     y += 104
 
     draw_block(d, item["verdict_text"], v_f, PAD, y, maxw, THEME.fg, 1.5)
 
-    d.line((PAD, H - 232, W - PAD, H - 232), fill="#2A2E3A", width=2)
-    d.text((PAD, H - 194), "이런 거 계속 계산해드립니다", font=font(MED, 40), fill=THEME.sub)
-    d.text((PAD, H - 130), "저장 · 팔로우", font=font(BLACK, 60), fill=THEME.accent)
+    # 하단 CTA
+    cta_y = SAFE_BOTTOM - 176
+    d.text((PAD, cta_y), "이런 계산, 주 2회 올립니다", font=font(MED, 38), fill=THEME.sub)
+    d.text((PAD, cta_y + 60), "저장 · 팔로우", font=font(BLACK, 62), fill=THEME.accent)
+
+    _footer(d, handle, f"{total}/{total}")
     return img
 
 
-def render_item(item: dict, outdir: Path, brand: str = "돈값하나?") -> list[Path]:
+def render_item(item: dict, outdir: Path, brand: str = "돈값하나?",
+                handle: str = "@dongabhana") -> list[Path]:
     """한 편(item)을 카드 PNG 리스트로 렌더링한다. 총 장수 = 1 + len(cards) + 1"""
     outdir.mkdir(parents=True, exist_ok=True)
     total = len(item["cards"]) + 2
-    paths: list[Path] = []
 
-    imgs = [cover(item, brand)]
+    imgs = [cover(item, brand, handle, total)]
     for i, c in enumerate(item["cards"], start=2):
-        imgs.append(body(c, brand, f"{i}/{total}"))
-    imgs.append(verdict(item, brand, f"{total}/{total}"))
+        imgs.append(body(c, brand, handle, i, total))
+    imgs.append(verdict(item, brand, handle, total))
 
+    paths: list[Path] = []
     for i, im in enumerate(imgs, start=1):
         p = outdir / f"{item['id']}_{i:02d}.png"
         im.save(p, "PNG", optimize=True)
@@ -267,6 +348,8 @@ if __name__ == "__main__":
 
     queue = yaml.safe_load(Path(sys.argv[1]).read_text(encoding="utf-8"))
     out = Path(sys.argv[2] if len(sys.argv) > 2 else "out")
+    brand = queue.get("brand", "돈값하나?")
+    handle = queue.get("handle", "@dongabhana")
     for it in queue["items"]:
-        ps = render_item(it, out / it["id"])
+        ps = render_item(it, out / it["id"], brand, handle)
         print(it["id"], "→", len(ps), "장")

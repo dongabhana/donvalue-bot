@@ -93,8 +93,9 @@ def main() -> int:
             return 0
 
     brand = queue.get("brand", "돈값하나?")
+    handle = queue.get("handle", "@dongabhana")
     outdir = IMAGES / item["id"]
-    paths = render_item(item, outdir, brand)
+    paths = render_item(item, outdir, brand, handle)
     print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
 
     if args.dry_run:
