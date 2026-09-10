@@ -1,0 +1,44 @@
+name: 액세스 토큰 자동 연장
+
+# 장기 토큰은 60일짜리입니다. 주 1회 연장해두면 만료로 발행이 멈추는 일이 없습니다.
+# 시크릿 갱신에는 GITHUB_TOKEN 으로는 부족하므로, 'Secrets: write' 권한이 있는
+# 개인 액세스 토큰(PAT)을 SECRETS_PAT 시크릿으로 등록해야 합니다.
+# PAT 을 등록하지 않으면 이 워크플로우는 연장만 하고 저장은 못 합니다
+# (그 경우 60일마다 수동 재발급이 필요합니다).
+
+on:
+  schedule:
+    - cron: "0 3 * * 1" # 매주 월요일 12:00 KST
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests
+
+      - id: refresh
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+        run: python -m src.refresh
+
+      - name: 새 토큰을 시크릿에 저장
+        if: steps.refresh.outputs.ig_token != '' || steps.refresh.outputs.th_token != ''
+        env:
+          GH_TOKEN: ${{ secrets.SECRETS_PAT }}
+        run: |
+          if [ -z "$GH_TOKEN" ]; then
+            echo "::warning::SECRETS_PAT 이 없어 토큰을 저장하지 못했습니다."
+            exit 0
+          fi
+          if [ -n "${{ steps.refresh.outputs.ig_token }}" ]; then
+            gh secret set IG_ACCESS_TOKEN --body "${{ steps.refresh.outputs.ig_token }}"
+          fi
+          if [ -n "${{ steps.refresh.outputs.th_token }}" ]; then
+            gh secret set TH_ACCESS_TOKEN --body "${{ steps.refresh.outputs.th_token }}"
+          fi

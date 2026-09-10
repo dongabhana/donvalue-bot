@@ -1,0 +1,64 @@
+name: 돈값하나 자동 발행
+
+on:
+  schedule:
+    # 화요일·금요일 20:00 KST (= 11:00 UTC). GitHub cron 은 UTC 기준이며
+    # 러너 혼잡도에 따라 수 분~수십 분 지연될 수 있습니다.
+    - cron: "0 11 * * 2,5"
+  workflow_dispatch:
+    inputs:
+      item_id:
+        description: "특정 항목 id 를 강제 발행 (비우면 큐 순서대로)"
+        required: false
+      dry_run:
+        description: "true 면 렌더링만 하고 발행하지 않음"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: donvalue-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: 한글 폰트 설치
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
+
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+
+      - name: 발행
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TH_USER_ID: ${{ secrets.TH_USER_ID }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+        run: |
+          ARGS=""
+          if [ -n "${{ github.event.inputs.item_id }}" ]; then
+            ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"
+          fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python -m src.run $ARGS
+
+      - name: 실패 시 렌더 결과 남기기
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rendered-cards
+          path: images/
+          retention-days: 7
