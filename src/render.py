@@ -251,30 +251,51 @@ def body(card: dict, brand: str, handle: str, idx: int, total: int) -> Image.Ima
     num = f"{idx - 1:02d}"
     n_f = font(BLACK, 42)
     t_f = fit_font(d, card["title"], BLACK, maxw, 250, 88, 56, 1.18)
-    b_f = fit_font(d, card["body"], MED, maxw, 560, 50, 36, 1.55)
-    note_f = font(REG, 35)
 
-    # 숫자 강조 블록 (figure / figure_label / as_of)
     figure = card.get("figure")
     fig_label = card.get("figure_label", "")
     as_of = card.get("as_of", "")
-    fig_f = fit_font(d, str(figure), BLACK, maxw - 60, 150, 128, 64, 1.05) if figure else None
-    fig_h = 0
-    fig_line = 0
+
+    avail = bottom - top
+
+    def measure(body_size: int, note_size: int, fig_size: int):
+        """주어진 폰트 크기 조합으로 전체 높이를 계산한다."""
+        bf = font(MED, body_size)
+        nf = font(REG, note_size)
+        ff = font(BLACK, fig_size) if figure else None
+        fl = int(ff.size * 1.42) if figure else 0
+        fh = (52 + (46 if fig_label else 0) + fl + (40 if as_of else 0) + 44) if figure else 0
+        nlines = wrap(d, note, nf, maxw - 76) if note else []
+        h = 74 + block_h(d, card["title"], t_f, maxw, 1.18) + 46 + fh
+        h += block_h(d, card["body"], bf, maxw, 1.55)
+        if note:
+            h += 52 + len(nlines) * int(note_size * 1.43) + 60
+        return h, bf, nf, ff, fl, fh, nlines
+
+    # 숫자 카드와 note 가 함께 오면 높이를 넘길 수 있으므로 들어갈 때까지 줄인다.
+    body_size, note_size, fig_size = 50, 35, 128
     if figure:
-        # 숫자는 글리프가 폰트 크기보다 높게 그려지므로 넉넉히 1.42배로 잡는다.
-        fig_line = int(fig_f.size * 1.42)
-        fig_h = 52 + (46 if fig_label else 0) + fig_line + (40 if as_of else 0) + 44
+        # 숫자는 폭도 넘치면 안 되므로 폭 기준으로 먼저 맞춘다.
+        fig_size = fit_font(d, str(figure), BLACK, maxw - 80, 200, 128, 56, 1.05).size
+    total_h, b_f, note_f, fig_f, fig_line, fig_h, note_lines = measure(
+        body_size, note_size, fig_size)
+    while total_h > avail:
+        shrunk = False
+        if body_size > 34:
+            body_size -= 2
+            shrunk = True
+        if note and note_size > 28:
+            note_size -= 1
+            shrunk = True
+        if figure and total_h > avail and fig_size > 72:
+            fig_size -= 6
+            shrunk = True
+        if not shrunk:
+            break
+        total_h, b_f, note_f, fig_f, fig_line, fig_h, note_lines = measure(
+            body_size, note_size, fig_size)
 
-    total_h = 74
-    total_h += block_h(d, card["title"], t_f, maxw, 1.18) + 46
-    total_h += fig_h
-    total_h += block_h(d, card["body"], b_f, maxw, 1.55)
-    note_lines = wrap(d, note, note_f, maxw - 76) if note else []
-    if note:
-        total_h += 52 + len(note_lines) * 50 + 60
-
-    y = max(top, top + (bottom - top - total_h) // 2)
+    y = max(top, top + (avail - total_h) // 2)
 
     # 챕터 넘버
     d.text((PAD, y), num, font=n_f, fill=THEME.accent)
@@ -302,13 +323,14 @@ def body(card: dict, brand: str, handle: str, idx: int, total: int) -> Image.Ima
 
     if note:
         y += 52
-        box_h = len(note_lines) * 50 + 60
+        note_lh = int(note_f.size * 1.43)
+        box_h = len(note_lines) * note_lh + 60
         rounded(d, (PAD, y, W - PAD, y + box_h), 26, THEME.card_bg)
         rounded(d, (PAD, y + 16, PAD + 6, y + box_h - 16), 3, THEME.accent)
         yy = y + 30
         for line in note_lines:
             d.text((PAD + 40, yy), line, font=note_f, fill=THEME.sub)
-            yy += 50
+            yy += note_lh
 
     _footer(d, handle, f"{idx}/{total}")
     return img
