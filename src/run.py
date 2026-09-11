@@ -23,14 +23,16 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from src.render import render_item          # noqa: E402
-from src.reel import build_reel             # noqa: E402
-from src import publish                     # noqa: E402
+from src.render import render_item                      # noqa: E402
+from src.reel import build_reel_for, plan_summary       # noqa: E402
+from src import publish                                 # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "content" / "queue.yaml"
 POSTED = ROOT / "content" / "posted.json"
 IMAGES = ROOT / "images"
+# 미리보기 렌더는 저장소에 남기지 않는다(.gitignore 처리). 발행분만 images/ 에 커밋된다.
+PREVIEW = ROOT / ".preview"
 KST = timezone(timedelta(hours=9))
 
 
@@ -106,6 +108,15 @@ def build_threads_text(item: dict, cta: dict | None = None, ig_format: str = "")
     return body.strip()
 
 
+def build_first_comment(item: dict, cta: dict | None = None) -> str:
+    """발행 직후 내 게시물에 다는 첫 댓글.
+
+    댓글창이 비어 있으면 아무도 첫 번째가 되고 싶어 하지 않는다.
+    기준·출처처럼 캡션에 넣기엔 긴 내용도 여기로 빼면 캡션이 깔끔해진다.
+    """
+    return (item.get("first_comment") or (cta or {}).get("first_comment") or "").strip()
+
+
 def threads_images(paths: list) -> list:
     """쓰레드에는 표지와 결론 2장만 보낸다."""
     if len(paths) <= 2:
@@ -156,18 +167,21 @@ def main() -> int:
     print(f"[format] {'내일' if args.tomorrow else '오늘'} "
           f"{'월화수목금토일'[wd]}요일 → {ig_format}")
 
-    outdir = IMAGES / item["id"]
+    outdir = (PREVIEW if args.dry_run else IMAGES) / item["id"]
     paths = render_item(item, outdir, brand, handle, cta)
     print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
 
     if args.dry_run:
         print(f"[dry-run] 이미지: {outdir}")
+        print(f"[reel-plan] {plan_summary(item, paths)}")
         try:
-            mp4 = build_reel(paths, outdir / f"{item['id']}.mp4")
-            print(f"[dry-run] 릴스: {mp4} ({mp4.stat().st_size/1024/1024:.2f}MB)")
+            mp4, note = build_reel_for(item, paths, outdir / f"{item['id']}.mp4")
+            print(f"[dry-run] 릴스: {mp4} · {note} "
+                  f"({mp4.stat().st_size/1024/1024:.2f}MB)")
         except Exception as e:                                    # noqa: BLE001
             print(f"[dry-run] 릴스 생성 실패(무시): {e}")
         print("--- 인스타 캡션 ---\n" + build_caption(item, cta))
+        print("--- 첫 댓글 ---\n" + (build_first_comment(item, cta) or "(없음)"))
         print("--- 쓰레드 본문 ---\n" + build_threads_text(item, cta, ig_format))
         return 0
 
@@ -195,9 +209,9 @@ def main() -> int:
         if ig_format in ("reel", "both"):
             try:
                 mp4 = outdir / f"{item['id']}.mp4"
-                build_reel(paths, mp4)
+                _, plan_note = build_reel_for(item, paths, mp4)
                 size_mb = mp4.stat().st_size / 1024 / 1024
-                print(f"[reel] {mp4.name} {size_mb:.2f}MB")
+                print(f"[reel] {mp4.name} · {plan_note} ({size_mb:.2f}MB)")
                 sh("git", "add", str(mp4))
                 sh("git", "-c", "user.name=donvalue-bot",
                    "-c", "user.email=bot@users.noreply.github.com",
@@ -229,6 +243,22 @@ def main() -> int:
             except Exception as e:                                # noqa: BLE001
                 errors.append(f"instagram: {e}")
                 print(f"[instagram] 실패: {e}")
+        # 발행된 게시물마다 첫 댓글을 단다.
+        # 권한(instagram_business_manage_comments)이 없어도 발행은 이미 끝났으니
+        # 여기서 실패해도 전체를 실패로 처리하지 않는다.
+        first = build_first_comment(item, cta)
+        if first:
+            for key in ("instagram_reel", "instagram"):
+                mid = results.get(key)
+                if not mid:
+                    continue
+                try:
+                    cid = publish.publish_instagram_comment(mid, ig_tok, first)
+                    results[f"{key}_comment"] = cid
+                    print(f"[comment] {key} 첫 댓글 완료 id={cid}")
+                except Exception as e:                            # noqa: BLE001
+                    errors.append(f"{key}_comment: {e}")
+                    print(f"[comment] {key} 첫 댓글 실패(발행은 정상): {e}")
     else:
         print("[instagram] 토큰 없음 → 건너뜀")
 
