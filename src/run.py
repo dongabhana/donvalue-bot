@@ -24,6 +24,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.render import render_item          # noqa: E402
+from src.reel import build_reel             # noqa: E402
 from src import publish                     # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -117,6 +118,11 @@ def main() -> int:
 
     if args.dry_run:
         print(f"[dry-run] 이미지: {outdir}")
+        try:
+            mp4 = build_reel(paths, outdir / f"{item['id']}.mp4")
+            print(f"[dry-run] 릴스: {mp4} ({mp4.stat().st_size/1024/1024:.2f}MB)")
+        except Exception as e:                                    # noqa: BLE001
+            print(f"[dry-run] 릴스 생성 실패(무시): {e}")
         print("--- 인스타 캡션 ---\n" + build_caption(item))
         print("--- 쓰레드 본문 ---\n" + build_threads_text(item))
         return 0
@@ -138,15 +144,46 @@ def main() -> int:
     errors: list[str] = []
 
     # ---------------- 인스타그램
+    # ig_format: "reel"(기본) | "carousel" | "both"
+    # 팔로워가 적은 동안에는 릴스가 비팔로워 도달의 거의 유일한 통로다.
+    ig_format = (item.get("ig_format")
+                 or queue.get("ig_format_default")
+                 or os.getenv("IG_FORMAT", "reel")).lower()
     ig_id, ig_tok = os.getenv("IG_USER_ID"), os.getenv("IG_ACCESS_TOKEN")
+
     if ig_id and ig_tok:
-        try:
-            results["instagram"] = publish.publish_instagram(
-                ig_id, ig_tok, urls, build_caption(item))
-            print(f"[instagram] 발행 완료 media_id={results['instagram']}")
-        except Exception as e:                                    # noqa: BLE001
-            errors.append(f"instagram: {e}")
-            print(f"[instagram] 실패: {e}")
+        did_reel = False
+        if ig_format in ("reel", "both"):
+            try:
+                mp4 = outdir / f"{item['id']}.mp4"
+                build_reel(paths, mp4)
+                size_mb = mp4.stat().st_size / 1024 / 1024
+                print(f"[reel] {mp4.name} {size_mb:.2f}MB")
+                sh("git", "add", str(mp4))
+                sh("git", "-c", "user.name=donvalue-bot",
+                   "-c", "user.email=bot@users.noreply.github.com",
+                   "commit", "-m", f"reel: {item['id']}")
+                sh("git", "push")
+                sha2 = sh("git", "rev-parse", "HEAD")
+                video_url = (f"https://raw.githubusercontent.com/{repo}/{sha2}"
+                             f"/images/{item['id']}/{mp4.name}")
+                results["instagram_reel"] = publish.publish_instagram_reel(
+                    ig_id, ig_tok, video_url, build_caption(item), urls[0])
+                print(f"[reel] 발행 완료 media_id={results['instagram_reel']}")
+                did_reel = True
+            except Exception as e:                                # noqa: BLE001
+                errors.append(f"instagram_reel: {e}")
+                print(f"[reel] 실패: {e}")
+
+        # 릴스만 하기로 했는데 실패했으면 캐러셀로 폴백한다(빈손으로 끝내지 않는다).
+        if ig_format in ("carousel", "both") or (ig_format == "reel" and not did_reel):
+            try:
+                results["instagram"] = publish.publish_instagram(
+                    ig_id, ig_tok, urls, build_caption(item))
+                print(f"[instagram] 발행 완료 media_id={results['instagram']}")
+            except Exception as e:                                # noqa: BLE001
+                errors.append(f"instagram: {e}")
+                print(f"[instagram] 실패: {e}")
     else:
         print("[instagram] 토큰 없음 → 건너뜀")
 
