@@ -341,7 +341,8 @@ def body(card: dict, brand: str, handle: str, idx: int, total: int) -> Image.Ima
     return img
 
 
-def verdict(item: dict, brand: str, handle: str, total: int) -> Image.Image:
+def verdict(item: dict, brand: str, handle: str, total: int,
+            cta: dict | None = None) -> Image.Image:
     img, d = _base(brand, total, total, handle, glow_at=(140, H - 560))
     maxw = W - PAD * 2
     top, bottom = 240, SAFE_BOTTOM - 200
@@ -370,17 +371,22 @@ def verdict(item: dict, brand: str, handle: str, total: int) -> Image.Image:
 
     draw_block(d, item["verdict_text"], v_f, PAD, y, maxw, THEME.fg, 1.5)
 
-    # 하단 CTA
+    # 하단 CTA — 댓글 요청이 참여도와 다음 소재를 동시에 만든다
+    cta = cta or {}
+    top_line = cta.get("card_top", "다음엔 뭐가 궁금하세요?")
+    bot_line = cta.get("card_bottom", "댓글로 신청받습니다")
     cta_y = SAFE_BOTTOM - 176
-    d.text((PAD, cta_y), "이런 계산, 주 2회 올립니다", font=font(MED, 38), fill=THEME.sub)
-    d.text((PAD, cta_y + 60), "저장 · 팔로우", font=font(BLACK, 62), fill=THEME.accent)
+    d.text((PAD, cta_y), top_line, font=font(MED, 38), fill=THEME.sub)
+    bf = fit_font(d, bot_line, BLACK, W - PAD * 2, 80, 62, 40, 1.1)
+    d.text((PAD, cta_y + 60), bot_line, font=bf, fill=THEME.accent)
 
     _footer(d, handle, f"{total}/{total}")
     return img
 
 
 def render_item(item: dict, outdir: Path, brand: str = "돈값하나?",
-                handle: str = "@dongabhana") -> list[Path]:
+                handle: str = "@dongabhana",
+                cta: dict | None = None) -> list[Path]:
     """한 편(item)을 카드 PNG 리스트로 렌더링한다. 총 장수 = 1 + len(cards) + 1"""
     outdir.mkdir(parents=True, exist_ok=True)
     total = len(item["cards"]) + 2
@@ -388,7 +394,7 @@ def render_item(item: dict, outdir: Path, brand: str = "돈값하나?",
     imgs = [cover(item, brand, handle, total)]
     for i, c in enumerate(item["cards"], start=2):
         imgs.append(body(c, brand, handle, i, total))
-    imgs.append(verdict(item, brand, handle, total))
+    imgs.append(verdict(item, brand, handle, total, cta))
 
     paths: list[Path] = []
     for i, im in enumerate(imgs, start=1):
@@ -405,6 +411,7 @@ if __name__ == "__main__":
     out = Path(sys.argv[2] if len(sys.argv) > 2 else "out")
     brand = queue.get("brand", "돈값하나?")
     handle = queue.get("handle", "@dongabhana")
+    cta = queue.get("cta") or {}
     for it in queue["items"]:
-        ps = render_item(it, out / it["id"], brand, handle)
+        ps = render_item(it, out / it["id"], brand, handle, cta)
         print(it["id"], "→", len(ps), "장")
