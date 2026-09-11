@@ -16,6 +16,7 @@ items:
     hook: "한 달에 몇 번 시켜야 본전일까? 계산해봤다."
     verified: true
     threads_tag: "생활비절약"
+    threads_question: "한 달에 몇 번쯤 시키세요? 손익분기 넘기시나요?"
     verify:
       - "현재 쿠팡 와우 월 구독료 (7,890원 · 사용자 확인)"
       - "비회원 배송비 기준"
@@ -66,6 +67,7 @@ items:
     hook: "월 요금 말고 36개월 총액으로 보면 순위가 바뀐다."
     verified: true
     threads_tag: "자취"
+    threads_question: "정수기 쓰세요, 생수 시키세요? 어느 쪽이 만족스러우세요?"
     verify:
       - "정수기 렌탈 월 요금 + 설치비 + 의무약정 개월수"
       - "생수 2L 12개입 묶음 가격"
@@ -111,6 +113,7 @@ items:
     hook: "할인율이 아니라 출석률이 가격을 정한다."
     verified: true
     threads_tag: "운동"
+    threads_question: "연간권 끊고 몇 달 만에 안 가게 되셨나요?"
     verify:
       - "비교할 헬스장의 1개월권 / 12개월권 실제 가격"
     cards:
@@ -155,6 +158,7 @@ items:
     hook: "월 얼마가 아니라 '1시간당 얼마'로 보면 정리할 게 보인다."
     verified: true
     threads_tag: "구독"
+    threads_question: "지금 OTT 몇 개 결제 중이세요?"
     verify:
       - "본인이 구독 중인 OTT 목록과 각 월 요금"
     cards:
@@ -199,6 +203,7 @@ items:
     hook: "귀찮음의 가격을 계산해봤다."
     verified: true
     threads_tag: "통신비"
+    threads_question: "통신비 한 달에 얼마 내세요?"
     verify:
       - "현재 본인 통신요금"
       - "동일 데이터 구간 알뜰폰 요금"
@@ -248,6 +253,7 @@ items:
     hook: "차값보다 5년 유지비가 더 나올 수도 있다."
     verified: true
     threads_tag: "자동차"
+    threads_question: "차 유지비 월에 얼마인지 계산해보신 적 있으세요?"
     verify:
       - "본인 차량 기준 연간 보험료 / 세금 / 평균 주유비"
     cards:
@@ -293,6 +299,7 @@ items:
     hook: "가전은 가격이 아니라 회수 기간으로 판단한다."
     verified: true
     threads_tag: "살림"
+    threads_question: "식기세척기 쓰시는 분, 손설거지로 돌아갈 수 있나요?"
     verify:
       - "비교할 제품의 실구매가 및 설치비"
     cards:
@@ -338,6 +345,7 @@ items:
     hook: "월세 차액만 보면 통근이 이긴다. 시간을 넣으면 뒤집힌다."
     verified: true
     threads_tag: "자취"
+    threads_question: "출퇴근 시간이랑 월세, 어느 쪽을 포기하시겠어요?"
     verify:
       - "비교 지역 월세 시세"
       - "본인 통근 교통비 또는 유류비"
@@ -382,6 +390,7 @@ items:
     hook: "수당으로 회수되는 자격증만 투자다."
     verified: true
     threads_tag: "자기계발"
+    threads_question: "따놓고 한 번도 안 쓴 자격증 있으세요?"
     verify:
       - "대상 자격증의 학원비 및 응시료"
       - "해당 자격 수당 지급 여부와 금액 (회사 취업규칙 확인)"
@@ -429,6 +438,7 @@ items:
     hook: "하루 한 잔의 1년치를 숫자로 보면 판단이 달라진다."
     verified: true
     threads_tag: "커피"
+    threads_question: "하루에 커피 몇 잔 드세요?"
     verify:
       - "본인이 자주 마시는 커피 가격"
     cards:
