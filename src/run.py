@@ -183,6 +183,11 @@ def main() -> int:
         print("--- 인스타 캡션 ---\n" + build_caption(item, cta))
         print("--- 첫 댓글 ---\n" + (build_first_comment(item, cta) or "(없음)"))
         print("--- 쓰레드 본문 ---\n" + build_threads_text(item, cta, ig_format))
+        chain = [str(t).strip() for t in (item.get("threads_chain") or []) if str(t).strip()]
+        for i, t in enumerate(chain, start=1):
+            print(f"--- 쓰레드 답글 {i} ---\n{t}")
+        if not chain:
+            print("--- 쓰레드 답글 ---\n(없음)")
         return 0
 
     # ---------------- 이미지를 커밋/푸시해서 공개 URL 확보
@@ -282,6 +287,18 @@ def main() -> int:
             results["threads"] = publish.publish_threads(
                 th_id, th_tok, th_urls, build_threads_text(item, cta, ig_format))
             print(f"[threads] 발행 완료 post_id={results['threads']}")
+
+            # 내 글에 답글을 이어 단다. 쓰레드는 답글이 붙은 글을 더 밀어준다.
+            chain = [t for t in (item.get("threads_chain") or []) if str(t).strip()]
+            if chain:
+                try:
+                    ids = publish.publish_threads_chain(
+                        th_id, th_tok, results["threads"], chain)
+                    results["threads_chain"] = ",".join(ids)
+                    print(f"[threads] 답글 {len(ids)}개 완료")
+                except Exception as e:                            # noqa: BLE001
+                    errors.append(f"threads_chain: {e}")
+                    print(f"[threads] 답글 실패(본문은 정상): {e}")
         except Exception as e:                                    # noqa: BLE001
             errors.append(f"threads: {e}")
             print(f"[threads] 실패: {e}")
