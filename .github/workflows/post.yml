@@ -14,6 +14,10 @@ on:
         description: "true 면 렌더링만 하고 발행하지 않음"
         required: false
         default: "false"
+      skip_threads:
+        description: "true 면 쓰레드는 건너뛰고 인스타에만 발행 (이미 올린 편의 릴스 추가용)"
+        required: false
+        default: "false"
 
 permissions:
   contents: write
@@ -48,6 +52,7 @@ jobs:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           TH_USER_ID: ${{ secrets.TH_USER_ID }}
           TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+          SKIP_THREADS: ${{ github.event.inputs.skip_threads }}
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.item_id }}" ]; then
