@@ -251,11 +251,24 @@ def body(card: dict, brand: str, handle: str, idx: int, total: int) -> Image.Ima
     num = f"{idx - 1:02d}"
     n_f = font(BLACK, 42)
     t_f = fit_font(d, card["title"], BLACK, maxw, 250, 88, 56, 1.18)
-    b_f = fit_font(d, card["body"], MED, maxw, 600, 50, 36, 1.55)
+    b_f = fit_font(d, card["body"], MED, maxw, 560, 50, 36, 1.55)
     note_f = font(REG, 35)
+
+    # 숫자 강조 블록 (figure / figure_label / as_of)
+    figure = card.get("figure")
+    fig_label = card.get("figure_label", "")
+    as_of = card.get("as_of", "")
+    fig_f = fit_font(d, str(figure), BLACK, maxw - 60, 150, 128, 64, 1.05) if figure else None
+    fig_h = 0
+    fig_line = 0
+    if figure:
+        # 숫자는 글리프가 폰트 크기보다 높게 그려지므로 넉넉히 1.42배로 잡는다.
+        fig_line = int(fig_f.size * 1.42)
+        fig_h = 52 + (46 if fig_label else 0) + fig_line + (40 if as_of else 0) + 44
 
     total_h = 74
     total_h += block_h(d, card["title"], t_f, maxw, 1.18) + 46
+    total_h += fig_h
     total_h += block_h(d, card["body"], b_f, maxw, 1.55)
     note_lines = wrap(d, note, note_f, maxw - 76) if note else []
     if note:
@@ -270,6 +283,21 @@ def body(card: dict, brand: str, handle: str, idx: int, total: int) -> Image.Ima
     y += 74
 
     y = draw_block(d, card["title"], t_f, PAD, y, maxw, THEME.fg, 1.18) + 46
+
+    if figure:
+        box_top = y
+        box_h = fig_h - 44
+        rounded(d, (PAD, box_top, W - PAD, box_top + box_h), 26, THEME.card_bg)
+        yy = box_top + 30
+        if fig_label:
+            d.text((PAD + 40, yy), fig_label, font=font(MED, 34), fill=THEME.sub)
+            yy += 46
+        d.text((PAD + 40, yy), str(figure), font=fig_f, fill=THEME.accent)
+        yy += fig_line
+        if as_of:
+            d.text((PAD + 40, yy), as_of, font=font(REG, 28), fill=THEME.dim)
+        y = box_top + box_h + 44
+
     y = draw_block(d, card["body"], b_f, PAD, y, maxw, THEME.sub, 1.55)
 
     if note:
