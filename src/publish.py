@@ -123,6 +123,21 @@ def publish_instagram_reel(user_id: str, token: str, video_url: str,
     return j["id"]
 
 
+def publish_instagram_comment(media_id: str, token: str, message: str) -> str:
+    """내 게시물에 첫 댓글을 단다.
+
+    첫 댓글은 두 가지를 한다.
+      1) 댓글창에 이미 글이 하나 있으면 다음 사람이 달기가 쉬워진다(빈칸 저항).
+      2) 캡션에 넣기엔 긴 기준·출처·다음 편 요청을 여기로 뺄 수 있다.
+
+    instagram_business_manage_comments 권한이 필요하다. 토큰에 그 권한이 없으면
+    발행 자체는 이미 끝난 뒤이므로, 호출부에서 경고만 남기고 넘어간다.
+    """
+    j = _post(f"{IG_BASE}/{media_id}/comments",
+              {"message": message, "access_token": token})
+    return j["id"]
+
+
 # ------------------------------------------------------------------ 쓰레드
 def publish_threads(user_id: str, token: str, image_urls: list[str], text: str) -> str:
     """0장이면 텍스트, 1장이면 단일 이미지, 2장 이상이면 캐러셀."""
