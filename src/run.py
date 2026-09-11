@@ -162,9 +162,18 @@ def main() -> int:
     # ---------------- 인스타그램
     # ig_format: "reel"(기본) | "carousel" | "both"
     # 팔로워가 적은 동안에는 릴스가 비팔로워 도달의 거의 유일한 통로다.
+    # 요일별 포맷: 초반에는 릴스 비중을 높게 간다.
+    # 팔로워가 적을 때 비팔로워에게 닿는 건 사실상 릴스뿐이라,
+    # 카드뉴스는 프로필에 들어온 사람이 볼 깊이 있는 콘텐츠 역할만 맡는다.
+    # 0=월 … 6=일. 큐의 ig_format_by_weekday 로 언제든 바꿀 수 있다.
+    by_weekday = queue.get("ig_format_by_weekday") or {1: "reel", 3: "carousel", 6: "reel"}
+    today = datetime.now(KST).weekday()
     ig_format = (item.get("ig_format")
+                 or os.getenv("IG_FORMAT")
+                 or by_weekday.get(today)
                  or queue.get("ig_format_default")
-                 or os.getenv("IG_FORMAT", "reel")).lower()
+                 or "reel").lower()
+    print(f"[format] {['월','화','수','목','금','토','일'][today]}요일 → {ig_format}")
     ig_id, ig_tok = os.getenv("IG_USER_ID"), os.getenv("IG_ACCESS_TOKEN")
 
     if ig_id and ig_tok:
