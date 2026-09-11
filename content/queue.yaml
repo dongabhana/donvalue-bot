@@ -115,6 +115,7 @@ items:
     price: "연간 결제"
     hook: "할인율이 아니라 출석률이 가격을 정한다."
     verified: true
+    ask: "헬스장 연간권 가격과 월 단위로 끊을 때 가격 (다니는 곳 기준)"
     threads_tag: "운동"
     threads_question: "연간권 끊고 몇 달 만에 안 가게 되셨나요?"
     verify:
@@ -160,6 +161,7 @@ items:
     price: "시청시간 단가"
     hook: "월 얼마가 아니라 '1시간당 얼마'로 보면 정리할 게 보인다."
     verified: true
+    ask: "구독 중인 OTT와 각 월 요금"
     threads_tag: "구독"
     threads_question: "지금 OTT 몇 개 결제 중이세요?"
     verify:
@@ -205,6 +207,7 @@ items:
     price: "2년 차액"
     hook: "귀찮음의 가격을 계산해봤다."
     verified: true
+    ask: "지금 내는 휴대폰 요금과 갈아탈 알뜰폰 요금"
     threads_tag: "통신비"
     threads_question: "통신비 한 달에 얼마 내세요?"
     verify:
@@ -255,6 +258,7 @@ items:
     price: "5년 총소유비용"
     hook: "차값보다 5년 유지비가 더 나올 수도 있다."
     verified: true
+    ask: "월 주유비, 보험료(연), 정비비(연) 대략"
     threads_tag: "자동차"
     threads_question: "차 유지비 월에 얼마인지 계산해보신 적 있으세요?"
     verify:
@@ -301,6 +305,7 @@ items:
     price: "시간을 시급으로"
     hook: "가전은 가격이 아니라 회수 기간으로 판단한다."
     verified: true
+    ask: "식기세척기 구매가 (관심 모델 기준)"
     threads_tag: "살림"
     threads_question: "식기세척기 쓰시는 분, 손설거지로 돌아갈 수 있나요?"
     verify:
@@ -347,6 +352,7 @@ items:
     price: "월 총비용"
     hook: "월세 차액만 보면 통근이 이긴다. 시간을 넣으면 뒤집힌다."
     verified: true
+    ask: "지금 월세와 교통비, 회사 근처 월세 시세"
     threads_tag: "자취"
     threads_question: "출퇴근 시간이랑 월세, 어느 쪽을 포기하시겠어요?"
     verify:
@@ -392,6 +398,7 @@ items:
     price: "회수 기간"
     hook: "수당으로 회수되는 자격증만 투자다."
     verified: true
+    ask: "자격증 응시료와 교재/인강 비용"
     threads_tag: "자기계발"
     threads_question: "따놓고 한 번도 안 쓴 자격증 있으세요?"
     verify:
@@ -488,6 +495,7 @@ items:
     price: "월 구독"
     hook: "무료로도 되는데, 굳이 돈 내는 이유가 뭘까?"
     verified: true
+    ask: "결제 중인 AI 구독과 각 월 요금"
     threads_tag: "AI"
     threads_question: "AI에 돈 쓰고 계신가요? 어디에 쓰는지 궁금하네요."
     verify:
@@ -632,6 +640,7 @@ items:
     price: "같은 메뉴"
     hook: "같은 치킨인데 왜 값이 다를까?"
     verified: true
+    ask: "자주 시키는 메뉴의 배달가 vs 매장가, 배달비"
     threads_tag: "자취"
     threads_question: "배달비 얼마부터 포장하러 나가세요?"
     verify:
@@ -676,6 +685,7 @@ items:
     price: "연 단위"
     hook: "얼마를 써야 연회비 본전을 뽑을까?"
     verified: true
+    ask: "쓰는 카드 연회비와 월 최대 할인 한도"
     threads_tag: "재테크"
     threads_question: "연회비 카드 쓰세요? 본전 뽑고 계신가요?"
     verify:
@@ -722,6 +732,7 @@ items:
     price: "10배 가격차"
     hook: "앉는 데 100만원? 그런데 하루 8시간 앉는다면."
     verified: true
+    ask: "쓰는 의자 가격과 구매 시기"
     threads_tag: "홈오피스"
     threads_question: "의자에 얼마까지 써봤어요? 후회했나요?"
     verify:
@@ -767,6 +778,7 @@ items:
     price: "리터당 차액"
     hook: "고급유 넣으면 진짜 차가 좋아질까?"
     verified: true
+    ask: "일반유 vs 고급유 리터당 가격 (자주 가는 주유소)"
     threads_tag: "자동차"
     threads_question: "고급유 넣어보고 차이 느끼신 분 있나요?"
     verify:
@@ -862,6 +874,7 @@ items:
     price: "구매 + 전기료"
     hook: "없는 집으로 다시 돌아갈 수 있을까?"
     verified: true
+    ask: "건조기 구매가와 월 전기료 체감"
     threads_tag: "살림"
     threads_question: "건조기 쓰시는 분, 없던 시절로 돌아갈 수 있나요?"
     verify:
@@ -905,6 +918,7 @@ items:
     price: "잔당 차액"
     hook: "커피 맛에 내는 걸까, 공간에 내는 걸까?"
     verified: true
+    ask: "자주 가는 카페 아메리카노 가격 (스벅/저가 각각)"
     threads_tag: "커피"
     threads_question: "카페에서 커피값 내세요, 자리값 내세요?"
     verify:
