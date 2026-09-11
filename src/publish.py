@@ -104,10 +104,16 @@ def publish_instagram(user_id: str, token: str, image_urls: list[str], caption: 
 
 # ------------------------------------------------------------------ 쓰레드
 def publish_threads(user_id: str, token: str, image_urls: list[str], text: str) -> str:
-    """이미지가 2장 이상이면 캐러셀, 없으면 텍스트 포스트."""
+    """0장이면 텍스트, 1장이면 단일 이미지, 2장 이상이면 캐러셀."""
     if not image_urls:
         j = _post(f"{TH_BASE}/{user_id}/threads",
                   {"media_type": "TEXT", "text": text, "access_token": token})
+        container = j["id"]
+    elif len(image_urls) == 1:
+        # 캐러셀은 최소 2장이므로 1장은 단일 IMAGE 포스트로 보낸다.
+        j = _post(f"{TH_BASE}/{user_id}/threads",
+                  {"media_type": "IMAGE", "image_url": image_urls[0],
+                   "text": text, "access_token": token})
         container = j["id"]
     else:
         if len(image_urls) > 20:
