@@ -206,7 +206,12 @@ def main() -> int:
     # ---------------- 쓰레드
     # 같은 시각에 두 플랫폼에 같은 내용이 뜨면 서로 도달을 갉아먹는다.
     stagger = int(os.getenv("STAGGER_MIN", "10"))
+    # 이미 쓰레드에 올린 편의 릴스만 추가로 낼 때 중복 발행을 막는다.
+    skip_threads = os.getenv("SKIP_THREADS", "").lower() in ("1", "true", "yes")
     th_id, th_tok = os.getenv("TH_USER_ID"), os.getenv("TH_ACCESS_TOKEN")
+    if skip_threads:
+        th_id = th_tok = None
+        print("[threads] SKIP_THREADS 설정 → 건너뜀")
     if th_id and th_tok:
         if stagger > 0 and results:
             print(f"[stagger] 쓰레드 발행까지 {stagger}분 대기")
