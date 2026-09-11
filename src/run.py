@@ -79,16 +79,24 @@ def build_caption(item: dict, cta: dict | None = None) -> str:
     return f"{body}\n\n{tags}".strip()
 
 
-def build_threads_text(item: dict, cta: dict | None = None) -> str:
-    """쓰레드용 본문. 쓰레드는 게시물당 주제 태그를 1개만 인식한다."""
+def build_threads_text(item: dict, cta: dict | None = None, ig_format: str = "") -> str:
+    """쓰레드용 본문. 쓰레드는 게시물당 주제 태그를 1개만 인식한다.
+
+    인스타에 릴스가 나가는 날에는 꼬리말을 바꿔 '영상 버전이 저쪽에 있다'고 알린다.
+    쓰레드가 인스타보다 초반 도달이 빠르니, 교차 유입은 이 방향이 효율이 좋다.
+    """
+    cta = cta or {}
     body = item["threads_text"].strip()
 
     question = (item.get("threads_question") or "").strip()
     if question:
         body = f"{body}\n\n{question}"
 
-    tail = (cta or {}).get("threads_tail",
-                           "다음에 뭐 계산해볼까요? 궁금한 거 답글로 남겨주세요.")
+    default_tail = "다음에 뭐 계산해볼까요? 궁금한 거 답글로 남겨주세요."
+    if ig_format == "reel":
+        tail = cta.get("threads_reel_tail") or cta.get("threads_tail", default_tail)
+    else:
+        tail = cta.get("threads_tail", default_tail)
     if tail:
         body = f"{body}\n\n{tail}"
 
@@ -109,6 +117,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true", help="렌더링만 하고 종료")
     ap.add_argument("--id", help="특정 항목 강제 발행")
+    ap.add_argument("--tomorrow", action="store_true",
+                    help="내일 기준으로 포맷을 계산 (발행 전날 검토용)")
     args = ap.parse_args()
 
     queue = yaml.safe_load(QUEUE.read_text(encoding="utf-8"))
@@ -128,6 +138,24 @@ def main() -> int:
     brand = queue.get("brand", "돈값하나?")
     handle = queue.get("handle", "@dongabhana")
     cta = queue.get("cta") or {}
+
+    # ---------------- 오늘의 인스타 포맷
+    # "reel"(기본) | "carousel" | "both"
+    # 팔로워가 적을 때 비팔로워에게 닿는 건 사실상 릴스뿐이라, 초반에는 릴스 비중을 높게 간다.
+    # 카드뉴스는 프로필에 들어온 사람이 볼 깊이 있는 콘텐츠 역할만 맡는다.
+    # 0=월 … 6=일. 큐의 ig_format_by_weekday 로 언제든 바꿀 수 있다.
+    # 쓰레드 꼬리말도 이 값을 보고 갈리므로 dry-run(전날 검토)에서도 먼저 정해둔다.
+    by_weekday = queue.get("ig_format_by_weekday") or {1: "reel", 3: "carousel", 6: "reel"}
+    when = datetime.now(KST) + timedelta(days=1 if args.tomorrow else 0)
+    wd = when.weekday()
+    ig_format = (item.get("ig_format")
+                 or os.getenv("IG_FORMAT")
+                 or by_weekday.get(wd)
+                 or queue.get("ig_format_default")
+                 or "reel").lower()
+    print(f"[format] {'내일' if args.tomorrow else '오늘'} "
+          f"{'월화수목금토일'[wd]}요일 → {ig_format}")
+
     outdir = IMAGES / item["id"]
     paths = render_item(item, outdir, brand, handle, cta)
     print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
@@ -140,7 +168,7 @@ def main() -> int:
         except Exception as e:                                    # noqa: BLE001
             print(f"[dry-run] 릴스 생성 실패(무시): {e}")
         print("--- 인스타 캡션 ---\n" + build_caption(item, cta))
-        print("--- 쓰레드 본문 ---\n" + build_threads_text(item, cta))
+        print("--- 쓰레드 본문 ---\n" + build_threads_text(item, cta, ig_format))
         return 0
 
     # ---------------- 이미지를 커밋/푸시해서 공개 URL 확보
@@ -159,21 +187,7 @@ def main() -> int:
     results: dict[str, str] = {}
     errors: list[str] = []
 
-    # ---------------- 인스타그램
-    # ig_format: "reel"(기본) | "carousel" | "both"
-    # 팔로워가 적은 동안에는 릴스가 비팔로워 도달의 거의 유일한 통로다.
-    # 요일별 포맷: 초반에는 릴스 비중을 높게 간다.
-    # 팔로워가 적을 때 비팔로워에게 닿는 건 사실상 릴스뿐이라,
-    # 카드뉴스는 프로필에 들어온 사람이 볼 깊이 있는 콘텐츠 역할만 맡는다.
-    # 0=월 … 6=일. 큐의 ig_format_by_weekday 로 언제든 바꿀 수 있다.
-    by_weekday = queue.get("ig_format_by_weekday") or {1: "reel", 3: "carousel", 6: "reel"}
-    today = datetime.now(KST).weekday()
-    ig_format = (item.get("ig_format")
-                 or os.getenv("IG_FORMAT")
-                 or by_weekday.get(today)
-                 or queue.get("ig_format_default")
-                 or "reel").lower()
-    print(f"[format] {['월','화','수','목','금','토','일'][today]}요일 → {ig_format}")
+    # ---------------- 인스타그램 (포맷은 위에서 이미 정해졌다)
     ig_id, ig_tok = os.getenv("IG_USER_ID"), os.getenv("IG_ACCESS_TOKEN")
 
     if ig_id and ig_tok:
@@ -236,7 +250,7 @@ def main() -> int:
             th_urls = [u for u in urls if u.rsplit("/", 1)[-1] in th_names]
             print(f"[threads] 이미지 {len(th_urls)}장 (표지+결론)")
             results["threads"] = publish.publish_threads(
-                th_id, th_tok, th_urls, build_threads_text(item, cta))
+                th_id, th_tok, th_urls, build_threads_text(item, cta, ig_format))
             print(f"[threads] 발행 완료 post_id={results['threads']}")
         except Exception as e:                                    # noqa: BLE001
             errors.append(f"threads: {e}")
