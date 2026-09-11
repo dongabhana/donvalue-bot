@@ -1,0 +1,11 @@
+# 파이썬 빌드 산출물
+__pycache__/
+*.py[cod]
+
+# 로컬 렌더 테스트 결과 (발행 시 images/ 는 봇이 커밋하므로 제외하지 않음)
+out/
+
+# 에디터/OS
+.DS_Store
+.vscode/
+.idea/
