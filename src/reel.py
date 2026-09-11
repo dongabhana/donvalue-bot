@@ -106,8 +106,55 @@ def plan_summary(item: dict, paths: list[Path]) -> str:
 
 
 # ------------------------------------------------------------------ 인코딩
+INTRO_FADE = 0.45   # 첫 장이 검은 화면에서 떠오르는 시간
+INTRO_RISE = 0.85   # 첫 장이 아래에서 밀려 올라오는 시간
+INTRO_SHIFT = 40    # 밀려 올라오는 거리(px)
+
+
+def _build_reel_motion(card_paths: list[Path], durations: list[float],
+                       outfile: Path) -> Path:
+    """첫 장에 페이드인 + 살짝 밀려 올라오는 모션을 넣어 인코딩한다.
+
+    릴스는 첫 1초에서 넘길지 말지가 갈린다. 정지 이미지로 시작하면
+    '광고'로 읽혀서 손가락이 먼저 올라간다. 큰 효과를 줄 필요는 없고,
+    화면이 '방금 바뀌었다'는 신호만 있으면 시선이 한 박자 더 머문다.
+    """
+    args: list[str] = ["ffmpeg", "-y", "-loglevel", "error"]
+    # 0번: 첫 장이 얹힐 배경
+    args += ["-f", "lavfi", "-t", f"{durations[0]:.2f}",
+             "-i", f"color=c=0x101217:s={W}x{H}:r={FPS}"]
+    for p, d in zip(card_paths, durations):
+        args += ["-loop", "1", "-framerate", str(FPS), "-t", f"{d:.2f}", "-i", str(p)]
+    args += ["-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
+
+    y_expr = (f"(H-h)/2-{INTRO_SHIFT}*max(0\\,1-t/{INTRO_RISE})")
+    parts = [
+        f"[1:v]scale={W}:-2,setsar=1[cov];",
+        f"[0:v][cov]overlay=x=(W-w)/2:y='{y_expr}':shortest=1,"
+        f"fade=t=in:st=0:d={INTRO_FADE},fps={FPS},format=yuv420p,setsar=1[v0];",
+    ]
+    for i in range(1, len(card_paths)):
+        parts.append(
+            f"[{i+1}:v]scale={W}:-2,pad={W}:{H}:(ow-iw)/2:(oh-ih)/2:color=0x101217,"
+            f"fps={FPS},format=yuv420p,setsar=1[v{i}];")
+    parts.append("".join(f"[v{i}]" for i in range(len(card_paths)))
+                 + f"concat=n={len(card_paths)}:v=1:a=0[v]")
+
+    args += ["-filter_complex", "".join(parts),
+             "-map", "[v]", "-map", f"{len(card_paths)+1}:a",
+             "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+             "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+             "-c:a", "aac", "-b:a", "96k", "-shortest", str(outfile)]
+
+    r = subprocess.run(args, capture_output=True, text=True)
+    if r.returncode != 0 or not outfile.exists():
+        raise ReelError(f"ffmpeg(모션) 실패: {r.stderr[:400]}")
+    return outfile
+
+
 def build_reel(card_paths: list[Path], outfile: Path,
-               durations: list[float] | None = None) -> Path:
+               durations: list[float] | None = None,
+               motion: bool = True) -> Path:
     """카드 이미지들을 이어붙여 세로 영상을 만든다."""
     if not ffmpeg_available():
         raise ReelError("ffmpeg 가 없습니다. 워크플로에서 apt-get install ffmpeg 를 확인하세요.")
@@ -120,6 +167,14 @@ def build_reel(card_paths: list[Path], outfile: Path,
         raise ReelError("카드 수와 노출 시간 수가 다릅니다.")
 
     outfile.parent.mkdir(parents=True, exist_ok=True)
+
+    if motion:
+        try:
+            return _build_reel_motion(card_paths, durations, outfile)
+        except ReelError as e:
+            # 모션은 있으면 좋은 것이지 없으면 안 되는 게 아니다.
+            # 필터가 안 먹는 환경이면 조용히 기본 방식으로 내려간다.
+            print(f"[reel] 모션 인코딩 실패 → 기본 방식으로 진행: {e}")
     concat = outfile.parent / "_concat.txt"
 
     lines = []
