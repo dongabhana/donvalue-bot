@@ -102,6 +102,27 @@ def publish_instagram(user_id: str, token: str, image_urls: list[str], caption: 
     return j["id"]
 
 
+def publish_instagram_reel(user_id: str, token: str, video_url: str,
+                           caption: str, cover_url: str | None = None) -> str:
+    """릴스 발행. 캐러셀과 달리 팔로워가 없어도 비팔로워에게 배포된다.
+
+    영상 인코딩에 시간이 걸려서 컨테이너 준비 대기를 캐러셀보다 길게 잡는다.
+    """
+    params = {"media_type": "REELS", "video_url": video_url,
+              "caption": caption, "access_token": token}
+    if cover_url:
+        params["cover_url"] = cover_url
+    j = _post(f"{IG_BASE}/{user_id}/media", params)
+    container = j["id"]
+    print(f"  · IG reel container {container}")
+
+    _ig_wait_ready(container, token, tries=60)   # 영상은 최대 6분 대기
+
+    j = _post(f"{IG_BASE}/{user_id}/media_publish",
+              {"creation_id": container, "access_token": token})
+    return j["id"]
+
+
 # ------------------------------------------------------------------ 쓰레드
 def publish_threads(user_id: str, token: str, image_urls: list[str], text: str) -> str:
     """0장이면 텍스트, 1장이면 단일 이미지, 2장 이상이면 캐러셀."""
