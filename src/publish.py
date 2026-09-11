@@ -139,17 +139,23 @@ def publish_instagram_comment(media_id: str, token: str, message: str) -> str:
 
 
 # ------------------------------------------------------------------ 쓰레드
-def publish_threads(user_id: str, token: str, image_urls: list[str], text: str) -> str:
-    """0장이면 텍스트, 1장이면 단일 이미지, 2장 이상이면 캐러셀."""
+def publish_threads(user_id: str, token: str, image_urls: list[str], text: str,
+                    reply_to_id: str | None = None, wait: int = 30) -> str:
+    """0장이면 텍스트, 1장이면 단일 이미지, 2장 이상이면 캐러셀.
+
+    reply_to_id 를 주면 그 글에 달리는 답글이 된다.
+    """
+    base = {"text": text, "access_token": token}
+    if reply_to_id:
+        base["reply_to_id"] = reply_to_id
+
     if not image_urls:
-        j = _post(f"{TH_BASE}/{user_id}/threads",
-                  {"media_type": "TEXT", "text": text, "access_token": token})
+        j = _post(f"{TH_BASE}/{user_id}/threads", {**base, "media_type": "TEXT"})
         container = j["id"]
     elif len(image_urls) == 1:
         # 캐러셀은 최소 2장이므로 1장은 단일 IMAGE 포스트로 보낸다.
         j = _post(f"{TH_BASE}/{user_id}/threads",
-                  {"media_type": "IMAGE", "image_url": image_urls[0],
-                   "text": text, "access_token": token})
+                  {**base, "media_type": "IMAGE", "image_url": image_urls[0]})
         container = j["id"]
     else:
         if len(image_urls) > 20:
@@ -162,11 +168,41 @@ def publish_threads(user_id: str, token: str, image_urls: list[str], text: str) 
             children.append(j["id"])
             print(f"  · TH child {j['id']} ← {url.rsplit('/', 1)[-1]}")
         j = _post(f"{TH_BASE}/{user_id}/threads",
-                  {"media_type": "CAROUSEL", "children": ",".join(children),
-                   "text": text, "access_token": token})
+                  {**base, "media_type": "CAROUSEL", "children": ",".join(children)})
         container = j["id"]
 
-    time.sleep(30)  # 문서 권장 대기
-    j = _post(f"{TH_BASE}/{user_id}/threads_publish",
-              {"creation_id": container, "access_token": token})
+    time.sleep(wait)  # 문서 권장 대기. 텍스트만 올릴 땐 짧게 잡아도 된다.
+    try:
+        j = _post(f"{TH_BASE}/{user_id}/threads_publish",
+                  {"creation_id": container, "access_token": token})
+    except PublishError:
+        # 컨테이너가 아직 준비 안 된 경우가 있어 한 번만 더 기다렸다 시도한다
+        time.sleep(20)
+        j = _post(f"{TH_BASE}/{user_id}/threads_publish",
+                  {"creation_id": container, "access_token": token})
     return j["id"]
+
+
+def publish_threads_chain(user_id: str, token: str, parent_id: str,
+                          texts: list[str]) -> list[str]:
+    """본문 글에 내 답글을 줄줄이 이어 단다.
+
+    왜 이걸 하나
+      쓰레드는 답글이 달린 글을 더 밀어준다. 남이 달아주길 기다리는 것보다
+      내가 먼저 이어 붙이는 쪽이 확실하고, 본문에 다 넣으면 길어서 안 읽히는
+      예외·반론·출처를 여기로 뺄 수 있다.
+
+    각 답글은 '바로 앞 글'에 달린다. 그래야 하나의 타래로 읽힌다.
+    실패해도 이미 본문은 올라간 뒤이므로 호출부에서 경고만 남긴다.
+    """
+    ids: list[str] = []
+    prev = parent_id
+    for i, t in enumerate(texts, start=1):
+        t = (t or "").strip()
+        if not t:
+            continue
+        rid = publish_threads(user_id, token, [], t, reply_to_id=prev, wait=12)
+        print(f"  · TH reply {i} → {rid}")
+        ids.append(rid)
+        prev = rid
+    return ids
