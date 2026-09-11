@@ -191,8 +191,14 @@ def main() -> int:
                 errors.append(f"instagram_reel: {e}")
                 print(f"[reel] 실패: {e}")
 
-        # 릴스만 하기로 했는데 실패했으면 캐러셀로 폴백한다(빈손으로 끝내지 않는다).
-        if ig_format in ("carousel", "both") or (ig_format == "reel" and not did_reel):
+        # 릴스만 하기로 했는데 실패하면 캐러셀로 폴백한다(빈손으로 끝내지 않는다).
+        # 다만 이미 발행한 편을 --id 로 재실행한 경우엔 폴백하지 않는다.
+        # 그 경우 폴백은 같은 내용을 두 번 올리는 중복 발행이 된다.
+        already_posted = item["id"] in posted_ids
+        allow_fallback = (ig_format == "reel" and not did_reel and not already_posted)
+        if already_posted and not did_reel:
+            print("[instagram] 이미 발행된 편이라 캐러셀 폴백을 건너뜁니다(중복 방지)")
+        if ig_format in ("carousel", "both") or allow_fallback:
             try:
                 results["instagram"] = publish.publish_instagram(
                     ig_id, ig_tok, urls, build_caption(item, cta))
