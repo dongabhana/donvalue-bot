@@ -16,6 +16,7 @@ import json
 import os
 import subprocess
 import sys
+import time
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 
@@ -68,8 +69,24 @@ def build_caption(item: dict) -> str:
 
 
 def build_threads_text(item: dict) -> str:
-    tags = " ".join(f"#{t}" for t in item.get("hashtags", [])[:3])
-    return f"{item['threads_text'].strip()}\n\n{tags}".strip()
+    """쓰레드용 본문. 쓰레드는 게시물당 주제 태그를 1개만 인식한다."""
+    body = item["threads_text"].strip()
+
+    question = (item.get("threads_question") or "").strip()
+    if question:
+        body = f"{body}\n\n{question}"
+
+    tag = item.get("threads_tag") or (item.get("hashtags") or [None])[0]
+    if tag:
+        body = f"{body}\n\n#{str(tag).lstrip('#')}"
+    return body.strip()
+
+
+def threads_images(paths: list) -> list:
+    """쓰레드에는 표지와 결론 2장만 보낸다."""
+    if len(paths) <= 2:
+        return list(paths)
+    return [paths[0], paths[-1]]
 
 
 def main() -> int:
@@ -134,11 +151,19 @@ def main() -> int:
         print("[instagram] 토큰 없음 → 건너뜀")
 
     # ---------------- 쓰레드
+    # 같은 시각에 두 플랫폼에 같은 내용이 뜨면 서로 도달을 갉아먹는다.
+    stagger = int(os.getenv("STAGGER_MIN", "10"))
     th_id, th_tok = os.getenv("TH_USER_ID"), os.getenv("TH_ACCESS_TOKEN")
     if th_id and th_tok:
+        if stagger > 0 and results:
+            print(f"[stagger] 쓰레드 발행까지 {stagger}분 대기")
+            time.sleep(stagger * 60)
         try:
+            th_names = {p.name for p in threads_images(paths)}
+            th_urls = [u for u in urls if u.rsplit("/", 1)[-1] in th_names]
+            print(f"[threads] 이미지 {len(th_urls)}장 (표지+결론)")
             results["threads"] = publish.publish_threads(
-                th_id, th_tok, urls, build_threads_text(item))
+                th_id, th_tok, th_urls, build_threads_text(item))
             print(f"[threads] 발행 완료 post_id={results['threads']}")
         except Exception as e:                                    # noqa: BLE001
             errors.append(f"threads: {e}")
