@@ -2,9 +2,9 @@ name: 돈값하나 자동 발행
 
 on:
   schedule:
-    # 화요일·금요일 20:00 KST (= 11:00 UTC). GitHub cron 은 UTC 기준이며
+    # 화·목·일 20:00 KST (= 11:00 UTC). GitHub cron 은 UTC 기준이며
     # 러너 혼잡도에 따라 수 분~수십 분 지연될 수 있습니다.
-    - cron: "0 11 * * 2,5"
+    - cron: "0 11 * * 0,2,4"
   workflow_dispatch:
     inputs:
       item_id:
