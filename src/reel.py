@@ -17,8 +17,8 @@ import subprocess
 from pathlib import Path
 
 W, H = 1080, 1920
-SEC_PER_CARD = 2.6          # 표지는 아래에서 따로 늘린다
-COVER_EXTRA = 1.2           # 첫 장은 훅을 읽을 시간이 더 필요하다
+SEC_PER_CARD = 4.2          # 읽을 시간을 충분히 준다 (표지는 아래에서 더 늘림)
+COVER_EXTRA = 2.3           # 첫 장은 훅을 읽고 판단할 시간이 더 필요하다
 BG = "#101217"
 FPS = 30
 
