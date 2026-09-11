@@ -217,11 +217,11 @@ def cover(item: dict, brand: str, handle: str, total: int) -> Image.Image:
     # 손가락을 멈추게 하는 건 제품명이 아니라 훅이다.
     # 훅을 주인공으로 키우고 제품명은 위쪽 라벨로 내린다.
     label = item["product"]
-    label_f = font(BLACK, 44)
-    hook_f = fit_font(d, hook, BLACK, maxw, 620, 118, 62, 1.16) if hook else None
+    label_f = fit_font(d, label, BLACK, maxw, 200, 68, 44, 1.18)
+    hook_f = fit_font(d, hook, BLACK, maxw, 560, 104, 58, 1.16) if hook else None
 
     total_h = (108 if price else 0)
-    total_h += block_h(d, label, label_f, maxw, 1.2) + 30
+    total_h += block_h(d, label, label_f, maxw, 1.18) + 36
     if hook:
         total_h += block_h(d, hook, hook_f, maxw, 1.16)
     y = max(top, top + (bottom - top - total_h) // 2)
@@ -232,7 +232,7 @@ def cover(item: dict, brand: str, handle: str, total: int) -> Image.Image:
         d.text((PAD + 30, y + 13), price, font=font(BOLD, 38), fill=THEME.ink)
         y += 108
 
-    y = draw_block(d, label, label_f, PAD, y, maxw, THEME.accent, 1.2) + 30
+    y = draw_block(d, label, label_f, PAD, y, maxw, THEME.accent, 1.18) + 36
     if hook:
         draw_block(d, hook, hook_f, PAD, y, maxw, THEME.fg, 1.16)
 
