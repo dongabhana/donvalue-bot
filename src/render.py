@@ -214,12 +214,16 @@ def cover(item: dict, brand: str, handle: str, total: int) -> Image.Image:
     price = item.get("price", "")
     hook = item.get("hook", "")
 
-    title_f = fit_font(d, item["product"], BLACK, maxw, 500, 128, 66, 1.14)
-    hook_f = font(MED, 46)
+    # 손가락을 멈추게 하는 건 제품명이 아니라 훅이다.
+    # 훅을 주인공으로 키우고 제품명은 위쪽 라벨로 내린다.
+    label = item["product"]
+    label_f = font(BLACK, 44)
+    hook_f = fit_font(d, hook, BLACK, maxw, 620, 118, 62, 1.16) if hook else None
 
     total_h = (108 if price else 0)
-    total_h += block_h(d, item["product"], title_f, maxw, 1.14) + 40
-    total_h += block_h(d, hook, hook_f, maxw, 1.42)
+    total_h += block_h(d, label, label_f, maxw, 1.2) + 30
+    if hook:
+        total_h += block_h(d, hook, hook_f, maxw, 1.16)
     y = max(top, top + (bottom - top - total_h) // 2)
 
     if price:
@@ -228,8 +232,9 @@ def cover(item: dict, brand: str, handle: str, total: int) -> Image.Image:
         d.text((PAD + 30, y + 13), price, font=font(BOLD, 38), fill=THEME.ink)
         y += 108
 
-    y = draw_block(d, item["product"], title_f, PAD, y, maxw, THEME.fg, 1.14) + 40
-    draw_block(d, hook, hook_f, PAD, y, maxw, THEME.sub, 1.42)
+    y = draw_block(d, label, label_f, PAD, y, maxw, THEME.accent, 1.2) + 30
+    if hook:
+        draw_block(d, hook, hook_f, PAD, y, maxw, THEME.fg, 1.16)
 
     # 하단 시그니처
     sig_y = SAFE_BOTTOM - 236
