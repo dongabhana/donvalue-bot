@@ -64,18 +64,33 @@ def pick_next(queue: dict, posted_ids: set[str]) -> dict | None:
     return None
 
 
-def build_caption(item: dict) -> str:
+def build_caption(item: dict, cta: dict | None = None) -> str:
+    """인스타 캡션. 마지막에 댓글 요청 한 줄을 붙인다.
+
+    댓글은 참여 신호이자 다음 소재의 공급원이라 두 번 남는 장사다.
+    """
+    cta = cta or {}
+    tail = cta.get("caption_tail",
+                   "다음에 계산해줬으면 하는 거 있으면 댓글로 남겨주세요. 하나씩 다 따져봅니다.")
     tags = " ".join(f"#{t}" for t in item.get("hashtags", []))
-    return f"{item['caption'].strip()}\n\n{tags}".strip()
+    body = item["caption"].strip()
+    if tail:
+        body = f"{body}\n\n{tail}"
+    return f"{body}\n\n{tags}".strip()
 
 
-def build_threads_text(item: dict) -> str:
+def build_threads_text(item: dict, cta: dict | None = None) -> str:
     """쓰레드용 본문. 쓰레드는 게시물당 주제 태그를 1개만 인식한다."""
     body = item["threads_text"].strip()
 
     question = (item.get("threads_question") or "").strip()
     if question:
         body = f"{body}\n\n{question}"
+
+    tail = (cta or {}).get("threads_tail",
+                           "다음에 뭐 계산해볼까요? 궁금한 거 답글로 남겨주세요.")
+    if tail:
+        body = f"{body}\n\n{tail}"
 
     tag = item.get("threads_tag") or (item.get("hashtags") or [None])[0]
     if tag:
@@ -112,8 +127,9 @@ def main() -> int:
 
     brand = queue.get("brand", "돈값하나?")
     handle = queue.get("handle", "@dongabhana")
+    cta = queue.get("cta") or {}
     outdir = IMAGES / item["id"]
-    paths = render_item(item, outdir, brand, handle)
+    paths = render_item(item, outdir, brand, handle, cta)
     print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
 
     if args.dry_run:
@@ -123,8 +139,8 @@ def main() -> int:
             print(f"[dry-run] 릴스: {mp4} ({mp4.stat().st_size/1024/1024:.2f}MB)")
         except Exception as e:                                    # noqa: BLE001
             print(f"[dry-run] 릴스 생성 실패(무시): {e}")
-        print("--- 인스타 캡션 ---\n" + build_caption(item))
-        print("--- 쓰레드 본문 ---\n" + build_threads_text(item))
+        print("--- 인스타 캡션 ---\n" + build_caption(item, cta))
+        print("--- 쓰레드 본문 ---\n" + build_threads_text(item, cta))
         return 0
 
     # ---------------- 이미지를 커밋/푸시해서 공개 URL 확보
@@ -168,7 +184,7 @@ def main() -> int:
                 video_url = (f"https://raw.githubusercontent.com/{repo}/{sha2}"
                              f"/images/{item['id']}/{mp4.name}")
                 results["instagram_reel"] = publish.publish_instagram_reel(
-                    ig_id, ig_tok, video_url, build_caption(item), urls[0])
+                    ig_id, ig_tok, video_url, build_caption(item, cta), urls[0])
                 print(f"[reel] 발행 완료 media_id={results['instagram_reel']}")
                 did_reel = True
             except Exception as e:                                # noqa: BLE001
@@ -179,7 +195,7 @@ def main() -> int:
         if ig_format in ("carousel", "both") or (ig_format == "reel" and not did_reel):
             try:
                 results["instagram"] = publish.publish_instagram(
-                    ig_id, ig_tok, urls, build_caption(item))
+                    ig_id, ig_tok, urls, build_caption(item, cta))
                 print(f"[instagram] 발행 완료 media_id={results['instagram']}")
             except Exception as e:                                # noqa: BLE001
                 errors.append(f"instagram: {e}")
@@ -200,7 +216,7 @@ def main() -> int:
             th_urls = [u for u in urls if u.rsplit("/", 1)[-1] in th_names]
             print(f"[threads] 이미지 {len(th_urls)}장 (표지+결론)")
             results["threads"] = publish.publish_threads(
-                th_id, th_tok, th_urls, build_threads_text(item))
+                th_id, th_tok, th_urls, build_threads_text(item, cta))
             print(f"[threads] 발행 완료 post_id={results['threads']}")
         except Exception as e:                                    # noqa: BLE001
             errors.append(f"threads: {e}")
