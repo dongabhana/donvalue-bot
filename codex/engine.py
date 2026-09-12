@@ -369,6 +369,9 @@ class Engine:
             for child in children: self.wait_ready('th',child)
             args.update(media_type='CAROUSEL',children=','.join(children))
         cid=self.meta('th','POST',user+'/threads',**args)['id']
+        # Allow the freshly created parent to become visible before checking
+        # readiness and making the single publish call; never retry a write.
+        time.sleep(20)
         self.wait_ready('th',cid)
         return cid
 
