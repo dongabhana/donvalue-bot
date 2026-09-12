@@ -10,6 +10,7 @@ import tempfile
 
 from codex.engine import Engine, KST, validate
 from src import run, publish
+from tools.claude_burst_once import recover_rejected_threads
 
 
 def arithmetic(text):
@@ -104,3 +105,40 @@ class EditorialBankTests(unittest.TestCase):
             with self.assertRaises(publish.PublishError):
                 publish.publish_threads('user','token',['one','two'],'complete text')
         self.assertEqual(writer.call_count,2)
+
+    def test_backlog_recovery_does_not_retry_ambiguous_threads_publication(self):
+        prior={'results':{'instagram':'existing'},'errors':[
+            'threads: POST https://graph.threads.net/v1.0/me/threads_publish → 400 Invalid Carousel Children']}
+        with patch.object(run,'deliver_once') as delivery:
+            recover_rejected_threads('004-ott-stack',prior)
+        delivery.assert_not_called()
+
+    def test_backlog_recovery_posts_only_threads_after_proven_preparation_rejection(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)
+            item_id='004-ott-stack'
+            images=root/item_id
+            images.mkdir()
+            for name in ('01.png','02.png'): (images/name).write_bytes(b'original')
+            ledger=root/'delivery.json'
+            ledger.write_text(json.dumps({item_id:{'instagram':{'status':'done','id':'existing'},'threads':{'status':'in_flight'}}}))
+            posted=root/'posted.json'
+            prior={'id':item_id,'product':'OTT','results':{'instagram':'existing'},'errors':[
+                'threads: POST https://graph.threads.net/v1.0/me/threads → 400 Invalid Carousel Children']}
+            posted.write_text(json.dumps([prior]))
+            queue=root/'queue.yaml'
+            queue.write_text('items:\n  - id: 004-ott-stack\n    threads_tag: 구독\n')
+            with patch.object(run,'IMAGES',root), patch.object(run,'DELIVERY',ledger), \
+                 patch.object(run,'POSTED',posted), patch.object(run,'QUEUE',queue), \
+                 patch.object(run,'sh',return_value='commit'), patch.object(run,'push'), \
+                 patch.object(run,'build_threads_text',return_value='complete manuscript'), \
+                 patch.object(publish,'publish_threads',return_value='recovered') as threads, \
+                 patch.object(publish,'publish_instagram') as instagram, \
+                 patch('tools.claude_burst_once.notify.done'), \
+                 patch.dict('os.environ',{'GITHUB_REPOSITORY':'owner/repo','TH_USER_ID':'user','TH_ACCESS_TOKEN':'token'}):
+                recover_rejected_threads(item_id,prior)
+            threads.assert_called_once()
+            instagram.assert_not_called()
+            saved=json.loads(posted.read_text())[0]
+            self.assertEqual(saved['results'],{'instagram':'existing','threads':'recovered'})
+            self.assertEqual(saved['errors'],[])
