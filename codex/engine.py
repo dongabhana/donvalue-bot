@@ -68,7 +68,26 @@ def commit(paths, message):
         git('add', str(path))
     if git('diff', '--cached', '--name-only'):
         git('-c', 'user.name=donvalue-bot', '-c', 'user.email=bot@users.noreply.github.com', 'commit', '-m', message)
-        git('push')
+        push()
+
+
+def push(tries=5):
+    """Rebase concurrent changes; conflicting approval state must stop publishing."""
+    for attempt in range(tries):
+        try:
+            git('push')
+            return
+        except RuntimeError:
+            if attempt == tries - 1:
+                raise
+        git('fetch', 'origin', 'main')
+        try:
+            git('-c', 'user.name=donvalue-bot', '-c', 'user.email=bot@users.noreply.github.com',
+                'rebase', 'origin/main')
+        except RuntimeError:
+            git('rebase', '--abort')
+            raise RuntimeError('Concurrent changes conflict; publishing stopped') from None
+        time.sleep(3 * (attempt + 1))
 
 
 class Engine:
@@ -77,6 +96,7 @@ class Engine:
         self.crypt = cipher(self.token)
         self.owner = json.loads(self.crypt.decrypt((ROOT/'content/telegram_owner.enc').read_bytes()))
         self.state = json.loads(self.crypt.decrypt(STATE.read_bytes())) if STATE.exists() else {'offset': 0, 'records': {}, 'comments': {}}
+        self._saved_state = canonical(self.state) if STATE.exists() else None
         self.items = json.loads((ROOT/'codex/content.json').read_text())['items']
         for item in self.items:
             validate(item)
@@ -84,8 +104,12 @@ class Engine:
             raise ValueError('Duplicate content ID')
 
     def save(self):
-        STATE.write_bytes(self.crypt.encrypt(canonical(self.state)))
+        payload = canonical(self.state)
+        if payload == getattr(self, '_saved_state', None):
+            return
+        STATE.write_bytes(self.crypt.encrypt(payload))
         commit([STATE], 'Update encrypted Codex approval and delivery state')
+        self._saved_state = payload
 
     def tg(self, method, files=None, **params):
         try:
