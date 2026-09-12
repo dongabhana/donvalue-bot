@@ -26,6 +26,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src.render import render_item                      # noqa: E402
 from src.reel import build_reel_for, plan_summary       # noqa: E402
 from src import publish                                 # noqa: E402
+from src import hooks                                   # noqa: E402
+from src import notify                                  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "content" / "queue.yaml"
@@ -47,10 +49,17 @@ def load_posted() -> list[dict]:
     return []
 
 
-def pick_next(queue: dict, posted_ids: set[str]) -> dict | None:
+def pick_next(queue: dict, posted_ids: set[str], only: str = "") -> dict | None:
+    """다음 발행분을 고른다.
+
+    only 를 주면 그 포맷으로 지정된 편만 고른다(예: 프로필을 채우려고
+    카드뉴스만 몰아서 낼 때). 지정이 없는 편은 대상이 아니다.
+    """
     skipped: list[str] = []
     for item in queue["items"]:
         if item["id"] in posted_ids:
+            continue
+        if only and (item.get("ig_format") or "").lower() != only:
             continue
         if not item.get("verified"):
             skipped.append(item["id"])
@@ -76,6 +85,10 @@ def build_caption(item: dict, cta: dict | None = None) -> str:
                    "다음에 계산해줬으면 하는 거 있으면 댓글로 남겨주세요. 하나씩 다 따져봅니다.")
     tags = " ".join(f"#{t}" for t in item.get("hashtags", []))
     body = item["caption"].strip()
+    # 캡션은 약 125자에서 '... 더 보기'로 잘린다. 첫 줄이 사실상 두 번째 훅이다.
+    head = hooks.caption_first_line(item)
+    if head and not body.startswith(head[:12]):
+        body = f"{head}\n\n{body}"
     if tail:
         body = f"{body}\n\n{tail}"
     return f"{body}\n\n{tags}".strip()
@@ -124,15 +137,9 @@ def threads_images(paths: list) -> list:
     return [paths[0], paths[-1]]
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--dry-run", action="store_true", help="렌더링만 하고 종료")
-    ap.add_argument("--id", help="특정 항목 강제 발행")
-    ap.add_argument("--tomorrow", action="store_true",
-                    help="내일 기준으로 포맷을 계산 (발행 전날 검토용)")
-    args = ap.parse_args()
-
-    queue = yaml.safe_load(QUEUE.read_text(encoding="utf-8"))
+def run_once(args) -> int:
+    # content/hooks.yaml 을 각 항목의 reel 블록으로 합친다(릴스 훅·화자·배경음 무드).
+    queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
     posted = load_posted()
     posted_ids = {p["id"] for p in posted}
 
@@ -142,11 +149,12 @@ def main() -> int:
             print(f"[stop] id '{args.id}' 를 큐에서 찾을 수 없습니다.")
             return 1
     else:
-        item = pick_next(queue, posted_ids)
+        item = pick_next(queue, posted_ids, (args.pick or "").lower())
         if item is None:
             return 0
 
-    brand = queue.get("brand", "돈값하나?")
+    # 편에 brand 가 있으면 그 편만 다른 시리즈 이름으로 나간다
+    brand = item.get("brand") or queue.get("brand", "돈값하나?")
     handle = queue.get("handle", "@dongabhana")
     cta = queue.get("cta") or {}
 
@@ -159,7 +167,7 @@ def main() -> int:
     by_weekday = queue.get("ig_format_by_weekday") or {1: "reel", 3: "carousel", 6: "reel"}
     when = datetime.now(KST) + timedelta(days=1 if args.tomorrow else 0)
     wd = when.weekday()
-    ig_format = (item.get("ig_format")
+    ig_format = ((args.pick or "").lower() or item.get("ig_format")
                  or os.getenv("IG_FORMAT")
                  or by_weekday.get(wd)
                  or queue.get("ig_format_default")
@@ -167,19 +175,35 @@ def main() -> int:
     print(f"[format] {'내일' if args.tomorrow else '오늘'} "
           f"{'월화수목금토일'[wd]}요일 → {ig_format}")
 
+    for w in hooks.validate(item):
+        print(f"[hook] ⚠ {item['id']}: {w}")
+
     outdir = (PREVIEW if args.dry_run else IMAGES) / item["id"]
     paths = render_item(item, outdir, brand, handle, cta)
     print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
 
+    results: dict[str, str] = {}
+    errors: list[str] = []
+
+    # 릴스는 발행 전에 미리 만들어 둔다. 승인 화면에 '실제로 나갈 영상'이 보여야
+    # 검토가 의미가 있고, 승인 후 인코딩을 기다릴 필요도 없다.
+    mp4: Path | None = None
+    if ig_format in ("reel", "both"):
+        try:
+            mp4 = outdir / f"{item['id']}.mp4"
+            _, plan_note = build_reel_for(item, paths, mp4, brand, handle)
+            print(f"[reel] {mp4.name} · {plan_note} "
+                  f"({mp4.stat().st_size / 1024 / 1024:.2f}MB)")
+        except Exception as e:                                    # noqa: BLE001
+            errors.append(f"instagram_reel: {e}")
+            print(f"[reel] 실패: {e}")
+            mp4 = None
+
     if args.dry_run:
         print(f"[dry-run] 이미지: {outdir}")
         print(f"[reel-plan] {plan_summary(item, paths)}")
-        try:
-            mp4, note = build_reel_for(item, paths, outdir / f"{item['id']}.mp4")
-            print(f"[dry-run] 릴스: {mp4} · {note} "
-                  f"({mp4.stat().st_size/1024/1024:.2f}MB)")
-        except Exception as e:                                    # noqa: BLE001
-            print(f"[dry-run] 릴스 생성 실패(무시): {e}")
+        if mp4:
+            print(f"[dry-run] 릴스: {mp4}")
         print("--- 인스타 캡션 ---\n" + build_caption(item, cta))
         print("--- 첫 댓글 ---\n" + (build_first_comment(item, cta) or "(없음)"))
         print("--- 쓰레드 본문 ---\n" + build_threads_text(item, cta, ig_format))
@@ -188,7 +212,31 @@ def main() -> int:
             print(f"--- 쓰레드 답글 {i} ---\n{t}")
         if not chain:
             print("--- 쓰레드 답글 ---\n(없음)")
+        if notify.enabled():
+            try:
+                preview = (f"[검토용 · 발행 안 함]\n\n{build_caption(item, cta)}")
+                if mp4:
+                    notify.send_video(mp4, f"🗂 {item['product']} <{item['id']}>")
+                else:
+                    notify.send_photos([paths[0], paths[-1]],
+                                       f"🗂 {item['product']} <{item['id']}>")
+                notify.send_message(preview)
+            except Exception as e:                                # noqa: BLE001
+                print(f"[telegram] 전송 실패: {e}")
         return 0
+
+    # ---------------- 발행 승인 (텔레그램)
+    # 승인이 아니면 큐를 소진하지 않는다. 같은 편이 다음 회차에 다시 올라온다.
+    if notify.enabled() and os.getenv("APPROVAL_REQUIRED", "1") == "1":
+        body = ("--- 인스타 캡션 ---\n" + build_caption(item, cta)
+                + "\n\n--- 쓰레드 ---\n" + build_threads_text(item, cta, ig_format))
+        answer = notify.ask(item["id"], f"{item['product']} ({ig_format})", body,
+                            video=mp4,
+                            photos=[paths[0], paths[-1]] if not mp4 else None)
+        if answer is not True:
+            print("[stop] " + ("반려됨" if answer is False else "승인 응답 없음")
+                  + " → 발행하지 않고 종료합니다(큐 유지).")
+            return 0
 
     # ---------------- 이미지를 커밋/푸시해서 공개 URL 확보
     repo = os.environ["GITHUB_REPOSITORY"]          # owner/repo
@@ -203,20 +251,13 @@ def main() -> int:
     urls = [f"{base}/{p.name}" for p in paths]
     print(f"[urls] {urls[0]}")
 
-    results: dict[str, str] = {}
-    errors: list[str] = []
-
     # ---------------- 인스타그램 (포맷은 위에서 이미 정해졌다)
     ig_id, ig_tok = os.getenv("IG_USER_ID"), os.getenv("IG_ACCESS_TOKEN")
 
     if ig_id and ig_tok:
         did_reel = False
-        if ig_format in ("reel", "both"):
+        if mp4 is not None:
             try:
-                mp4 = outdir / f"{item['id']}.mp4"
-                _, plan_note = build_reel_for(item, paths, mp4)
-                size_mb = mp4.stat().st_size / 1024 / 1024
-                print(f"[reel] {mp4.name} · {plan_note} ({size_mb:.2f}MB)")
                 sh("git", "add", str(mp4))
                 sh("git", "-c", "user.name=donvalue-bot",
                    "-c", "user.email=bot@users.noreply.github.com",
@@ -318,12 +359,44 @@ def main() -> int:
         "errors": errors,
     })
     POSTED.write_text(json.dumps(posted, ensure_ascii=False, indent=2), encoding="utf-8")
+    notify.done(item["id"], item["product"], results, errors)
     sh("git", "add", str(POSTED))
     sh("git", "-c", "user.name=donvalue-bot",
        "-c", "user.email=bot@users.noreply.github.com",
        "commit", "-m", f"posted: {item['id']}")
     sh("git", "push")
     return 0
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dry-run", action="store_true", help="렌더링만 하고 종료")
+    ap.add_argument("--id", help="특정 항목 강제 발행")
+    ap.add_argument("--tomorrow", action="store_true",
+                    help="내일 기준으로 포맷을 계산 (발행 전날 검토용)")
+    ap.add_argument("--pick", default="",
+                    help="이 ig_format 으로 지정된 편만 고른다 (carousel | reel)")
+    ap.add_argument("--count", type=int, default=1,
+                    help="한 번에 몇 편을 낼지. 밀린 카드뉴스 소진용 (기본 1)")
+    args = ap.parse_args()
+
+    # 같은 날 여러 편을 몰아 올리면 뒤 글이 앞 글의 도달을 먹는다.
+    # 그래도 프로필을 채워야 할 때가 있어 간격을 두고 순차 발행한다.
+    gap = int(os.getenv("BURST_GAP_MIN", "40"))
+    count = 1 if args.id else max(1, args.count)
+    if count > 1:
+        print(f"[burst] {count}편을 {gap}분 간격으로 발행합니다")
+
+    rc = 0
+    for n in range(count):
+        if n:
+            print(f"[burst] {gap}분 대기 후 {n + 1}번째 편")
+            if not args.dry_run:
+                time.sleep(gap * 60)
+        rc = run_once(args)
+        if rc:
+            break
+    return rc
 
 
 if __name__ == "__main__":
