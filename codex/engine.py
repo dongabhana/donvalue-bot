@@ -193,6 +193,36 @@ class Engine:
             time.sleep(5)
         raise RuntimeError('Media processing timeout')
 
+    def account_check(self, platform):
+        user=os.environ['IG_USER_ID' if platform=='ig' else 'TH_USER_ID']
+        info=self.meta(platform,'GET',user,fields='id,username')
+        if info.get('username','').lower()!='dongabhana':
+            raise RuntimeError('Unexpected publishing account')
+        return user
+
+    def preflight(self):
+        """Read-only checks, including existing media; never creates a post."""
+        report={}
+        for platform in ('ig','th'):
+            checks={}
+            try:
+                user=self.account_check(platform); checks['account']='ok'
+                feed=self.meta(platform,'GET',user+('/media' if platform=='ig' else '/threads'),fields='id',limit=1).get('data',[])
+                checks['media_read']='ok'
+                if feed:
+                    mid=feed[0]['id']
+                    for label,endpoint,args in [('comments_read',mid+('/comments' if platform=='ig' else '/replies'),{'fields':'id','limit':1}),('insights_read',mid+'/insights',{'metric':'views'})]:
+                        try: self.meta(platform,'GET',endpoint,**args); checks[label]='ok'
+                        except RuntimeError: checks[label]='unavailable'
+                else: checks['existing_post_checks']='no_media'
+            except (RuntimeError,KeyError): checks['account_or_media']='unavailable'
+            report[platform]=checks
+        if report!=self.state.get('preflight'):
+            self.state['preflight']=report; self.save()
+            labels={'account':'계정 확인','media_read':'게시물 조회','comments_read':'댓글 조회','insights_read':'조회수 조회','existing_post_checks':'기존 게시물 검사','account_or_media':'계정 또는 게시물 조회'}
+            status={'ok':'성공','unavailable':'확인 실패','no_media':'검사할 게시물 없음'}
+            self.tell('게시 없는 연결 점검\n'+'\n'.join(p+': '+', '.join(labels[k]+' '+status[v] for k,v in checks.items()) for p,checks in report.items())+'\n실제 쓰기 권한은 승인 게시가 성공해야 검증됩니다.')
+
     def operation(self, rec, key, action):
         op=rec.setdefault('operations',{}).get(key)
         if op:
@@ -209,7 +239,7 @@ class Engine:
         return str(result)
 
     def thread(self, text, parent=None):
-        user=os.environ['TH_USER_ID']
+        user=self.account_check('th')
         args={'media_type':'TEXT','text':text}
         if parent: args['reply_to_id']=parent
         cid=self.meta('th','POST',user+'/threads',**args)['id']
@@ -225,7 +255,7 @@ class Engine:
         repo=os.environ['GITHUB_REPOSITORY']; commit_sha=rec['asset_commit']
         def url(path): return f'https://raw.githubusercontent.com/{repo}/{commit_sha}/{path}'
         def instagram():
-            user=os.environ['IG_USER_ID']
+            user=self.account_check('ig')
             if item['format']=='reel':
                 cid=self.meta('ig','POST',user+'/media',media_type='REELS',video_url=url(manifest['video']),caption=item['caption'])['id']
             else:
@@ -311,6 +341,7 @@ class Engine:
         self.callbacks()
         now=datetime.now(KST)
         if mode=='preview':
+            self.preflight()
             pending=[i for i in self.items if datetime.fromisoformat(i['publish_at'])>now]
             if pending:
                 item=pending[0]
