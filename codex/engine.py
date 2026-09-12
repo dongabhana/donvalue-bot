@@ -45,6 +45,10 @@ def validate(item):
 
 
 def eligible(item, record, now):
+    if record.get('closed'): return False
+    if record.get('review_kind')=='owner_chat_once':
+        from codex.today_once import authorized_now
+        return authorized_now(item,record,now)
     due = datetime.fromisoformat(item['publish_at'])
     return (record.get('decision') == 'approved' and record.get('review_kind') == 'real'
             and due <= now < due + timedelta(hours=2)
@@ -382,7 +386,7 @@ class Engine:
         now=datetime.now(KST)
         if mode=='preview':
             self.preflight()
-            pending=[i for i in self.items if datetime.fromisoformat(i['publish_at'])>now]
+            pending=[i for i in self.items if datetime.fromisoformat(i['publish_at'])>now and not i.get('posted_early_on') and not self.state['records'].get(i['id'],{}).get('operations')]
             if pending:
                 item=pending[0]
                 due=datetime.fromisoformat(item['publish_at'])
@@ -392,7 +396,7 @@ class Engine:
             return
         for item in self.items:
             due=datetime.fromisoformat(item['publish_at'])
-            if now.date()==(due-timedelta(days=1)).date() and now.hour>=20:
+            if now.date()==(due-timedelta(days=1)).date() and now.hour>=20 and not self.state['records'].get(item['id'],{}).get('operations'):
                 self.preview(item,real=True)
             rec=self.state['records'].get(item['id'])
             if rec: self.publish(item,rec,now)
