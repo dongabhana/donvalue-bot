@@ -65,6 +65,12 @@ def eligible(item, record, now):
             and datetime.fromisoformat(record['approved_at']).date() == (due-timedelta(days=1)).date())
 
 
+def regular_item(item, now):
+    if item.get('posted_early_on'): return False
+    from codex.seed_three_once import DATE, ITEM_IDS
+    return not (now.date().isoformat()==DATE and item['id'] in ITEM_IDS)
+
+
 def git(*args):
     result = subprocess.run(['git', *args], cwd=ROOT, capture_output=True, text=True)
     if result.returncode:
@@ -429,7 +435,8 @@ class Engine:
         now=datetime.now(KST)
         if mode=='preview':
             self.preflight()
-            pending=[i for i in self.items if datetime.fromisoformat(i['publish_at'])>now and not i.get('posted_early_on') and not self.state['records'].get(i['id'],{}).get('operations')]
+            pending=sorted([i for i in self.items if datetime.fromisoformat(i['publish_at'])>now and regular_item(i,now)
+                            and not self.state['records'].get(i['id'],{}).get('operations')],key=lambda i:i['publish_at'])
             if pending:
                 item=pending[0]
                 due=datetime.fromisoformat(item['publish_at'])
@@ -438,6 +445,7 @@ class Engine:
             self.observations()
             return
         for item in self.items:
+            if not regular_item(item,now): continue
             due=datetime.fromisoformat(item['publish_at'])
             if now.date()==(due-timedelta(days=1)).date() and now.hour>=20 and not self.state['records'].get(item['id'],{}).get('operations'):
                 self.preview(item,real=True)
