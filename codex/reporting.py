@@ -18,16 +18,22 @@ def collect_and_report(engine, root, now):
     candidates=[]
     path=root/'content/posted.json'
     legacy=json.loads(path.read_text()) if path.exists() else []
+    from yaml import safe_load
+    legacy_queue=safe_load((root/'content/queue.yaml').read_text()) if (root/'content/queue.yaml').exists() else {}
+    legacy_content={i['id']:i for i in legacy_queue.get('items',[])}
     for item in legacy:
         for key,mid in item.get('results',{}).items():
             if key not in ('instagram','instagram_reel','threads') or not mid: continue
-            candidates.append({'source':'Claude','platform':'th' if key=='threads' else 'ig','format':'text' if key=='threads' else ('reel' if key=='instagram_reel' else 'feed'), 'media_id':str(mid),'at':item['posted_at']})
+            content=legacy_content.get(item['id'],{})
+            candidates.append({'source':'Claude','platform':'th' if key=='threads' else 'ig','format':'text' if key=='threads' else ('reel' if key=='instagram_reel' else 'feed'), 'media_id':str(mid),'at':item['posted_at'],
+                               'topic':item.get('product',item['id']),'category':content.get('threads_tag','미분류'),'hook':content.get('hook','')})
     for item in engine.items:
         record=engine.state['records'].get(item['id'],{})
         for platform,key in [('ig','instagram'),('th','threads')]:
             op=record.get('operations',{}).get(key,{})
             if op.get('status')=='done':
-                candidates.append({'source':'Codex','platform':platform,'format':'text' if platform=='th' else ('reel' if item['format']=='reel' else 'feed'),'media_id':op['id'],'at':op['at']})
+                candidates.append({'source':'Codex','platform':platform,'format':'text' if platform=='th' else ('reel' if item['format']=='reel' else 'feed'),'media_id':op['id'],'at':op['at'],
+                                   'topic':item['topic'],'category':item.get('category','미분류'),'hook':item.get('hook',item['slides'][0]['title'])})
     samples=engine.state.setdefault('comparison_samples',{})
     for row in candidates:
         age=(now-datetime.fromisoformat(row['at'])).total_seconds()/3600
@@ -56,6 +62,13 @@ def collect_and_report(engine, root, now):
             counts=[r['metrics'][metric] for r in rows if metric in r['metrics']]
             if counts: values.append(f'{metric} 평균 {mean(counts):.1f} (조회 성공 {len(counts)}편)')
         lines.append(f'{source} / {platform} / {fmt} / {len(rows)}편\n'+(', '.join(values) or '지표 조회 불가'))
+    comparable=[r for r in recent if r['platform']=='ig' and r['metrics'].get('reach',0)>0
+                and all(m in r['metrics'] for m in ('saved','shares'))]
+    if comparable:
+        ranked=sorted(comparable,key=lambda r:(r['metrics']['saved']+r['metrics']['shares'])/r['metrics']['reach'],reverse=True)[:3]
+        lines.append('저장·공유 / 도달 비율이 높은 소재\n'+'\n'.join(
+            f"{r['source']} · {r.get('category','미분류')} · {r.get('topic','')} "
+            f"{100*(r['metrics']['saved']+r['metrics']['shares'])/r['metrics']['reach']:.1f}%" for r in ranked))
     lines.append('표본·주제·요일이 달라 인과관계나 승자를 확정할 수 없습니다. 조회 실패는 0으로 계산하지 않았습니다.')
     engine.tell('\n\n'.join(lines))
     engine.state['comparison_report_date']=now.date().isoformat()

@@ -1,4 +1,4 @@
-name: Claude four carousels without approval 2026-09-12
+name: Claude four carousels without approval - resume safely 2026-09-12
 on:
   push:
     branches: [main]
@@ -20,6 +20,11 @@ jobs:
           case "$recovery_status" in
             completed) echo 'Previous recovery already stopped' ;;
             *) gh api --method POST repos/${{ github.repository }}/actions/runs/34678150695/cancel ;;
+          esac
+          burst_status=$(gh api repos/${{ github.repository }}/actions/runs/34678569412 --jq .status)
+          case "$burst_status" in
+            completed) echo 'Original burst already stopped' ;;
+            *) gh api --method POST repos/${{ github.repository }}/actions/runs/34678569412/cancel ;;
           esac
   publish:
     needs: clear_wait

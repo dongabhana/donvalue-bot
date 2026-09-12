@@ -20,13 +20,13 @@ class PublishError(RuntimeError):
     pass
 
 
-def _post(url: str, params: dict) -> dict:
+def _post(url: str, params: dict, retry: bool = True) -> dict:
     for attempt in range(3):
         r = requests.post(url, data=params, timeout=TIMEOUT)
         if r.status_code < 300:
             return r.json()
         # 429/5xx 는 재시도할 가치가 있음
-        if r.status_code in (429, 500, 502, 503, 504) and attempt < 2:
+        if retry and r.status_code in (429, 500, 502, 503, 504) and attempt < 2:
             time.sleep(15 * (attempt + 1))
             continue
         raise PublishError(f"POST {url} → {r.status_code} {r.text[:400]}")
@@ -139,6 +139,19 @@ def publish_instagram_comment(media_id: str, token: str, message: str) -> str:
 
 
 # ------------------------------------------------------------------ 쓰레드
+def _th_wait_ready(container_id: str, token: str, tries: int = 40) -> None:
+    for _ in range(tries):
+        result = _get(f"{TH_BASE}/{container_id}",
+                      {"fields": "status,error_message", "access_token": token})
+        status = result.get('status')
+        if status == 'FINISHED':
+            return
+        if status in ('ERROR', 'EXPIRED'):
+            raise PublishError(f"Threads container {container_id}: {status}")
+        time.sleep(5)
+    raise PublishError(f"Threads container {container_id}: processing timeout")
+
+
 def publish_threads(user_id: str, token: str, image_urls: list[str], text: str,
                     reply_to_id: str | None = None, wait: int = 30,
                     topic_tag: str | None = None) -> str:
@@ -174,19 +187,18 @@ def publish_threads(user_id: str, token: str, image_urls: list[str], text: str,
                        "is_carousel_item": "true", "access_token": token})
             children.append(j["id"])
             print(f"  · TH child {j['id']} ← {url.rsplit('/', 1)[-1]}")
+        for child in children:
+            _th_wait_ready(child, token)
         j = _post(f"{TH_BASE}/{user_id}/threads",
                   {**base, "media_type": "CAROUSEL", "children": ",".join(children)})
         container = j["id"]
 
-    time.sleep(wait)  # 문서 권장 대기. 텍스트만 올릴 땐 짧게 잡아도 된다.
-    try:
-        j = _post(f"{TH_BASE}/{user_id}/threads_publish",
-                  {"creation_id": container, "access_token": token})
-    except PublishError:
-        # 컨테이너가 아직 준비 안 된 경우가 있어 한 번만 더 기다렸다 시도한다
-        time.sleep(20)
-        j = _post(f"{TH_BASE}/{user_id}/threads_publish",
-                  {"creation_id": container, "access_token": token})
+    time.sleep(wait)
+    _th_wait_ready(container, token)
+    # A lost response from publication is ambiguous. The delivery journal blocks
+    # a second write until the existing result has been checked.
+    j = _post(f"{TH_BASE}/{user_id}/threads_publish",
+              {"creation_id": container, "access_token": token}, retry=False)
     return j["id"]
 
 

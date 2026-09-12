@@ -6,6 +6,7 @@ import os
 import subprocess
 import wave
 import tempfile
+import re
 from functools import lru_cache
 from pathlib import Path
 
@@ -26,17 +27,22 @@ def lines(draw, text, size, width):
     result = []
     for paragraph in text.split('\n'):
         current = ''
-        for char in paragraph:
-            if draw.textlength(current + char, font=font(size)) > width:
-                result.append(current)
-                current = char
+        for token in re.findall(r'\S+\s*', paragraph):
+            if current and draw.textlength(current + token.rstrip(), font=font(size)) > width:
+                result.append(current.rstrip())
+                current = ''
+            if draw.textlength(token.rstrip(), font=font(size)) > width:
+                for char in token:
+                    if current and draw.textlength(current + char, font=font(size)) > width:
+                        result.append(current.rstrip()); current = ''
+                    current += char
             else:
-                current += char
-        result.append(current)
+                current += token
+        result.append(current.rstrip())
     return result
 
 
-def audio(path, seconds, bpm=88):
+def audio(path, seconds, bpm=88, punch=False):
     sr = 24000
     n = int(sr * seconds)
     x = np.zeros(n, dtype=np.float64)
@@ -56,13 +62,16 @@ def audio(path, seconds, bpm=88):
             x[pos:pos+length] += .12*np.sin(2*math.pi*(65*t-100*t*t))*np.exp(-35*t)
         else:
             x[pos:pos+length] += .015*rng.normal(size=length)*np.exp(-60*t)
-    fade = np.minimum(np.arange(n)/sr, 1)*np.minimum(np.arange(n)[::-1]/sr, 1)
+    fade = np.minimum(np.arange(n)[::-1]/sr, 1)
+    if not punch: fade *= np.minimum(np.arange(n)/sr, 1)
     pcm = (np.clip(x*fade, -.8, .8)*32767).astype('<i2')
     with wave.open(str(path), 'wb') as w:
         w.setnchannels(1); w.setsampwidth(2); w.setframerate(sr); w.writeframes(pcm.tobytes())
 
 
 def render(item, root):
+    if item.get('visual_style') == 'money_editorial_v2':
+        return render_editorial(item, root)
     if item.get('visual_style')=='checkout_pop':
         return render_pop(item,root)
     digest = hashlib.sha256(json.dumps(item, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
@@ -98,6 +107,160 @@ def render(item, root):
             '-c:v','libx264','-preset','veryfast','-crf','24','-pix_fmt','yuv420p','-c:a','aac',
             '-b:a','128k','-t',str(duration*len(paths)),'-movflags','+faststart',str(video)],check=True,capture_output=True)
         result['video']=str(video.relative_to(root))
+    result['sha256']={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in result['cards']+([result['video']] if 'video' in result else [])}
+    manifest.write_text(json.dumps(result,ensure_ascii=False,indent=2))
+    return result
+
+
+def fitted_font(draw, text, max_size, width, minimum=24):
+    size = max_size
+    while size > minimum and draw.textlength(text, font=font(size)) > width:
+        size -= 2
+    if draw.textlength(text, font=font(size)) > width:
+        raise ValueError('Text exceeds its reserved visual area')
+    return font(size)
+
+
+def pictogram(d, category, x, y, size, ink):
+    """Repo-native vector pictograms, not product or manufacturer imagery."""
+    s=size/120
+    def box(a,b,c,e,r=8,fill=None):
+        d.rounded_rectangle((x+a*s,y+b*s,x+c*s,y+e*s),radius=r*s,
+                            fill=fill,outline=ink,width=max(2,round(5*s)))
+    def line(points):
+        d.line([(x+a*s,y+b*s) for a,b in points],fill=ink,width=max(2,round(5*s)))
+    if category=='IT':
+        box(8,10,110,80); line([(8,96),(110,96),(120,108),(0,108),(8,96)])
+        line([(41,49),(55,64),(79,30)])
+    elif category=='결제':
+        box(22,0,98,116); line([(36,28),(84,28)]); line([(36,49),(74,49)])
+        line([(36,78),(82,78)]); line([(60,72),(60,104)])
+    elif category=='구독':
+        box(8,16,110,110); line([(8,42),(110,42)]); line([(33,0),(33,31)])
+        line([(84,0),(84,31)]); line([(39,75),(53,89),(82,57)])
+    elif category=='생활용품':
+        box(35,28,89,112,r=12); box(40,2,83,30,r=4); line([(49,57),(75,57)])
+        line([(49,77),(75,77)])
+    elif category=='가전':
+        box(9,6,109,114); box(26,25,92,90,r=32); line([(77,9),(95,9)])
+    elif category=='외식':
+        box(21,15,105,101,r=48); box(43,37,83,78,r=30)
+        line([(2,11),(2,110)]); line([(114,10),(114,110)])
+    elif category=='이동':
+        box(9,8,109,106,r=16); box(22,21,96,65,r=5)
+        line([(28,84),(35,84)]); line([(85,84),(92,84)])
+        line([(27,110),(27,120)]); line([(91,110),(91,120)])
+    else:
+        box(9,16,109,110); line([(9,48),(109,48)]); line([(59,16),(59,110)])
+        line([(35,5),(59,19),(81,5)])
+
+
+def editorial_card(item, slide, index, reel=False):
+    ink='#151819'; paper='#F6F6F0'; gray='#686C67'
+    accent=item.get('accent','#E6F34A'); cover=index==0
+    bg=ink if cover else paper
+    fg=paper if cover else ink
+    img=Image.new('RGB',(1080,1350),bg); d=ImageDraw.Draw(img)
+    d.text((62,56),'돈값하나?',font=font(31),fill=fg)
+    tag=item['category']+' · '+item['series']
+    tagfont=fitted_font(d,tag,25,610)
+    tagw=d.textlength(tag,font=tagfont)+38
+    d.rounded_rectangle((1018-tagw,51,1018,101),radius=23,fill=accent)
+    d.text((1037-tagw,58),tag,font=tagfont,fill=ink)
+    d.text((64,124),f'{int(item["id"][2:5])-3:02} / 50   ·   {index+1:02} / {len(item["slides"]):02}',
+           font=font(23),fill='#ABB0A4' if cover else gray)
+    title_size=110 if cover else 76
+    explicit=slide['title'].split('\n')
+    while title_size>54 and any(d.textlength(t,font=font(title_size))>936 for t in explicit):
+        title_size-=2
+    title_lines=lines(d,slide['title'],title_size,936)
+    if len(title_lines)>3: raise ValueError('Headline exceeds three lines')
+    y=187
+    for i,line in enumerate(title_lines):
+        color=accent if cover and i==len(title_lines)-1 else fg
+        d.text((62,y),line,font=font(title_size),fill=color); y+=title_size*1.2
+    if y>545: raise ValueError('Headline exceeds its safe area')
+    y=y+44 if not cover else y+24
+    body_size=48 if not cover else 32
+    while body_size>34 and y+len(lines(d,slide['body'],body_size,926))*body_size*1.4>690:
+        body_size-=2
+    for line in lines(d,slide['body'],body_size,926):
+        d.text((66,y),line,font=font(body_size),fill=fg); y+=body_size*1.4
+    if y>690: raise ValueError('Body exceeds its safe area')
+    top=628 if cover else max(660,y+36)
+    d.rounded_rectangle((76,top+14,1026,1116),radius=36,fill='#303632' if cover else '#D9DBD1')
+    d.rounded_rectangle((62,top,1012,1102),radius=36,fill=accent if cover else ink)
+    panelink=ink if cover else paper
+    visual=slide['visual']
+    label=visual.get('label','')
+    d.text((104,top+39),label,font=fitted_font(d,label,27,662),fill=panelink)
+    if not visual.get('rows'):
+        pictogram(d,item['category'],806,top+39,128,panelink)
+    value=visual.get('value','')
+    if visual.get('rows'):
+        yy=top+108
+        for label,amount in visual['rows']:
+            d.text((104,yy),label,font=font(30),fill=panelink)
+            af=fitted_font(d,amount,39,380)
+            d.text((934-d.textlength(amount,font=af),yy-5),amount,font=af,fill=accent if not cover else panelink)
+            yy+=64
+    else:
+        vf=fitted_font(d,value,122 if cover else 100,834,minimum=44)
+        d.text((99,top+168 if cover else top+137),value,font=vf,fill=panelink if cover else accent)
+    if cover:
+        d.line((105,top+335,927,top+335),fill=ink,width=3)
+        d.text((105,top+361),'가격표 → 실제 합계 → 내 선택',font=font(28),fill=ink)
+    yy=1165
+    for line in lines(d,slide['note'],24,936):
+        d.text((66,yy),line,font=font(24),fill='#ABB0A4' if cover else gray); yy+=36
+    if yy>1270: raise ValueError('Footnote exceeds its safe area')
+    d.text((66,1281),'@dongabhana',font=font(23),fill=fg)
+    d.text((846,1281),'직접 따져봄',font=font(21),fill=fg)
+    d.rectangle((0,1339,1080*(index+1)/len(item['slides']),1349),fill=accent)
+    if reel:
+        canvas=Image.new('RGB',(1080,1920),bg)
+        canvas.paste(img,(0,180))
+        rd=ImageDraw.Draw(canvas)
+        rd.text((66,1640),item['series'],font=font(27),fill=fg)
+        rd.text((66,1700),'가상 예시 · 조건에 따라 결과는 달라집니다',font=font(22),fill='#ABB0A4' if cover else gray)
+        return canvas
+    return img
+
+
+def render_editorial(item, root):
+    renderer='money-editorial-v2.3'
+    digest=hashlib.sha256(json.dumps({'item':item,'renderer':renderer},sort_keys=True,ensure_ascii=False).encode()).hexdigest()[:16]
+    directory=root/'codex/assets'/item['id']/digest
+    manifest=directory/'manifest.json'
+    if manifest.exists(): return json.loads(manifest.read_text())
+    directory.mkdir(parents=True,exist_ok=True)
+    paths=[]
+    for i,slide in enumerate(item['slides']):
+        p=directory/f'{i+1:02}.jpg'
+        editorial_card(item,slide,i).save(p,quality=94); paths.append(p)
+    result={'renderer':renderer,'cards':[str(p.relative_to(root)) for p in paths], 'music':item['music']}
+    if item['format']=='reel':
+        seconds=[float(s['seconds']) for s in item['slides']]
+        if not 1<=seconds[0]<=2 or not all(2<=s<=6 for s in seconds[1:]):
+            raise ValueError('Invalid reel timing')
+        wav=directory/'original.wav'; audio(wav,sum(seconds),bpm=112,punch=True)
+        video=directory/'reel.mp4'
+        with tempfile.TemporaryDirectory(prefix='donvalue-editorial-') as temp:
+            clips=[]
+            for i,(slide,duration) in enumerate(zip(item['slides'],seconds)):
+                frame=Path(temp)/f'{i:02}.jpg'; editorial_card(item,slide,i,reel=True).save(frame,quality=95)
+                clip=Path(temp)/f'{i:02}.mp4'; clips.append(clip)
+                frames=round(duration*30)
+                motion=f"zoompan=z='1+0.035*(1-on/{frames})':x='iw/2-iw/zoom/2':y='ih/2-ih/zoom/2':d={frames}:s=1080x1920:fps=30"
+                subprocess.run(['ffmpeg','-y','-loglevel','error','-i',str(frame),'-vf',motion,
+                    '-frames:v',str(frames),'-c:v','libx264','-preset','veryfast','-crf','23','-pix_fmt','yuv420p','-an',str(clip)],
+                    check=True,capture_output=True)
+            listing=Path(temp)/'clips.txt'; listing.write_text(''.join("file '"+str(c)+"'\n" for c in clips))
+            subprocess.run(['ffmpeg','-y','-loglevel','error','-f','concat','-safe','0','-i',str(listing),'-i',str(wav),
+                '-map','0:v','-map','1:a','-c:v','copy','-c:a','aac','-b:a','128k','-t',str(sum(seconds)),
+                '-movflags','+faststart',str(video)],check=True,capture_output=True)
+        result['video']=str(video.relative_to(root)); result['duration_seconds']=sum(seconds)
+        result['opening_seconds']=seconds[0]
     result['sha256']={p:hashlib.sha256((root/p).read_bytes()).hexdigest() for p in result['cards']+([result['video']] if 'video' in result else [])}
     manifest.write_text(json.dumps(result,ensure_ascii=False,indent=2))
     return result
