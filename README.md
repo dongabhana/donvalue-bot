@@ -1,7 +1,12 @@
 # 돈값하나? 자동 발행 봇
 
-인스타그램 + 쓰레드에 **주 2회 카드뉴스 캐러셀을 무인 발행**하는 파이프라인입니다.
-서버 없이 GitHub Actions 만으로 돌아가고, 비용은 0원입니다.
+미리 준비한 콘텐츠를 GitHub Actions에서 렌더링하고 인스타그램과 Threads에 발행합니다.
+PC나 대화창을 켜둘 필요가 없으며, 발행 경로는 Claude/OpenAI 생성 API를 호출하지 않습니다.
+따라서 대화 크레딧 소진은 준비된 콘텐츠의 발행을 막지 않습니다. 콘텐츠 큐가 비면 새 원고와 검수가 필요합니다.
+
+현재 운영 일정은 Claude 화·목·일 20시, GPT 월·수·토 20시(KST)입니다.
+Claude는 실행 시 Telegram 승인을 최대 45분 기다리고, GPT는 게시 전날 최종 승인한 원고만 게시합니다.
+GPT의 15분 실행 주기는 승인과 예약 상태 확인용이며, 15분마다 게시하는 일정이 아닙니다.
 
 ```
 content/queue.yaml  ─(렌더)→  images/{id}/*.png  ─(git push)→  raw.githubusercontent 공개 URL
@@ -104,7 +109,8 @@ python tools/get_tokens.py threads
 
 | 워크플로우 | 시각 | 하는 일 |
 |---|---|---|
-| `post.yml` | **화·금 20:00 KST** | 큐에서 다음 항목 1건 렌더 → 인스타·쓰레드 발행 |
+| `post.yml` | **화·목·일 20:00 KST** | Claude 큐의 다음 항목 1건 렌더 → Telegram 승인 → 인스타·Threads 발행 |
+| `codex-approval.yml` | 약 15분마다 확인 | GPT 승인·예약 상태 확인. 월·수·토 20시의 전날 승인된 콘텐츠만 발행 |
 | `refresh-token.yml` | 매주 월 12:00 KST | 장기 토큰 60일 연장 |
 
 주기를 바꾸려면 `.github/workflows/post.yml` 의 cron 을 수정하세요 (**UTC 기준**, KST = UTC+9).
@@ -130,7 +136,7 @@ python tools/get_tokens.py threads
     - "현재 쿠팡 와우 월 구독료"
 ```
 
-10개를 한 번에 검수해두면 **5주치가 무인 발행**됩니다.
+`verified: true`는 사실 검수 표시입니다. 현재 Claude 운영은 각 실행에서 Telegram 승인도 필요하므로, 사실 검수만으로 무인 발행되지는 않습니다.
 
 ### 미리보기
 
