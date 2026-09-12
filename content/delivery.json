@@ -35,7 +35,9 @@
   },
   "007-dishwasher": {
     "instagram": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "18026360807887197",
+      "at": "2026-09-12T17:00:41+09:00"
     }
   }
 }
