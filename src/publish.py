@@ -140,12 +140,19 @@ def publish_instagram_comment(media_id: str, token: str, message: str) -> str:
 
 # ------------------------------------------------------------------ 쓰레드
 def publish_threads(user_id: str, token: str, image_urls: list[str], text: str,
-                    reply_to_id: str | None = None, wait: int = 30) -> str:
+                    reply_to_id: str | None = None, wait: int = 30,
+                    topic_tag: str | None = None) -> str:
     """0장이면 텍스트, 1장이면 단일 이미지, 2장 이상이면 캐러셀.
 
     reply_to_id 를 주면 그 글에 달리는 답글이 된다.
     """
     base = {"text": text, "access_token": token}
+    if len(text) > 500:
+        raise PublishError('Threads 본문은 500자 이하여야 합니다')
+    if topic_tag:
+        if not 1 <= len(topic_tag) <= 50 or any(c in topic_tag for c in '.&'):
+            raise PublishError('Threads 주제 태그 형식이 잘못됐습니다')
+        base['topic_tag'] = topic_tag
     if reply_to_id:
         base["reply_to_id"] = reply_to_id
 
