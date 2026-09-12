@@ -61,5 +61,16 @@
       "threads": "18352977415220139"
     },
     "errors": []
+  },
+  {
+    "id": "008-commute-vs-rent",
+    "product": "회사 앞 자취 vs 왕복 1시간 통근",
+    "posted_at": "2026-09-12T17:52:41+09:00",
+    "results": {
+      "instagram": "18132814021644543",
+      "instagram_comment": "18122991856860061",
+      "threads": "17959208537998413"
+    },
+    "errors": []
   }
 ]
