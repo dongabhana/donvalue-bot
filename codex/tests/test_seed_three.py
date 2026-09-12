@@ -4,8 +4,8 @@ import re
 import unittest
 from datetime import datetime
 from pathlib import Path
-from unittest.mock import Mock
-from codex.engine import Engine, KST, eligible, validate
+from unittest.mock import Mock, patch
+from codex.engine import Engine, KST, eligible, validate, regular_item
 from codex.seed_three_once import ITEM_IDS, HASHES, SOURCE, content_hash
 
 ROOT=Path(__file__).resolve().parents[2]
@@ -70,6 +70,28 @@ class SeedThreeTests(unittest.TestCase):
         self.assertEqual(taxi['publish_at'],'2026-09-14T20:00:00+09:00')
         self.assertFalse(taxi['verification']['live_driver_quote_obtained'])
         self.assertFalse(eligible(taxi,{'decision':'pending'},datetime(2026,9,14,20,tzinfo=KST)))
+
+    def test_today_seed_cards_are_excluded_only_from_todays_regular_queue(self):
+        today=datetime(2026,9,12,19,tzinfo=KST)
+        tomorrow=datetime(2026,9,13,19,tzinfo=KST)
+        for item in self.selected.values():
+            unposted={k:v for k,v in item.items() if k!='posted_early_on'}
+            self.assertFalse(regular_item(unposted,today))
+            self.assertTrue(regular_item(unposted,tomorrow))
+        archived=next(i for i in self.items if i.get('posted_early_on'))
+        self.assertFalse(regular_item(archived,today))
+
+    def test_regular_preview_picks_the_earliest_actual_slot_without_seed_test_buttons(self):
+        instance=object.__new__(Engine)
+        instance.items=self.items
+        instance.state={'records':{}}
+        instance.tg=Mock(side_effect=lambda method:{'username':'donvalue_approval_bot'} if method=='getMe' else {'url':''})
+        instance.callbacks=Mock(); instance.preflight=Mock(); instance.preview=Mock(); instance.observations=Mock()
+        with patch('codex.engine.datetime',wraps=datetime) as clock:
+            clock.now.return_value=datetime(2026,9,12,19,tzinfo=KST)
+            instance.run('preview')
+        self.assertEqual(instance.preview.call_args.args[0]['id'],'cx054-taxi-vs-driver')
+        self.assertFalse(instance.preview.call_args.kwargs['real'])
 
 
 if __name__=='__main__': unittest.main()
