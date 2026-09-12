@@ -171,6 +171,8 @@ class Engine:
                                 self.tell(text)
                         elif parts[0] in ('r','x'):
                             self.reply_callback(parts,msg)
+                        elif action in ('a','e','h'):
+                            self.tell('이 미리보기는 수정되었거나 더 이상 유효하지 않아. 가장 최근에 받은 콘텐츠 아래 버튼을 사용해줘.')
                     try: self.tg('answerCallbackQuery',callback_query_id=cb['id'])
                     except RuntimeError: pass  # Old callbacks can no longer be acknowledged.
             message=update.get('message',{})
@@ -369,6 +371,12 @@ class Engine:
     def run(self,mode):
         if self.tg('getMe').get('username','').lower()!='donvalue_approval_bot': raise RuntimeError('Wrong bot')
         if self.tg('getWebhookInfo').get('url'): raise RuntimeError('Existing webhook left unchanged')
+        current_ids={i['id'] for i in self.items}
+        retired=False
+        for key,record in self.state['records'].items():
+            if key not in current_ids and not record.get('operations') and record.get('decision')!='superseded':
+                record['decision']='superseded'; retired=True
+        if retired: self.save()
         self.callbacks()
         print('CODEX_REVIEW_COUNTS: '+json.dumps(dict(Counter(r.get('decision','pending') for r in self.state['records'].values())),sort_keys=True))
         now=datetime.now(KST)
