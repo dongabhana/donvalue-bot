@@ -1,0 +1,27 @@
+name: Pair Telegram approval owner
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - tools/pair_telegram.py
+      - .github/workflows/telegram-pair.yml
+permissions:
+  contents: write
+concurrency:
+  group: donvalue-publish
+  cancel-in-progress: false
+jobs:
+  pair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install cryptography
+      - name: Pair exact private chat and confirm
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: python tools/pair_telegram.py
