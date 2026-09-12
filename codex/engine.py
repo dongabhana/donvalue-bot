@@ -114,6 +114,12 @@ def push(tries=5):
         time.sleep(3 * (attempt + 1))
 
 
+class MetaFailure(RuntimeError):
+    def __init__(self, platform, method, stage, status, code, subcode):
+        super().__init__('Meta rejected '+platform+' '+stage)
+        self.failure={'platform':platform,'method':method,'stage':stage,'http':status,'code':code,'subcode':subcode}
+
+
 class Engine:
     def __init__(self):
         self.token = os.environ['TELEGRAM_BOT_TOKEN']
@@ -273,7 +279,7 @@ class Engine:
             if not response.ok or 'error' in data:
                 error=data.get('error',{})
                 print('CODEX_META_ERROR: '+platform+' http='+str(response.status_code)+' code='+str(error.get('code'))+' subcode='+str(error.get('error_subcode')))
-                detail=str(error.get('message',''))
+                detail=' '.join(str(error.get(k,'')) for k in ('message','error_user_title','error_user_msg'))
                 for name in ('IG_ACCESS_TOKEN','TH_ACCESS_TOKEN','TELEGRAM_BOT_TOKEN','IG_USER_ID','TH_USER_ID'):
                     value=os.environ.get(name,'')
                     if len(value)>4: detail=detail.replace(value,'[redacted]')
@@ -281,8 +287,12 @@ class Engine:
                 detail=re.sub(r'[A-Za-z0-9_\-]{40,}','[redacted]',detail)
                 detail=re.sub(r'\b\d{8,}\b','[id]',detail)
                 print('CODEX_META_REASON: '+platform+' '+detail[:350])
-                raise RuntimeError()
+                stage=('publish' if endpoint.endswith('threads_publish') else 'parent_create' if params.get('media_type')=='CAROUSEL' else 'child_create' if params.get('is_carousel_item') else 'other')
+                print('CODEX_META_STAGE: '+stage,flush=True)
+                raise MetaFailure(platform,method,stage,response.status_code,error.get('code'),error.get('error_subcode'))
             return data
+        except MetaFailure:
+            raise
         except Exception:
             raise RuntimeError('Meta request failed; platform='+platform) from None
 
@@ -335,14 +345,16 @@ class Engine:
         rec['operations'][key]={'status':'in_flight'}; self.save()
         try:
             result=action()
-        except Exception:
-            rec['operations'][key]={'status':'needs_review'}; self.save()
+        except Exception as error:
+            rec['operations'][key]={'status':'needs_review'}
+            if isinstance(error,MetaFailure): rec['operations'][key]['failure']=error.failure
+            self.save()
             self.tell('게시 단계 '+key+'의 성공 여부를 확정하지 못했어. 중복 게시를 막기 위해 자동 재시도를 멈췄어.')
             raise RuntimeError('Operation stopped safely') from None
         rec['operations'][key]={'status':'done','id':str(result),'at':datetime.now(KST).isoformat()}; self.save()
         return str(result)
 
-    def thread(self, text, parent=None, topic_tag=None, image_urls=None):
+    def prepare_thread(self, text, parent=None, topic_tag=None, image_urls=None):
         user=self.account_check('th')
         args={'media_type':'TEXT','text':text}
         if parent: args['reply_to_id']=parent
@@ -352,10 +364,17 @@ class Engine:
             children=[]
             for image_url in image_urls:
                 child=self.meta('th','POST',user+'/threads',media_type='IMAGE',image_url=image_url,is_carousel_item='true')['id']
-                self.wait_ready('th',child); children.append(child)
+                children.append(child)
+            if len(set(children)) != len(children): raise RuntimeError('Duplicate Threads child containers')
+            for child in children: self.wait_ready('th',child)
             args.update(media_type='CAROUSEL',children=','.join(children))
         cid=self.meta('th','POST',user+'/threads',**args)['id']
         self.wait_ready('th',cid)
+        return cid
+
+    def thread(self, text, parent=None, topic_tag=None, image_urls=None):
+        cid=self.prepare_thread(text,parent,topic_tag,image_urls)
+        user=self.account_check('th')
         return self.meta('th','POST',user+'/threads_publish',creation_id=cid)['id']
 
     def publish(self,item,rec,now):
