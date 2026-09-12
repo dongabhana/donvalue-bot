@@ -6,6 +6,7 @@ import os
 import re
 import subprocess
 import time
+import traceback
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -13,6 +14,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 from codex.media import render
+from codex.reporting import collect_and_report
 from tools.pair_telegram import cipher
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -51,6 +53,7 @@ def eligible(item, record, now):
 def git(*args):
     result = subprocess.run(['git', *args], cwd=ROOT, capture_output=True, text=True)
     if result.returncode:
+        print('CODEX_GIT_FAILED: '+args[0])
         raise RuntimeError('Git operation failed; no external action will follow')
     return result.stdout.strip()
 
@@ -333,6 +336,7 @@ class Engine:
                     try: snapshot['metrics'][metric]=self.meta(platform,'GET',op['id']+'/insights',metric=metric).get('data',[])
                     except RuntimeError: snapshot['unavailable'].append(metric)
                 rec.setdefault('insights',{})[platform]=snapshot
+        collect_and_report(self,ROOT,now)
         self.save()
 
     def run(self,mode):
@@ -362,6 +366,8 @@ def main():
     parser=argparse.ArgumentParser(); parser.add_argument('mode',choices=['preview','tick']); args=parser.parse_args()
     try: Engine().run(args.mode)
     except Exception as e:
+        frame=traceback.extract_tb(e.__traceback__)[-1]
+        print('CODEX_ERROR_LOCATION: '+Path(frame.filename).name+':'+str(frame.lineno)+' '+frame.name)
         print('CODEX_STOPPED: '+type(e).__name__+'; inspect encrypted state, no sensitive values logged')
         raise SystemExit(1)
     print('CODEX_OK: '+args.mode)

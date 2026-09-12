@@ -15,6 +15,7 @@ on:
       - codex/content.json
       - codex/engine.py
       - codex/media.py
+      - codex/reporting.py
       - .github/workflows/codex-approval.yml
 permissions:
   contents: write
