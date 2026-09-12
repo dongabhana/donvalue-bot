@@ -1,0 +1,20 @@
+{
+  "renderer": "money-editorial-v3-photo",
+  "cards": [
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/01.jpg",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/02.jpg",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/03.jpg",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/04.jpg",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/05.jpg",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "sha256": {
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/01.jpg": "76f649b593e05234f784be6cce4e15d403103513b1d538ec1b436e3e3c95da9f",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/02.jpg": "e768ddd42f93a900107a9d88273d55f67bf4323cef06de374de8fd7495cceb72",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/03.jpg": "1264703b9879ab1bed13cdde8039fa301b2f6af64ce6f4798b46ad109dc77965",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/04.jpg": "ee2f37bebe36c06382396636dc9b28e12914ec5c7ce3485e9670d859deaea9a0",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/05.jpg": "2ebdce04eec464b8990ce471d75f8a27f008816c2066c82869e1c986b1dcefe1",
+    "codex/assets/cx004-laptop-total/e53cdd8b39dc8dca/06.jpg": "fc426c46871500fe3e020c41db45fbacfc100d52dc613f50231f272eebc39ae2"
+  }
+}
