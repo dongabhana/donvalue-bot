@@ -1,9 +1,4 @@
-name: Codex reviewed Threads recovery and remaining seed posts
-on:
-  push:
-    branches: [main]
-    paths: [.github/workflows/codex-seed-review.yml]
-  workflow_dispatch:
+name: Codex laptop Threads recovery and final seed card
 permissions:
   contents: write
 concurrency:
@@ -14,23 +9,89 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 150
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: main
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - name: Install carousel dependencies
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq fonts-noto-cjk
-          pip install -r requirements.txt
-      - run: python -m unittest discover -s codex/tests -q
-      - name: Publish reviewed coupon container once and resume remaining seed cards
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          TH_USER_ID: ${{ secrets.TH_USER_ID }}
-          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
-        run: python -u -m codex.seed_recovery_finish
+    - uses: actions/checkout@v4
+      with:
+        ref: main
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    - name: Install carousel dependencies
+      run: 'sudo apt-get update -qq
+
+        sudo apt-get install -y -qq fonts-noto-cjk
+
+        pip install -r requirements.txt
+
+        '
+    - run: python -m unittest discover -s codex/tests -q
+    - name: Recover only failed laptop Threads and publish final original robot card
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        IG_USER_ID: ${{ secrets.IG_USER_ID }}
+        IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+        TH_USER_ID: ${{ secrets.TH_USER_ID }}
+        TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+      run: |
+        python -u - <<'PY'
+        import hashlib, os, time
+        from datetime import datetime
+        from codex.engine import Engine, KST, ROOT, fingerprint
+        from codex.seed_three_once import authorized_now, mark_delivered, main as resume
+        from codex.seed_recovery_review import matching_posts
+        original_prepare=Engine.prepare_thread
+        def settled_prepare(self,*args,**kwargs):
+            cid=original_prepare(self,*args,**kwargs)
+            time.sleep(20)
+            self.wait_ready('th',cid)
+            return cid
+        Engine.prepare_thread=settled_prepare
+        e=Engine(); now=datetime.now(KST)
+        item=next(x for x in e.items if x['id']=='cx004-laptop-total')
+        r=e.state['records'][item['id']]
+        assert authorized_now(item,r,now)
+        assert r['operations']['instagram']['status']=='done'
+        assert fingerprint(item,r['manifest'])==r['hash']
+        for path,sha in r['manifest']['sha256'].items():
+            assert hashlib.sha256((ROOT/path).read_bytes()).hexdigest()==sha
+        if not r.get('closed'):
+            key='threads_reviewed_laptop_recovery'
+            prior=r['operations'].get(key)
+            if prior and prior['status']!='done':
+                raise RuntimeError('Uncertain recovery result; no automatic retry')
+            if r['operations']['threads']['status']!='done':
+                if not prior:
+                    failure=r['operations']['threads'].get('failure',{})
+                    assert failure.get('stage')=='publish' and failure.get('code')==24 and failure.get('subcode')==4279009
+                    posts=matching_posts(e,item,r)
+                    print('LAPTOP_MATCHING_POSTS:',len(posts),flush=True)
+                    if posts:
+                        assert len(posts)==1
+                        assert len(posts[0].get('children',{}).get('data',[]))==len(r['manifest']['cards'])
+                        r.setdefault('recovery_audit',[]).append({'original':dict(r['operations']['threads']),'action':'adopt verified existing exact original carousel'})
+                        r['operations']['threads']={'status':'done','id':posts[0]['id'],'at':now.isoformat()}
+                        e.save()
+                    else:
+                        urls=[f"https://raw.githubusercontent.com/{os.environ['GITHUB_REPOSITORY']}/{r['asset_commit']}/{p}" for p in r['manifest']['cards']]
+                        cid=e.prepare_thread(item['threads_text'],topic_tag=item.get('threads_tag'),image_urls=urls)
+                        assert not matching_posts(e,item,r), 'Post appeared during preparation; do not duplicate'
+                        r.setdefault('recovery_audit',[]).append({'original':dict(r['operations']['threads']),'action':'fresh verified container; preserve Instagram','at':now.isoformat()})
+                        e.save()
+                        user=e.account_check('th')
+                        post_id=e.operation(r,key,lambda:e.meta('th','POST',user+'/threads_publish',creation_id=cid)['id'])
+                        r['operations']['threads']={'status':'done','id':post_id,'at':r['operations'][key]['at'],'recovered_by':key}
+                        e.save()
+                else:
+                    r['operations']['threads']={'status':'done','id':prior['id'],'at':prior['at'],'recovered_by':key}
+                    e.save()
+            mark_delivered(e,item,r)
+            e.tell('노트북 카드뉴스 복구 완료 · Instagram 중복 없이 양쪽 발행 완료\n'+'\n'.join(r.get('permalinks',{}).values()))
+            print('LAPTOP_RECOVERY_COMPLETE',flush=True)
+        resume()
+        PY
+'on':
+  push:
+    branches:
+    - main
+    paths:
+    - .github/workflows/codex-seed-review.yml
+  workflow_dispatch: null
