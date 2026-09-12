@@ -36,6 +36,10 @@ import requests
 API = "https://api.telegram.org"
 TIMEOUT = 60
 
+# 같은 봇을 여러 시스템이 함께 쓰기 때문에, 보낸 쪽을 메시지에 박아 둔다.
+# (이 저장소에는 codex/ 로 도는 별도 발행 시스템이 하나 더 있다)
+LABEL = os.getenv("NOTIFY_LABEL", "🟠 Claude")
+
 
 ROOT = Path(__file__).resolve().parent.parent
 OWNER_ENC = ROOT / "content" / "telegram_owner.enc"
@@ -165,7 +169,7 @@ def ask(item_id: str, title: str, body: str,
                else os.getenv("APPROVAL_TIMEOUT_MIN", "45"))
     offset = _drain_offset()
 
-    head = f"🗂 {title}\n<{item_id}>"
+    head = f"{LABEL}\n🗂 {title}\n<{item_id}>"
     try:
         if video:
             send_video(video, head)
@@ -179,7 +183,7 @@ def ask(item_id: str, title: str, body: str,
 
     ok_data, no_data = f"ok:{item_id}", f"no:{item_id}"
     send_message(
-        f"이대로 발행할까요?  ({wait}분 안에 응답이 없으면 발행하지 않습니다)",
+        f"{LABEL} · 이대로 발행할까요?\n({wait}분 안에 응답이 없으면 발행하지 않습니다)",
         buttons=[[{"text": "✅ 발행", "callback_data": ok_data},
                   {"text": "✋ 건너뛰기", "callback_data": no_data}]])
 
@@ -219,7 +223,8 @@ def done(item_id: str, product: str, results: dict, errors: list[str]) -> None:
     """발행 결과 통보. 실패도 반드시 알려야 다음 회차 전에 손을 쓸 수 있다."""
     if not enabled():
         return
-    lines = [f"{'✅' if results else '❌'} {product}  <{item_id}>"]
+    lines = [f"{LABEL}  {'✅ 발행 완료' if results else '❌ 실패'}",
+             f"{product}  <{item_id}>"]
     for k, v in results.items():
         lines.append(f"· {k}: {v}")
     for e in errors:
