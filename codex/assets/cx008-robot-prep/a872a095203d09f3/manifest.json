@@ -1,0 +1,20 @@
+{
+  "renderer": "money-editorial-v3-photo",
+  "cards": [
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/01.jpg",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/02.jpg",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/03.jpg",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/04.jpg",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/05.jpg",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "sha256": {
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/01.jpg": "dac1f808d4d4b35c2af61d9753fb732f9970e80586da86250615ac396269fcf2",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/02.jpg": "be3501b5544a29e9d0893399bd41a5367c94abcca7806da069500e10dd2ef153",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/03.jpg": "489e64c1b42b090474e72dc6abb70a6b167429a5fa234f14aed9f04305c4d679",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/04.jpg": "1e1753d35bbee9162636e9119aa7ebefd8ee1bf31989905d8f4f0db6f930b348",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/05.jpg": "7c1275c8fd06a9976e89079bf393d8f62ced9cafa556e7247655ef5cd6202f15",
+    "codex/assets/cx008-robot-prep/a872a095203d09f3/06.jpg": "92523cf945023d0129639fb754e25acafa3f946b5d68fd9cafdad4d5b9b6bcdc"
+  }
+}
