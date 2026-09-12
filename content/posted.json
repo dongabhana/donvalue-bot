@@ -35,10 +35,9 @@
     "posted_at": "2026-09-12T15:48:35+09:00",
     "results": {
       "instagram": "18011818304755909",
-      "instagram_comment": "17877352908547950"
+      "instagram_comment": "17877352908547950",
+      "threads": "18380067301236903"
     },
-    "errors": [
-      "threads: POST https://graph.threads.net/v1.0/me/threads → 400 {\"error\":{\"message\":\"Invalid parameter\",\"type\":\"OAuthException\",\"code\":100,\"error_subcode\":4279004,\"is_transient\":false,\"error_user_title\":\"Invalid Carousel Children\",\"error_user_msg\":\"The children with IDs 18093757085298470 are invalid, nonexistent, or expired.\",\"fbtrace_id\":\"AxHoNr9vQKxX_g6ctor5zr6\"}}"
-    ]
+    "errors": []
   }
 ]
