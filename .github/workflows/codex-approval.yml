@@ -5,18 +5,10 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: 'preview is a non-publishing test; tick processes owner approvals'
+        description: 'tick is normal approval/publishing; preview is an explicit non-publishing test'
         type: choice
         options: [preview, tick]
-        default: preview
-  push:
-    branches: [main]
-    paths:
-      - codex/content.json
-      - codex/engine.py
-      - codex/media.py
-      - codex/reporting.py
-      - .github/workflows/codex-approval.yml
+        default: tick
 permissions:
   contents: write
 concurrency:
@@ -50,7 +42,6 @@ jobs:
           MODE_INPUT: ${{ inputs.mode }}
           EVENT_NAME: ${{ github.event_name }}
         run: |
-          mode=preview
-          if [ "$EVENT_NAME" = schedule ]; then mode=tick; fi
-          if [ "$EVENT_NAME" = workflow_dispatch ] && [ "$MODE_INPUT" = tick ]; then mode=tick; fi
+          mode=tick
+          if [ "$EVENT_NAME" = workflow_dispatch ] && [ "$MODE_INPUT" = preview ]; then mode=preview; fi
           python -m codex.engine "$mode"
