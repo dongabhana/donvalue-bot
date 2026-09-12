@@ -183,7 +183,10 @@ class Engine:
             response=requests.request(method,base+'/'+endpoint,params={**params,'access_token':token} if method=='GET' else None,
                                       data={**params,'access_token':token} if method=='POST' else None,timeout=60)
             data=response.json()
-            if not response.ok or 'error' in data: raise RuntimeError()
+            if not response.ok or 'error' in data:
+                error=data.get('error',{})
+                print('CODEX_META_ERROR: '+platform+' http='+str(response.status_code)+' code='+str(error.get('code'))+' subcode='+str(error.get('error_subcode')))
+                raise RuntimeError()
             return data
         except Exception:
             raise RuntimeError('Meta request failed; platform='+platform) from None
@@ -201,6 +204,7 @@ class Engine:
         user=os.environ['IG_USER_ID' if platform=='ig' else 'TH_USER_ID']
         info=self.meta(platform,'GET',user,fields='id,username')
         if info.get('username','').lower()!='dongabhana':
+            print('CODEX_ACCOUNT_MISMATCH: '+platform+' username='+str(info.get('username','missing')))
             raise RuntimeError('Unexpected publishing account')
         return user
 
