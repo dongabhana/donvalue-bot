@@ -1,0 +1,20 @@
+{
+  "renderer": "money-editorial-v3-photo",
+  "cards": [
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/01.jpg",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/02.jpg",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/03.jpg",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/04.jpg",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/05.jpg",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "sha256": {
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/01.jpg": "bb82710ab113487f75377ab19510dbdb0c5de0eec5c1782621a5d3c4a01113da",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/02.jpg": "6fadfb124fe3df342e3b3b40e53912984ddecd3e97d6d3f8e3eb4f5b787639d6",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/03.jpg": "3930cf6772bcb41da0766de14db114f291616cb71bfaaf06f493a3df96a37ee4",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/04.jpg": "1c2d1e407d9244f23573d505d1097ce54c6b776889498a5ffbf9642b71cbf4d1",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/05.jpg": "44f3234fbe46b55b375f7324f62d44f0008c08dbd6c02b7a35c812013b3a4415",
+    "codex/assets/cx005-coupon-minimum/62360995de5d6091/06.jpg": "5f47a19932a0513aa18eef725681a8edd72a26ae6d694f66775cf141109b5f8f"
+  }
+}
