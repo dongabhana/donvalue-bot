@@ -1,0 +1,62 @@
+name: Claude recover approved carousel 2026-09-12
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/claude-recovery.yml]
+permissions:
+  contents: write
+concurrency:
+  group: donvalue-publish
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 65
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rendering dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+          pip install -r requirements.txt
+      - name: Check recovery date and prior delivery
+        id: guard
+        run: |
+          python - <<'PY'
+          import json, os
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          posted=json.loads(Path('content/posted.json').read_text())
+          allowed=(datetime.now(ZoneInfo('Asia/Seoul')).date().isoformat()=='2026-09-12'
+                   and not any(p['id']=='004-ott-stack' for p in posted))
+          with open(os.environ['GITHUB_OUTPUT'],'a') as f:
+              f.write('allowed='+str(allowed).lower()+'\n')
+          print('RECOVERY_ALLOWED='+str(allowed).lower())
+          PY
+      - name: Recover one carousel with owner approval
+        if: steps.guard.outputs.allowed == 'true'
+        env:
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TH_USER_ID: ${{ secrets.TH_USER_ID }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          APPROVAL_REQUIRED: '1'
+          APPROVAL_TIMEOUT_MIN: '45'
+          NOTIFY_LABEL: '🟠 Claude · 실패한 1편 복구'
+          THEME: paper
+        run: python -u -m src.run --id 004-ott-stack --pick carousel
+      - name: Save render if recovery fails
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: claude-recovery-render
+          path: images/004-ott-stack/
+          retention-days: 7
