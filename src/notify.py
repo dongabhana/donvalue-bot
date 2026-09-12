@@ -150,6 +150,17 @@ def ask(item_id: str, title: str, body: str,
     if not enabled():
         return True                                   # 설정이 없으면 승인 단계를 건너뛴다
 
+    # 검수는 '나갈 것 전부'를 봐야 의미가 있다.
+    # 호출부가 표지·결론만 넘겨도 같은 폴더의 나머지 장을 모아 전체를 보낸다.
+    if photos:
+        try:
+            folder = Path(photos[0]).parent
+            allp = sorted(p for p in folder.glob("*.png"))
+            if len(allp) > len(photos):
+                photos = allp
+        except Exception:                                         # noqa: BLE001
+            pass
+
     wait = int(timeout_min if timeout_min is not None
                else os.getenv("APPROVAL_TIMEOUT_MIN", "45"))
     offset = _drain_offset()
