@@ -43,6 +43,45 @@ def sh(*args: str) -> str:
                           text=True).stdout.strip()
 
 
+def push(tries: int = 5) -> None:
+    """push 가 밀리면 rebase 후 다시 시도한다.
+
+    같은 저장소에 다른 워크플로(예: 15분 주기 승인 봇)가 동시에 커밋하면
+    push 가 non-fast-forward 로 거부된다. 승인 대기 몇 분 사이에 흔히 생긴다.
+    이때 죽어버리면 이미지가 올라가지 않아 발행 전체가 실패하므로,
+    원격을 받아 rebase 하고 다시 민다. 우리 커밋은 이미지/기록뿐이라
+    rebase 로 충돌이 날 여지가 사실상 없다.
+    """
+    last = ""
+    for n in range(1, tries + 1):
+        try:
+            sh("git", "push")
+            return
+        except subprocess.CalledProcessError as e:                # noqa: PERF203
+            last = (e.stderr or e.stdout or "").strip()
+            if n == tries:
+                break
+            print(f"[git] push 거부({n}/{tries}) → 원격 반영 후 재시도")
+            try:
+                sh("git", "-c", "user.name=donvalue-bot",
+                   "-c", "user.email=bot@users.noreply.github.com",
+                   "pull", "--rebase", "--autostash")
+            except subprocess.CalledProcessError as pe:
+                print(f"[git] rebase 실패: {(pe.stderr or '').strip()[:300]}")
+                try:
+                    sh("git", "rebase", "--abort")
+                except subprocess.CalledProcessError:
+                    pass
+                # rebase 가 막히면 원격 위에 우리 변경만 다시 얹는다
+                try:
+                    sh("git", "fetch", "origin")
+                    sh("git", "merge", "--no-edit", "-X", "ours", "origin/main")
+                except subprocess.CalledProcessError:
+                    pass
+            time.sleep(3 * n)
+    raise RuntimeError(f"git push 실패(재시도 {tries}회): {last[:400]}")
+
+
 def load_posted() -> list[dict]:
     if POSTED.exists():
         return json.loads(POSTED.read_text(encoding="utf-8"))
@@ -245,7 +284,7 @@ def run_once(args) -> int:
         sh("git", "-c", "user.name=donvalue-bot",
            "-c", "user.email=bot@users.noreply.github.com",
            "commit", "-m", f"images: {item['id']}")
-        sh("git", "push")
+        push()
     sha = sh("git", "rev-parse", "HEAD")
     base = f"https://raw.githubusercontent.com/{repo}/{sha}/images/{item['id']}"
     urls = [f"{base}/{p.name}" for p in paths]
@@ -262,7 +301,7 @@ def run_once(args) -> int:
                 sh("git", "-c", "user.name=donvalue-bot",
                    "-c", "user.email=bot@users.noreply.github.com",
                    "commit", "-m", f"reel: {item['id']}")
-                sh("git", "push")
+                push()
                 sha2 = sh("git", "rev-parse", "HEAD")
                 video_url = (f"https://raw.githubusercontent.com/{repo}/{sha2}"
                              f"/images/{item['id']}/{mp4.name}")
@@ -364,7 +403,7 @@ def run_once(args) -> int:
     sh("git", "-c", "user.name=donvalue-bot",
        "-c", "user.email=bot@users.noreply.github.com",
        "commit", "-m", f"posted: {item['id']}")
-    sh("git", "push")
+    push()
     return 0
 
 
