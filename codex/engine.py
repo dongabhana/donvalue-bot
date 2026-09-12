@@ -53,6 +53,9 @@ def validate(item):
 
 def eligible(item, record, now):
     if record.get('closed'): return False
+    if record.get('review_kind')=='owner_seed_three':
+        from codex.seed_three_once import authorized_now
+        return authorized_now(item,record,now)
     if record.get('review_kind')=='owner_chat_once':
         from codex.today_once import authorized_now
         return authorized_now(item,record,now)
@@ -305,11 +308,18 @@ class Engine:
         rec['operations'][key]={'status':'done','id':str(result),'at':datetime.now(KST).isoformat()}; self.save()
         return str(result)
 
-    def thread(self, text, parent=None, topic_tag=None):
+    def thread(self, text, parent=None, topic_tag=None, image_urls=None):
         user=self.account_check('th')
         args={'media_type':'TEXT','text':text}
         if parent: args['reply_to_id']=parent
         if topic_tag: args['topic_tag']=topic_tag
+        if image_urls:
+            if not 2 <= len(image_urls) <= 20: raise ValueError('Threads carousel needs 2..20 images')
+            children=[]
+            for image_url in image_urls:
+                child=self.meta('th','POST',user+'/threads',media_type='IMAGE',image_url=image_url,is_carousel_item='true')['id']
+                self.wait_ready('th',child); children.append(child)
+            args.update(media_type='CAROUSEL',children=','.join(children))
         cid=self.meta('th','POST',user+'/threads',**args)['id']
         self.wait_ready('th',cid)
         return self.meta('th','POST',user+'/threads_publish',creation_id=cid)['id']
@@ -335,7 +345,8 @@ class Engine:
             self.wait_ready('ig',cid)
             return self.meta('ig','POST',user+'/media_publish',creation_id=cid)['id']
         failures=[]
-        for key,action in [('instagram',instagram),('threads',lambda:self.thread(item['threads_text'], topic_tag=item.get('threads_tag')))]:
+        for key,action in [('instagram',instagram),('threads',lambda:self.thread(item['threads_text'], topic_tag=item.get('threads_tag'),
+                              image_urls=[url(p) for p in manifest['cards']] if item.get('threads_media')=='carousel' else None))]:
             try: self.operation(rec,key,action)
             except RuntimeError: failures.append(key)
         if rec['operations'].get('instagram',{}).get('status')=='done' and item['first_comment']:

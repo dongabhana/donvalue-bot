@@ -1,0 +1,65 @@
+name: Codex three profile carousels - owner exception 2026-09-12
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/codex-seed-three.yml]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  wait-for-existing-burst:
+    runs-on: ubuntu-latest
+    timeout-minutes: 155
+    permissions:
+      actions: read
+    steps:
+      - name: Let the existing four-card publication finish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for attempt in $(seq 1 150); do
+            if [ "$(TZ=Asia/Seoul date +%F)" != 2026-09-12 ]; then exit 1; fi
+            status=$(gh api repos/${{ github.repository }}/actions/runs/34679387426 --jq .status)
+            if [ "$status" = completed ]; then echo 'Previous burst finished; resume through delivery journals'; exit 0; fi
+            echo 'Existing four-card publication is still running'
+            sleep 60
+          done
+          exit 1
+  publish-three:
+    needs: wait-for-existing-burst
+    runs-on: ubuntu-latest
+    timeout-minutes: 160
+    permissions:
+      contents: write
+    concurrency:
+      group: donvalue-publish
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rendering dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk
+          pip install -r requirements.txt
+      - name: Verify version-bound exception and duplicate guards
+        run: python -m unittest discover -s codex/tests -q
+      - name: Publish exactly the requested three carousel versions
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TH_USER_ID: ${{ secrets.TH_USER_ID }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+        run: python -u -m codex.seed_three_once
+      - name: Keep cards for inspection if publication stops
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codex-seed-three-cards
+          path: codex/assets/
+          retention-days: 7

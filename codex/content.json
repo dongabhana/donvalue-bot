@@ -145,7 +145,7 @@
     {
       "id": "cx004-laptop-total",
       "publish_at": "2026-09-14T20:00:00+09:00",
-      "format": "reel",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "IT",
@@ -246,7 +246,7 @@
           }
         }
       ],
-      "caption": "70만원 노트북이 90만원 되는 순간\n\n노트북 70만원에 필요한 허브 5만원, 저장장치 10만원, 메모리 5만원을 더하는 상황.\n\n본체는 70만원. 사용할 구성은 90만원.\n\n추가 부품이 필요 없거나 이미 있다면 합계는 달라져요. 호환·확장 가능 여부도 확인해요.\n\n본체 가격 옆에 지금 필요한 추가 구매 목록을 같이 적어보세요.\n\n전자기기 사고 나서 예상 밖으로 더 산 물건, 뭐였나요?\n\n※ 가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.\n#돈값하나 #IT소비",
+      "caption": "70만원 노트북이 90만원 되는 순간\n\n노트북 70만원에 필요한 허브 5만원, 저장장치 10만원, 메모리 5만원을 더하는 상황.\n\n본체는 70만원. 사용할 구성은 90만원.\n\n추가 부품이 필요 없거나 이미 있다면 합계는 달라져요. 호환·확장 가능 여부도 확인해요.\n\n본체 가격 옆에 지금 필요한 추가 구매 목록을 같이 적어보세요.\n\n전자기기 사고 나서 예상 밖으로 더 산 물건, 뭐였나요?\n\n※ 가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.\n#돈값하나 #노트북 #노트북구매 #구매가이드 #IT소비",
       "first_comment": "추가 부품이 필요 없거나 이미 있다면 합계는 달라져요. 호환·확장 가능 여부도 확인해요.\n가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.",
       "threads_text": "70만원 노트북이 90만원 되는 순간\n\n노트북 70만원에 필요한 허브 5만원, 저장장치 10만원, 메모리 5만원을 더하는 상황.\n본체는 70만원. 사용할 구성은 90만원.\n\n본체 가격 옆에 지금 필요한 추가 구매 목록을 같이 적어보세요.\n\n전자기기 사고 나서 예상 밖으로 더 산 물건, 뭐였나요?\n\n※ 가상 예시. 추가 부품이 필요 없거나 이미 있다면 합계는 달라져요. 호환·확장 가능 여부도 확인해요.",
       "threads_chain": [],
@@ -266,7 +266,15 @@
         "visual": "첫 화면에 핵심 숫자와 두 줄 훅을 동시에 배치",
         "seconds": 1.8,
         "sound": "직접 합성한 짧은 타격음과 리듬, 음성 내레이션 없음"
-      }
+      },
+      "hashtags": [
+        "돈값하나",
+        "노트북",
+        "노트북구매",
+        "구매가이드",
+        "IT소비"
+      ],
+      "threads_media": "carousel"
     },
     {
       "id": "cx005-coupon-minimum",
@@ -299,18 +307,36 @@
           }
         },
         {
-          "title": "이런 상황이라면",
+          "title": "쿠폰 조건은 4만원\n원래 살 건 36,000원",
           "body": "36,000원만 살 예정. 4만원 이상 구매 시 5천원 쿠폰을 쓰려고 9천원 상품을 추가해요.",
           "note": "가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.",
           "seconds": 3.6,
           "visual": {
             "kind": "scene",
             "value": "+4천원",
-            "label": "비교 조건부터 확인"
+            "label": "비교 조건부터 확인",
+            "rows": [
+              [
+                "계획한 상품",
+                "36,000원"
+              ],
+              [
+                "추가한 상품",
+                "9,000원"
+              ],
+              [
+                "쿠폰 할인",
+                "−5,000원"
+              ],
+              [
+                "최종 결제",
+                "40,000원"
+              ]
+            ]
           }
         },
         {
-          "title": "이 숫자에서 달라져요",
+          "title": "할인은 5천원\n지출은 4천원 증가",
           "body": "45,000 − 5,000 = 40,000원. 원래 합계보다 4천원 늘었어요.",
           "note": "초기 비용·차액·이용량을 비교한 예시예요.",
           "seconds": 3.6,
@@ -321,40 +347,40 @@
           }
         },
         {
-          "title": "여기까지 같이 봐야 해요",
+          "title": "필요한 물건이면\n결론은 달라져요",
           "body": "추가 물건도 원래 필요했다면 쓸모가 있어요. 비교는 계획 밖 물건을 담은 경우예요.",
           "note": "조건이 바뀌면 결론도 달라집니다.",
           "seconds": 3.8,
           "visual": {
             "kind": "check",
-            "value": "조건 확인",
+            "value": "필요 vs 채움",
             "label": "가격 외에 남는 가치"
           }
         },
         {
-          "title": "다음 결제 전 딱 하나",
+          "title": "쿠폰 말고\n결제 총액을 비교",
           "body": "쿠폰 적용 전 합계와 계획대로만 산 합계를 나란히 봐요.",
           "note": "내 숫자와 실제 이용 조건으로 확인하세요.",
           "seconds": 3.2,
           "visual": {
             "kind": "check",
-            "value": "직접 확인",
+            "value": "36,000 vs 40,000",
             "label": "오늘 실행할 한 가지"
           }
         },
         {
-          "title": "당신은 어땠나요?",
+          "title": "쿠폰 때문에\n뭘 더 담았나요?",
           "body": "쿠폰 최소 금액 맞추려고 가장 자주 담는 물건은 뭐예요?",
           "note": "돈값하나? · 결제의 반전",
           "seconds": 2.6,
           "visual": {
             "kind": "question",
-            "value": "당신의 경험",
+            "value": "계획 밖 구매",
             "label": "선택이 달라지는 이유"
           }
         }
       ],
-      "caption": "5천원 쿠폰 쓰고 4천원 더 냈다\n\n36,000원만 살 예정. 4만원 이상 구매 시 5천원 쿠폰을 쓰려고 9천원 상품을 추가해요.\n\n45,000 − 5,000 = 40,000원. 원래 합계보다 4천원 늘었어요.\n\n추가 물건도 원래 필요했다면 쓸모가 있어요. 비교는 계획 밖 물건을 담은 경우예요.\n\n쿠폰 적용 전 합계와 계획대로만 산 합계를 나란히 봐요.\n\n쿠폰 최소 금액 맞추려고 가장 자주 담는 물건은 뭐예요?\n\n※ 가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.\n#돈값하나 #소비습관",
+      "caption": "5천원 쿠폰 쓰고 4천원 더 냈다\n\n36,000원만 살 예정. 4만원 이상 구매 시 5천원 쿠폰을 쓰려고 9천원 상품을 추가해요.\n\n45,000 − 5,000 = 40,000원. 원래 합계보다 4천원 늘었어요.\n\n추가 물건도 원래 필요했다면 쓸모가 있어요. 비교는 계획 밖 물건을 담은 경우예요.\n\n쿠폰 적용 전 합계와 계획대로만 산 합계를 나란히 봐요.\n\n쿠폰 최소 금액 맞추려고 가장 자주 담는 물건은 뭐예요?\n\n※ 가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.\n#돈값하나 #쿠폰 #온라인쇼핑 #소비습관 #장바구니",
       "first_comment": "추가 물건도 원래 필요했다면 쓸모가 있어요. 비교는 계획 밖 물건을 담은 경우예요.\n가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.",
       "threads_text": "5천원 쿠폰 쓰고 4천원 더 냈다\n\n36,000원만 살 예정. 4만원 이상 구매 시 5천원 쿠폰을 쓰려고 9천원 상품을 추가해요.\n45,000 − 5,000 = 40,000원. 원래 합계보다 4천원 늘었어요.\n\n쿠폰 적용 전 합계와 계획대로만 산 합계를 나란히 봐요.\n\n쿠폰 최소 금액 맞추려고 가장 자주 담는 물건은 뭐예요?\n\n※ 가상 예시. 추가 물건도 원래 필요했다면 쓸모가 있어요. 비교는 계획 밖 물건을 담은 경우예요.",
       "threads_chain": [],
@@ -374,12 +400,20 @@
         "visual": "첫 화면에 핵심 숫자와 두 줄 훅을 동시에 배치",
         "seconds": 1.8,
         "sound": "직접 합성한 짧은 타격음과 리듬, 음성 내레이션 없음"
-      }
+      },
+      "hashtags": [
+        "돈값하나",
+        "쿠폰",
+        "온라인쇼핑",
+        "소비습관",
+        "장바구니"
+      ],
+      "threads_media": "carousel"
     },
     {
       "id": "cx006-vacation-app",
-      "publish_at": "2026-09-19T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-09-16T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "구독",
@@ -486,7 +520,7 @@
     },
     {
       "id": "cx007-refill-total",
-      "publish_at": "2026-09-21T20:00:00+09:00",
+      "publish_at": "2026-09-19T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -613,7 +647,7 @@
       "slides": [
         {
           "title": "로봇청소기 샀는데\n바닥부터 치운다",
-          "body": "가격표 밖에 있는 한 장의 계산.",
+          "body": "편해지는 부분과 여전히 내가 하는 일을 나눠봐요.",
           "note": "가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.",
           "seconds": 1.8,
           "visual": {
@@ -623,62 +657,76 @@
           }
         },
         {
-          "title": "이런 상황이라면",
+          "title": "청소 버튼보다\n먼저 줍는 세 가지",
           "body": "청소 전 케이블·양말·장난감을 정리해야 하는 가상의 집이에요.",
           "note": "가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.",
           "seconds": 3.6,
           "visual": {
             "kind": "scene",
             "value": "준비 + 청소",
-            "label": "비교 조건부터 확인"
+            "label": "비교 조건부터 확인",
+            "rows": [
+              [
+                "케이블",
+                "먼저 정리"
+              ],
+              [
+                "양말",
+                "바닥에서 치우기"
+              ],
+              [
+                "장난감",
+                "이동 경로 확인"
+              ]
+            ]
           }
         },
         {
-          "title": "이 숫자에서 달라져요",
+          "title": "자동 청소여도\n준비는 남을 수 있어요",
           "body": "청소 시간만 보지 말고 준비와 뒤처리 시간도 포함해요.",
           "note": "초기 비용·차액·이용량을 비교한 예시예요.",
           "seconds": 3.6,
           "visual": {
             "kind": "metric",
-            "value": "준비 + 청소",
+            "value": "준비 + 뒤처리",
             "label": "같은 기준으로 다시 보기"
           }
         },
         {
-          "title": "여기까지 같이 봐야 해요",
+          "title": "좋은 가전인가보다\n우리 집에 맞는가",
           "body": "집 구조·제품·생활 방식에 따라 실제 손이 가는 정도는 달라요.",
           "note": "조건이 바뀌면 결론도 달라집니다.",
           "seconds": 3.8,
           "visual": {
             "kind": "check",
-            "value": "조건 확인",
+            "value": "구조 · 제품 · 생활",
             "label": "가격 외에 남는 가치"
           }
         },
         {
-          "title": "다음 결제 전 딱 하나",
+          "title": "제품 사진 말고\n우리 집 바닥부터",
           "body": "구매 전에 평소 바닥 사진을 보고 먼저 치워야 할 물건을 표시해요.",
           "note": "내 숫자와 실제 이용 조건으로 확인하세요.",
           "seconds": 3.2,
           "visual": {
             "kind": "check",
-            "value": "직접 확인",
+            "value": "바닥 사진 1장",
             "label": "오늘 실행할 한 가지"
           }
         },
         {
-          "title": "당신은 어땠나요?",
+          "title": "돌리기 전에\n제일 먼저 뭘 치워요?",
           "body": "로봇청소기 돌리기 전에 제일 먼저 치우는 물건은 뭐예요?",
           "note": "돈값하나? · 가전의 다음 가격",
           "seconds": 2.6,
           "visual": {
             "kind": "question",
-            "value": "당신의 경험",
+            "value": "양말? 케이블?",
             "label": "선택이 달라지는 이유"
           }
         }
       ],
-      "caption": "로봇청소기 샀는데 바닥부터 치운다\n\n청소 전 케이블·양말·장난감을 정리해야 하는 가상의 집이에요.\n\n청소 시간만 보지 말고 준비와 뒤처리 시간도 포함해요.\n\n집 구조·제품·생활 방식에 따라 실제 손이 가는 정도는 달라요.\n\n구매 전에 평소 바닥 사진을 보고 먼저 치워야 할 물건을 표시해요.\n\n로봇청소기 돌리기 전에 제일 먼저 치우는 물건은 뭐예요?\n\n※ 가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.\n#돈값하나 #가전",
+      "caption": "로봇청소기 샀는데 바닥부터 치운다\n\n청소 전 케이블·양말·장난감을 정리해야 하는 가상의 집이에요.\n\n청소 시간만 보지 말고 준비와 뒤처리 시간도 포함해요.\n\n집 구조·제품·생활 방식에 따라 실제 손이 가는 정도는 달라요.\n\n구매 전에 평소 바닥 사진을 보고 먼저 치워야 할 물건을 표시해요.\n\n로봇청소기 돌리기 전에 제일 먼저 치우는 물건은 뭐예요?\n\n※ 가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.\n#돈값하나 #로봇청소기 #가전구매 #살림 #청소",
       "first_comment": "집 구조·제품·생활 방식에 따라 실제 손이 가는 정도는 달라요.\n가상 조건·창작 상황입니다. 실제 업체 가격이나 정책을 뜻하지 않아요.",
       "threads_text": "로봇청소기 샀는데 바닥부터 치운다\n\n청소 전 케이블·양말·장난감을 정리해야 하는 가상의 집이에요.\n청소 시간만 보지 말고 준비와 뒤처리 시간도 포함해요.\n\n구매 전에 평소 바닥 사진을 보고 먼저 치워야 할 물건을 표시해요.\n\n로봇청소기 돌리기 전에 제일 먼저 치우는 물건은 뭐예요?\n\n※ 가상 예시. 집 구조·제품·생활 방식에 따라 실제 손이 가는 정도는 달라요.",
       "threads_chain": [],
@@ -698,11 +746,19 @@
         "visual": "첫 화면에 핵심 숫자와 두 줄 훅을 동시에 배치",
         "seconds": 1.8,
         "sound": "직접 합성한 짧은 타격음과 리듬, 음성 내레이션 없음"
-      }
+      },
+      "hashtags": [
+        "돈값하나",
+        "로봇청소기",
+        "가전구매",
+        "살림",
+        "청소"
+      ],
+      "threads_media": "carousel"
     },
     {
       "id": "cx009-delivery-menu",
-      "publish_at": "2026-09-26T20:00:00+09:00",
+      "publish_at": "2026-09-21T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -810,8 +866,8 @@
     },
     {
       "id": "cx010-parking-detour",
-      "publish_at": "2026-09-28T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-09-23T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "이동",
@@ -918,8 +974,8 @@
     },
     {
       "id": "cx011-hiking-use",
-      "publish_at": "2026-09-30T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-09-26T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "취미",
@@ -1026,7 +1082,7 @@
     },
     {
       "id": "cx012-storage-used",
-      "publish_at": "2026-10-03T20:00:00+09:00",
+      "publish_at": "2026-09-28T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1134,8 +1190,8 @@
     },
     {
       "id": "cx013-one-plus-one",
-      "publish_at": "2026-10-05T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-09-30T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "결제",
@@ -1242,8 +1298,8 @@
     },
     {
       "id": "cx014-trial-calendar",
-      "publish_at": "2026-10-07T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-10-03T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "구독",
@@ -1350,7 +1406,7 @@
     },
     {
       "id": "cx015-sheet-count",
-      "publish_at": "2026-10-10T20:00:00+09:00",
+      "publish_at": "2026-10-05T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1458,8 +1514,8 @@
     },
     {
       "id": "cx016-airfryer-rare",
-      "publish_at": "2026-10-12T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-10-07T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "가전",
@@ -1566,8 +1622,8 @@
     },
     {
       "id": "cx017-side-set",
-      "publish_at": "2026-10-14T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-10-10T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "외식",
@@ -1674,7 +1730,7 @@
     },
     {
       "id": "cx018-taxi-per-person",
-      "publish_at": "2026-10-17T20:00:00+09:00",
+      "publish_at": "2026-10-12T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1782,8 +1838,8 @@
     },
     {
       "id": "cx019-camera-rent",
-      "publish_at": "2026-10-19T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-10-14T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "취미",
@@ -1890,8 +1946,8 @@
     },
     {
       "id": "cx020-gaming-hours",
-      "publish_at": "2026-10-21T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-10-17T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "IT",
@@ -1998,7 +2054,7 @@
     },
     {
       "id": "cx021-coupon-cap",
-      "publish_at": "2026-10-24T20:00:00+09:00",
+      "publish_at": "2026-10-19T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2106,8 +2162,8 @@
     },
     {
       "id": "cx022-cloud-tier",
-      "publish_at": "2026-10-26T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-10-21T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "구독",
@@ -2214,8 +2270,8 @@
     },
     {
       "id": "cx023-detergent-dose",
-      "publish_at": "2026-10-28T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-10-24T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "생활용품",
@@ -2322,7 +2378,7 @@
     },
     {
       "id": "cx024-rental-total",
-      "publish_at": "2026-10-31T20:00:00+09:00",
+      "publish_at": "2026-10-26T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2430,8 +2486,8 @@
     },
     {
       "id": "cx025-stamp-detour",
-      "publish_at": "2026-11-02T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-10-28T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "외식",
@@ -2538,8 +2594,8 @@
     },
     {
       "id": "cx026-fuel-detour",
-      "publish_at": "2026-11-04T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-10-31T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "이동",
@@ -2646,7 +2702,7 @@
     },
     {
       "id": "cx027-game-season",
-      "publish_at": "2026-11-07T20:00:00+09:00",
+      "publish_at": "2026-11-02T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2754,8 +2810,8 @@
     },
     {
       "id": "cx028-cloud-and-disk",
-      "publish_at": "2026-11-09T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-11-04T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "IT",
@@ -2862,8 +2918,8 @@
     },
     {
       "id": "cx029-monthly-price",
-      "publish_at": "2026-11-11T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-11-07T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "결제",
@@ -2970,7 +3026,7 @@
     },
     {
       "id": "cx030-benefit-net",
-      "publish_at": "2026-11-14T20:00:00+09:00",
+      "publish_at": "2026-11-09T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3078,8 +3134,8 @@
     },
     {
       "id": "cx031-bulk-space",
-      "publish_at": "2026-11-16T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-11-11T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "생활용품",
@@ -3186,8 +3242,8 @@
     },
     {
       "id": "cx032-noise-demo",
-      "publish_at": "2026-11-18T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-11-14T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "가전",
@@ -3294,7 +3350,7 @@
     },
     {
       "id": "cx033-portion-weight",
-      "publish_at": "2026-11-21T20:00:00+09:00",
+      "publish_at": "2026-11-16T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3402,8 +3458,8 @@
     },
     {
       "id": "cx034-transport-pass",
-      "publish_at": "2026-11-23T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-11-18T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "이동",
@@ -3510,8 +3566,8 @@
     },
     {
       "id": "cx035-display-extra",
-      "publish_at": "2026-11-25T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-11-21T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "취미",
@@ -3618,7 +3674,7 @@
     },
     {
       "id": "cx036-keyboard-use",
-      "publish_at": "2026-11-28T20:00:00+09:00",
+      "publish_at": "2026-11-23T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3726,8 +3782,8 @@
     },
     {
       "id": "cx037-return-cost",
-      "publish_at": "2026-11-30T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-11-25T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "결제",
@@ -3834,8 +3890,8 @@
     },
     {
       "id": "cx038-wash-pack",
-      "publish_at": "2026-12-02T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-11-28T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "구독",
@@ -3942,7 +3998,7 @@
     },
     {
       "id": "cx039-reusable-use",
-      "publish_at": "2026-12-05T20:00:00+09:00",
+      "publish_at": "2026-11-30T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4050,8 +4106,8 @@
     },
     {
       "id": "cx040-energy-premium",
-      "publish_at": "2026-12-07T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-12-02T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "가전",
@@ -4158,8 +4214,8 @@
     },
     {
       "id": "cx041-buffet-choice",
-      "publish_at": "2026-12-09T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-12-05T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "외식",
@@ -4266,7 +4322,7 @@
     },
     {
       "id": "cx042-bike-rental",
-      "publish_at": "2026-12-12T20:00:00+09:00",
+      "publish_at": "2026-12-07T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4374,8 +4430,8 @@
     },
     {
       "id": "cx043-class-attendance",
-      "publish_at": "2026-12-14T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-12-09T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "취미",
@@ -4482,8 +4538,8 @@
     },
     {
       "id": "cx044-monitor-desk",
-      "publish_at": "2026-12-16T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-12-12T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "IT",
@@ -4590,7 +4646,7 @@
     },
     {
       "id": "cx045-bundle-unused",
-      "publish_at": "2026-12-19T20:00:00+09:00",
+      "publish_at": "2026-12-14T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4698,8 +4754,8 @@
     },
     {
       "id": "cx046-pair-plan",
-      "publish_at": "2026-12-21T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-12-16T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "구독",
@@ -4806,8 +4862,8 @@
     },
     {
       "id": "cx047-recharge-count",
-      "publish_at": "2026-12-23T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-12-19T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "생활용품",
@@ -4914,7 +4970,7 @@
     },
     {
       "id": "cx048-used-install",
-      "publish_at": "2026-12-26T20:00:00+09:00",
+      "publish_at": "2026-12-21T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -5022,8 +5078,8 @@
     },
     {
       "id": "cx049-voucher-use",
-      "publish_at": "2026-12-28T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-12-23T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "외식",
@@ -5130,8 +5186,8 @@
     },
     {
       "id": "cx050-hotel-total",
-      "publish_at": "2026-12-30T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2026-12-26T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "이동",
@@ -5238,7 +5294,7 @@
     },
     {
       "id": "cx051-study-tool",
-      "publish_at": "2027-01-02T20:00:00+09:00",
+      "publish_at": "2026-12-28T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -5346,8 +5402,8 @@
     },
     {
       "id": "cx052-ports-needed",
-      "publish_at": "2027-01-04T20:00:00+09:00",
-      "format": "reel",
+      "publish_at": "2026-12-30T20:00:00+09:00",
+      "format": "carousel",
       "verified": true,
       "content_version": 2,
       "category": "IT",
@@ -5454,8 +5510,8 @@
     },
     {
       "id": "cx053-point-mission",
-      "publish_at": "2027-01-06T20:00:00+09:00",
-      "format": "carousel",
+      "publish_at": "2027-01-02T20:00:00+09:00",
+      "format": "reel",
       "verified": true,
       "content_version": 2,
       "category": "결제",
@@ -5559,6 +5615,124 @@
         "seconds": 1.8,
         "sound": "직접 합성한 짧은 타격음과 리듬, 음성 내레이션 없음"
       }
+    },
+    {
+      "id": "cx054-taxi-vs-driver",
+      "publish_at": "2026-09-14T20:00:00+09:00",
+      "format": "reel",
+      "verified": true,
+      "content_version": 2,
+      "category": "이동",
+      "series": "이동의 영수증",
+      "threads_tag": "교통비",
+      "topic_key": "taxi-vs-driver",
+      "topic": "택시 2만 vs 대리 3만 아직 싼 쪽은 모릅니다",
+      "hook": "택시 2만 vs 대리 3만\n아직 싼 쪽은 모릅니다",
+      "slides": [
+        {
+          "title": "택시 2만 vs 대리 3만\n아직 싼 쪽은 모릅니다",
+          "body": "차를 두고 가면 내일 찾는 비용이 남습니다. 귀가비는 오늘과 내일을 같이 봐요.",
+          "note": "귀가 총액은 가상 예시. 다른 추가비용은 0원으로 가정.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "hero",
+            "label": "총 귀가비",
+            "value": "오늘 + 내일"
+          }
+        },
+        {
+          "title": "밤 11시를 넘기면\n할증도 달라져요",
+          "body": "서울 중형택시는 22~23시·02~04시 20%, 23~02시 40% 심야 할증입니다.",
+          "note": "서울시 중형택시 요금 · 2026-09-12 확인",
+          "seconds": 3.6,
+          "visual": {
+            "kind": "check",
+            "label": "심야 할증",
+            "value": "20% / 40%",
+            "rows": [
+              [
+                "22~23시",
+                "20%"
+              ],
+              [
+                "23~02시",
+                "40%"
+              ],
+              [
+                "02~04시",
+                "20%"
+              ]
+            ]
+          }
+        },
+        {
+          "title": "5·10·20km\n같은 조건으로 비교",
+          "body": "같은 출발·도착지와 조회 시각으로 비교해요. 거리만으로 정체 시간·통행료를 알 수는 없어요.",
+          "note": "서울 중형 주간: 1.6km 4,800원, 이후 131m당 100원. 저속 시간요금 별도.",
+          "seconds": 3.6,
+          "visual": {
+            "kind": "check",
+            "label": "비교할 세 가지",
+            "value": "거리 · 시간 · 경로"
+          }
+        },
+        {
+          "title": "택시 2만원이\n총 31,500원이 된다면",
+          "body": "택시 20,000원 + 밤샘 주차 10,000원 + 다음 날 차 찾으러 가는 교통비 1,500원.",
+          "note": "귀가 총액은 가상 예시. 다른 추가비용은 0원으로 가정.",
+          "seconds": 3.8,
+          "visual": {
+            "kind": "check",
+            "label": "차를 두고 갈 때",
+            "value": "31,500원"
+          }
+        },
+        {
+          "title": "대리 3만원이\n총 32,000원이 된다면",
+          "body": "대리 30,000원 + 통행료 2,000원. 예시의 총액 차이는 500원. 차 찾는 시간도 함께 봐요.",
+          "note": "귀가 총액은 가상 예시. 다른 추가비용은 0원으로 가정.",
+          "seconds": 3.2,
+          "visual": {
+            "kind": "check",
+            "label": "차를 가져갈 때",
+            "value": "32,000원"
+          }
+        },
+        {
+          "title": "호출 전 한 줄\n오늘 + 내일 + 내 차",
+          "body": "택시+주차+차 회수비와 대리+연료+통행료+주차를 합쳐요. 차 찾는 시간까지 보면 어떤 선택이 편했나요?",
+          "note": "대리는 서비스·요금 방식에 따라 달라요. 서울 택시 기준을 전국에 적용하지 않아요.",
+          "seconds": 2.6,
+          "visual": {
+            "kind": "check",
+            "label": "대리 요금 확인",
+            "value": "고정 할증표로 단정 X"
+          }
+        }
+      ],
+      "caption": "택시 2만 vs 대리 3만 아직 싼 쪽은 모릅니다\n\n차를 두고 가면 내일 찾는 비용이 남습니다. 귀가비는 오늘과 내일을 같이 봐요.\n\n서울 중형택시는 22~23시·02~04시 20%, 23~02시 40% 심야 할증입니다.\n\n같은 출발·도착지와 조회 시각으로 비교해요. 거리만으로 정체 시간·통행료를 알 수는 없어요.\n\n택시 20,000원 + 밤샘 주차 10,000원 + 다음 날 차 찾으러 가는 교통비 1,500원.\n\n대리 30,000원 + 통행료 2,000원. 예시의 총액 차이는 500원. 차 찾는 시간도 함께 봐요.\n\n택시+주차+차 회수비와 대리+연료+통행료+주차를 각각 합쳐요. 대리비는 해당 시각 앱 견적을 확인해요.\n\n※ 귀가 총액은 가상 예시이며 다른 추가비용은 0원 가정. 지역·택시 종류·대리 서비스에 따라 달라요.\n서울 택시 기준: https://news.seoul.go.kr/traffic/archives/1659\n대리 요금 방식: https://play.google.com/store/apps/details?id=com.kakao.wheel.driver\n#돈값하나 #택시비 #대리운전 #심야할증 #교통비",
+      "first_comment": "대리비는 서울 택시 심야 할증표를 적용하지 않아요. 같은 시각 앱 견적을 확인하고, 연료·통행료·주차·차 회수 비용을 합쳐 비교하세요.",
+      "threads_text": "택시 2만 vs 대리 3만. 아직 싼 쪽은 모릅니다.\n\n가상 예시: 택시 2만+밤샘 주차 1만+차 찾으러 가는 교통비 1,500=31,500원. 대리 3만+통행료 2천=32,000원. 다른 추가비는 0원 가정.\n\n서울 중형 심야 할증: 22~23시·02~04시 20%, 23~02시 40%.\n5·10·20km도 같은 출발·도착·조회 시각으로 비교하세요. 대리는 앱 견적과 연료·통행료·주차까지 확인.\n\n내일 차 찾는 시간까지 보면 어느 쪽이 편했나요?\n택시 기준 출처: https://news.seoul.go.kr/traffic/archives/1659",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "서울 중형택시 요금 체계의 공식 공시와 카카오모빌리티 공식 앱 설명을 확인. 귀가 총액은 가상 예시: 20000+10000+1500=31500;30000+2000=32000;32000-31500=500.",
+      "verification": {
+        "kind": "official_tariff_and_illustrative_comparison",
+        "checked_at": "2026-09-12",
+        "real_world_price_claim": true,
+        "region": "서울",
+        "taxi_type": "중형",
+        "sources": [
+          "https://news.seoul.go.kr/traffic/archives/1659",
+          "https://play.google.com/store/apps/details?id=com.kakao.wheel.driver"
+        ],
+        "live_driver_quote_obtained": false,
+        "illustrative_totals": true,
+        "calculation": "20000+10000+1500=31500;30000+2000=32000;32000-31500=500"
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#69BCE8"
     }
   ]
 }

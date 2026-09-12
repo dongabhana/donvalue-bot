@@ -167,7 +167,7 @@ def editorial_card(item, slide, index, reel=False):
     tagw=d.textlength(tag,font=tagfont)+38
     d.rounded_rectangle((1018-tagw,51,1018,101),radius=23,fill=accent)
     d.text((1037-tagw,58),tag,font=tagfont,fill=ink)
-    d.text((64,124),f'{int(item["id"][2:5])-3:02} / 50   ·   {index+1:02} / {len(item["slides"]):02}',
+    d.text((64,124),f'EP. {int(item["id"][2:5])-3:02}   ·   {index+1:02} / {len(item["slides"]):02}',
            font=font(23),fill='#ABB0A4' if cover else gray)
     title_size=110 if cover else 76
     explicit=slide['title'].split('\n')
@@ -222,13 +222,14 @@ def editorial_card(item, slide, index, reel=False):
         canvas.paste(img,(0,180))
         rd=ImageDraw.Draw(canvas)
         rd.text((66,1640),item['series'],font=font(27),fill=fg)
-        rd.text((66,1700),'가상 예시 · 조건에 따라 결과는 달라집니다',font=font(22),fill='#ABB0A4' if cover else gray)
+        note='요금 기준: 서울 중형 · 귀가 총액은 가상 예시' if item.get('verification',{}).get('kind')=='official_tariff_and_illustrative_comparison' else '가상 예시 · 조건에 따라 결과는 달라집니다'
+        rd.text((66,1700),note,font=font(22),fill='#ABB0A4' if cover else gray)
         return canvas
     return img
 
 
 def render_editorial(item, root):
-    renderer='money-editorial-v2.3'
+    renderer='money-editorial-v2.4'
     digest=hashlib.sha256(json.dumps({'item':item,'renderer':renderer},sort_keys=True,ensure_ascii=False).encode()).hexdigest()[:16]
     directory=root/'codex/assets'/item['id']/digest
     manifest=directory/'manifest.json'

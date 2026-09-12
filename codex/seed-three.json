@@ -1,0 +1,15 @@
+{
+  "date": "2026-09-12",
+  "expires_at": "2026-09-12T23:59:00+09:00",
+  "gap_minutes": 40,
+  "item_ids": [
+    "cx005-coupon-minimum",
+    "cx004-laptop-total",
+    "cx008-robot-prep"
+  ],
+  "content_hashes": {
+    "cx004-laptop-total": "cd9c235470207a5d55f19ccfb9ad235d7bfb1bb4ad694e82a3553c7f584a10f0",
+    "cx005-coupon-minimum": "b5eb0e3ee35cd60a69dccd5ecc03e8bbab4f90bf4ae71232e104892f17926cc1",
+    "cx008-robot-prep": "a6faec5b3001aaf7003468b887645afaf10dfc51ebf9a61610165d04ff1ac9b8"
+  }
+}
