@@ -37,7 +37,7 @@ jobs:
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
-          pip install Pillow numpy requests cryptography
+          pip install -r requirements.txt
       - name: Verify approval invariants
         run: python -m unittest discover -s codex/tests -v
       - name: Run isolated Codex engine
