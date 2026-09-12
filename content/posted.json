@@ -50,5 +50,16 @@
       "threads": "18142113556596391"
     },
     "errors": []
+  },
+  {
+    "id": "007-dishwasher",
+    "product": "식기세척기",
+    "posted_at": "2026-09-12T17:11:38+09:00",
+    "results": {
+      "instagram": "18026360807887197",
+      "instagram_comment": "18075756812419017",
+      "threads": "18352977415220139"
+    },
+    "errors": []
   }
 ]
