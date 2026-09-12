@@ -1,0 +1,23 @@
+{
+  "renderer": "checkout-pop-v1",
+  "cards": [
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/01.jpg",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/02.jpg",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/03.jpg",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/04.jpg",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/05.jpg",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "video": "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/reel.mp4",
+  "duration_seconds": 20.5,
+  "sha256": {
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/01.jpg": "397e61f63a52dc2bcd817c8223a6efe25f9534fce41b381246eaebe7f0a5829b",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/02.jpg": "e1b2ce79e8559b3324acf276ff23ff4a3b9d6f9e798165da909b7b2a19c79b93",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/03.jpg": "7f1894a8db97c3a45aeebdcae236dcc4e768c074845f93fa273c56b39b5dd686",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/04.jpg": "fd49ea367d0f06c91bc66d0a1bdb264a7ee0bd10efae8325c60e36db7e4c77dd",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/05.jpg": "ae028bfc2ac12957e70ba6abef7ce9de7e1b992d13ceb443223dee04f1086906",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/06.jpg": "798c2155871da06700db1074a60698f2b486bada17c77242ff27a513d16c1c32",
+    "codex/assets/cx001-free-shipping/98a9249bf7e2b9ad/reel.mp4": "3d213ec23302ae43ee15042fd3da91f38ac893539fc37b46079f315fe783ff9d"
+  }
+}
