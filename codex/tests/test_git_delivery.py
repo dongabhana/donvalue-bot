@@ -77,7 +77,7 @@ class GitDeliveryTests(unittest.TestCase):
                 return ''
 
             args = argparse.Namespace(id=None, pick='', tomorrow=False, dry_run=False)
-            with patch.multiple(run, QUEUE=queue, POSTED=posted, IMAGES=root / 'images',
+            with patch.multiple(run, QUEUE=queue, POSTED=posted, DELIVERY=root / 'delivery.json', IMAGES=root / 'images',
                                 render_item=Mock(side_effect=render), build_reel_for=Mock(side_effect=reel),
                                 sh=Mock(side_effect=sh), push=Mock(), build_caption=Mock(return_value='caption'),
                                 build_first_comment=Mock(return_value='')):
