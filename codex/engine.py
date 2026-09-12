@@ -7,6 +7,7 @@ import re
 import subprocess
 import time
 import traceback
+from collections import Counter
 from datetime import datetime, timedelta
 from pathlib import Path
 from zoneinfo import ZoneInfo
@@ -225,6 +226,7 @@ class Engine:
             labels={'account':'계정 확인','media_read':'게시물 조회','comments_read':'댓글 조회','insights_read':'조회수 조회','existing_post_checks':'기존 게시물 검사','account_or_media':'계정 또는 게시물 조회'}
             status={'ok':'성공','unavailable':'확인 실패','no_media':'검사할 게시물 없음'}
             self.tell('게시 없는 연결 점검\n'+'\n'.join(p+': '+', '.join(labels[k]+' '+status[v] for k,v in checks.items()) for p,checks in report.items())+'\n실제 쓰기 권한은 승인 게시가 성공해야 검증됩니다.')
+        print('CODEX_CONNECTION_CHECK: '+json.dumps(report,sort_keys=True))
 
     def operation(self, rec, key, action):
         op=rec.setdefault('operations',{}).get(key)
@@ -343,6 +345,7 @@ class Engine:
         if self.tg('getMe').get('username','').lower()!='donvalue_approval_bot': raise RuntimeError('Wrong bot')
         if self.tg('getWebhookInfo').get('url'): raise RuntimeError('Existing webhook left unchanged')
         self.callbacks()
+        print('CODEX_REVIEW_COUNTS: '+json.dumps(dict(Counter(r.get('decision','pending') for r in self.state['records'].values())),sort_keys=True))
         now=datetime.now(KST)
         if mode=='preview':
             self.preflight()
@@ -352,6 +355,7 @@ class Engine:
                 due=datetime.fromisoformat(item['publish_at'])
                 real=now.date()==(due-timedelta(days=1)).date() and now.hour>=20
                 self.preview(item,real=real)
+            self.observations()
             return
         for item in self.items:
             due=datetime.fromisoformat(item['publish_at'])
