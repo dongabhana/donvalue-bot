@@ -193,7 +193,33 @@ def photographic_cover(item, slide, reel=False):
     return canvas
 
 
+def comparison_reel_scene(item, slide, index):
+    if index == 0: return photographic_cover(item, slide, reel=True)
+    ink='#151819'; paper='#F6F6F0'; accent=item.get('accent','#E6F34A')
+    img=Image.new('RGB',(1080,1920),ink); d=ImageDraw.Draw(img)
+    d.text((66,200),'돈값하나? · '+item['category'],font=font(32),fill=accent)
+    y=295
+    for line in lines(d,slide['title'],74,940):
+        d.text((64,y),line,font=font(74),fill=paper); y+=102
+    if y>640: raise ValueError('Reel headline exceeds safe area')
+    y+=42
+    for line in lines(d,slide['body'],42,930):
+        d.text((66,y),line,font=font(42),fill=paper); y+=63
+    if y>1010: raise ValueError('Reel body exceeds safe area')
+    d.rounded_rectangle((64,1080,1016,1395),radius=28,fill=accent)
+    value=slide['visual']['value']; vf=fitted_font(d,value,98,870,minimum=38)
+    d.text((104,1180),value,font=vf,fill=ink)
+    y=1465
+    for line in lines(d,slide['note'],25,936):
+        d.text((66,y),line,font=font(25),fill='#D5D9D5'); y+=39
+    d.text((66,1660),'@dongabhana',font=font(25),fill=paper)
+    d.text((885,1660),f'{index+1:02}/{len(item["slides"]):02}',font=font(25),fill=accent)
+    d.rectangle((64,1740,64+952*(index+1)/len(item['slides']),1750),fill=accent)
+    return img
+
 def editorial_card(item, slide, index, reel=False):
+    if reel and item.get('editorial_revision') == 'official-comparison-2026-09-12':
+        return comparison_reel_scene(item,slide,index)
     if index == 0 and item.get('cover_photo'):
         return photographic_cover(item, slide, reel)
     ink='#151819'; paper='#F6F6F0'; gray='#686C67'
@@ -269,7 +295,7 @@ def editorial_card(item, slide, index, reel=False):
 
 
 def render_editorial(item, root):
-    renderer='money-editorial-v3-photo'
+    renderer='money-editorial-v4-comparison' if item.get('editorial_revision') else 'money-editorial-v3-photo'
     if item.get('cover_photo'):
         photo = root / item['cover_photo']['path']
         if hashlib.sha256(photo.read_bytes()).hexdigest() != item['cover_photo']['sha256']:

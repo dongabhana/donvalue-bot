@@ -15,6 +15,7 @@ from zoneinfo import ZoneInfo
 import requests
 
 from codex.media import render
+from codex.official_prices import check_prices
 from codex.reporting import collect_and_report
 from tools.pair_telegram import cipher
 
@@ -49,6 +50,13 @@ def validate(item):
         assert 1 <= len(tag) <= 50 and not any(c in tag for c in '.&')
         assert item['slides'][0]['title'] == item['hook']
         assert 1 <= float(item['slides'][0]['seconds']) <= 2
+    if item.get('editorial_revision') == 'official-comparison-2026-09-12':
+        verification=item['verification']
+        assert verification['real_world_price_claim'] == bool(verification['sources'])
+        assert item['slides'][0]['title'] == item['hook']
+        assert verification['checked_at']
+        if verification['real_world_price_claim']:
+            assert all(s['url'].startswith('https://') and s['offers'] and s['required_tokens'] for s in verification['sources'])
 
 
 def eligible(item, record, now):
@@ -158,7 +166,25 @@ class Engine:
         with (ROOT/path).open('rb') as f:
             return self.tg('sendVideo' if video else 'sendPhoto', files={kind:f}, chat_id=str(self.owner['chat_id']))
 
+    def price_check(self, item):
+        if item.get('editorial_revision') != 'official-comparison-2026-09-12': return True
+        key=item['id']
+        if key in getattr(self, '_price_checks', {}): return self._price_checks[key]
+        self._price_checks=getattr(self, '_price_checks', {})
+        try:
+            check_prices(item)
+            self._price_checks[key]=True
+            return True
+        except RuntimeError:
+            self._price_checks[key]=False
+            alerts=self.state.setdefault('price_alerts', {})
+            if alerts.get(key)!=item['evidence']:
+                self.tell(item['topic']+'\n공식 가격이 변경됐거나 현재 페이지에서 확인되지 않아 미리보기·자동 발행을 멈췄어요. 공식 상품·요금과 조건을 재확인하고 수정 원고로 다시 승인해야 합니다.')
+                alerts[key]=item['evidence']; self.save()
+            return False
+
     def preview(self, item, real=False):
+        if not self.price_check(item): return
         manifest=render(item,ROOT)
         digest=fingerprint(item,manifest)
         key=item['id']
@@ -332,6 +358,7 @@ class Engine:
 
     def publish(self,item,rec,now):
         if not eligible(item,rec,now): return
+        if not self.price_check(item): return
         manifest=rec['manifest']
         if fingerprint(item,manifest)!=rec['hash']: raise RuntimeError('Content changed after approval')
         for path,sha in manifest['sha256'].items():
