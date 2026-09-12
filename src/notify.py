@@ -18,7 +18,9 @@
 
 필요 환경변수
   TELEGRAM_BOT_TOKEN   @BotFather 에서 받은 토큰
-  TELEGRAM_CHAT_ID     본인 chat id (봇에게 아무 말이나 보낸 뒤 getUpdates 로 확인)
+  TELEGRAM_CHAT_ID     본인 chat id — 비워두면 content/telegram_owner.enc 에서 읽는다.
+                       (tools/pair_telegram.py 가 페어링할 때 봇 토큰으로 암호화해 저장해 둔 값.
+                        같은 봇을 쓰는 다른 워크플로와 수신자를 하나로 유지하기 위해서다.)
   APPROVAL_REQUIRED    1 이면 승인 없이는 발행하지 않음 (기본 1, 토큰 없으면 자동 통과)
   APPROVAL_TIMEOUT_MIN 기다리는 시간(분). 기본 45
 """
@@ -35,9 +37,38 @@ API = "https://api.telegram.org"
 TIMEOUT = 60
 
 
+ROOT = Path(__file__).resolve().parent.parent
+OWNER_ENC = ROOT / "content" / "telegram_owner.enc"
+_owner_cache: dict = {}
+
+
+def _paired_chat(token: str) -> str:
+    """페어링 때 저장해 둔 chat id 를 복호화해서 읽는다.
+
+    키는 봇 토큰에서 유도하므로 별도 시크릿이 필요 없고,
+    토큰이 바뀌면 자동으로 읽히지 않는다(= 잘못된 사람에게 안 간다).
+    """
+    if "v" in _owner_cache:
+        return _owner_cache["v"]
+    _owner_cache["v"] = ""
+    try:
+        import base64
+        import hashlib
+        from cryptography.fernet import Fernet
+        key = hashlib.sha256(("donvalue-owner-v1:" + token).encode()).digest()
+        raw = Fernet(base64.urlsafe_b64encode(key)).decrypt(OWNER_ENC.read_bytes())
+        _owner_cache["v"] = str(json.loads(raw).get("chat_id", "") or "")
+    except Exception as e:                                        # noqa: BLE001
+        print(f"[telegram] 페어링 정보 읽기 실패(무시): {e}")
+    return _owner_cache["v"]
+
+
 def _cfg() -> tuple[str, str]:
-    return os.getenv("TELEGRAM_BOT_TOKEN", "").strip(), \
-        os.getenv("TELEGRAM_CHAT_ID", "").strip()
+    tok = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    chat = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+    if tok and not chat:
+        chat = _paired_chat(tok)
+    return tok, chat
 
 
 def enabled() -> bool:
