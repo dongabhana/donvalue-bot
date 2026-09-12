@@ -1,0 +1,21 @@
+{
+  "cards": [
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/01.jpg",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/02.jpg",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/03.jpg",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/04.jpg",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/05.jpg",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/06.jpg"
+  ],
+  "music": "original-focus-88bpm",
+  "video": "codex/assets/cx001-bulk/ab2b86075987e2ae/reel.mp4",
+  "sha256": {
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/01.jpg": "28458d77f4ac309cce3ce8d04315ffd0c1a85ec02c2c4e8144d5be374be72fad",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/02.jpg": "b35008990831bbf95eacfc34881b3145b6f205cc0ae1b58fe11a2aca502153d2",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/03.jpg": "06ebdb0f354eca92945c0e1d3d48d371dc6388d631eb3c974cef06905bfb011c",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/04.jpg": "039902a7623b5201e9f043debe44c47886b358dcc543047e4cca6cb5089a0828",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/05.jpg": "8ab601b6fa534e5b1a9aaf6b9f5baa1c0e74987c5a9918721602a296353884fa",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/06.jpg": "d03c08031453d388e9e95880c3e7399e9a04a776c74424b9c895a7a7b951852b",
+    "codex/assets/cx001-bulk/ab2b86075987e2ae/reel.mp4": "380696aaeac4c030c9f7b4d51a0c571de45564dfe05c7f41a162ead6f651b24b"
+  }
+}
