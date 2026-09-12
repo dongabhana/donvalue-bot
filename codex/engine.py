@@ -184,6 +184,8 @@ class Engine:
             return False
 
     def preview(self, item, real=False):
+        # Telegram is for actual previous-day approvals only.
+        if not real: return
         if not self.price_check(item): return
         manifest=render(item,ROOT)
         digest=fingerprint(item,manifest)
@@ -229,7 +231,7 @@ class Engine:
                         item=next((i for i in self.items if i['id']==key),None)
                         valid=(item and rec.get('message_id')==msg.get('message_id') and rec.get('hash','')[:12]==short
                                and fingerprint(item,rec['manifest'])==rec['hash'] and not rec.get('operations'))
-                        if valid and action in ('a','e','h'):
+                        if valid and rec.get('review_kind') == 'real' and action in ('a','e','h'):
                             now=datetime.now(KST); due=datetime.fromisoformat(item['publish_at'])
                             if action=='a' and rec['review_kind']=='real' and now.date()!=(due-timedelta(days=1)).date():
                                 self.tell('승인은 게시 전날만 가능해요. 이 예약은 승인되지 않았습니다.')
@@ -241,7 +243,7 @@ class Engine:
                                 self.tell(text)
                         elif parts[0] in ('r','x'):
                             self.reply_callback(parts,msg)
-                        elif action in ('a','e','h'):
+                        elif action in ('a','e','h') and rec.get('review_kind') == 'real':
                             self.tell('이 미리보기는 수정되었거나 더 이상 유효하지 않아. 가장 최근에 받은 콘텐츠 아래 버튼을 사용해줘.')
                     try: self.tg('answerCallbackQuery',callback_query_id=cb['id'])
                     except RuntimeError: pass  # Old callbacks can no longer be acknowledged.
