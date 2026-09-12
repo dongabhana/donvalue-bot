@@ -1,0 +1,24 @@
+{
+  "renderer": "money-editorial-v3-photo",
+  "cards": [
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/01.jpg",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/02.jpg",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/03.jpg",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/04.jpg",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/05.jpg",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "video": "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/reel.mp4",
+  "duration_seconds": 18.6,
+  "opening_seconds": 1.8,
+  "sha256": {
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/01.jpg": "b0636c7edf1f2c2b3531529d308a7bb5a6e2d62c2f0666963bd943ed0f25d984",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/02.jpg": "aca1d24bbad111d38e1f230d7a1f58818b9b5ca385357ae2867ed06f8460bc07",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/03.jpg": "8c41d208facdb8aa212fe842d151664b333ec70867d355294bd7227ad22c7037",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/04.jpg": "347eaa08f94567e924f59a54f26eb91d78e50ff861adb390db307ef106f66ffe",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/05.jpg": "0513fba86ce885f87a6c48c1e570d9c625a48e62f4348132bc4eb4d673fcc2da",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/06.jpg": "f3c0c4a204417905d1eed43f92523decd2a9338e61a854eb93b44d6dcca35182",
+    "codex/assets/cx054-taxi-vs-driver/b442589a4b952ee6/reel.mp4": "0cc905842abce6fb84bb98138bb78e29e2c09817ded744f473260aa29bc1d2a0"
+  }
+}
