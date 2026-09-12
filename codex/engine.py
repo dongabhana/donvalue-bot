@@ -86,12 +86,24 @@ class Engine:
     def tg(self, method, files=None, **params):
         try:
             url='https://api.telegram.org/bot'+self.token+'/'+method
-            response = requests.post(url, data=params, files=files, timeout=60) if files else requests.post(url, json=params, timeout=40)
-            result=response.json()
-            if not response.ok or not result.get('ok'):
+            for attempt in range(3):
+                if method.startswith('send'):
+                    gap=1.1-(time.monotonic()-getattr(self,'_last_tg_send',0))
+                    if gap>0: time.sleep(gap)
+                    self._last_tg_send=time.monotonic()
+                if files:
+                    for handle in files.values(): handle.seek(0)
+                response = requests.post(url, data=params, files=files, timeout=60) if files else requests.post(url, json=params, timeout=40)
+                result=response.json()
+                if response.ok and result.get('ok'): return result['result']
+                print('CODEX_TG_ERROR: '+method+' http='+str(response.status_code)+' code='+str(result.get('error_code')))
+                if result.get('error_code')==429 and attempt<2:
+                    delay=int(result.get('parameters',{}).get('retry_after',5))
+                    if 0<delay<=60:
+                        time.sleep(delay+1); continue
                 raise RuntimeError()
-            return result['result']
         except Exception:
+            print('CODEX_TG_FAILED_METHOD: '+method)
             raise RuntimeError('Telegram '+method+' failed; sensitive details suppressed') from None
 
     def tell(self, text, **kwargs):
