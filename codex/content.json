@@ -139,7 +139,8 @@
       "evidence": "가상 상황. 27900+3000=30900, 27900+5900=33800, 33800-30900=2900. 추가 상품은 원래 필요하지 않았다고 가정. 실제 쇼핑몰 조건 주장 없음.",
       "music": "original-playful-112bpm",
       "visual_style": "checkout_pop",
-      "palette": "coral"
+      "palette": "coral",
+      "posted_early_on": "2026-09-12"
     },
     {
       "id": "cx002-countdown",
