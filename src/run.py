@@ -48,9 +48,8 @@ def push(tries: int = 5) -> None:
 
     같은 저장소에 다른 워크플로(예: 15분 주기 승인 봇)가 동시에 커밋하면
     push 가 non-fast-forward 로 거부된다. 승인 대기 몇 분 사이에 흔히 생긴다.
-    이때 죽어버리면 이미지가 올라가지 않아 발행 전체가 실패하므로,
-    원격을 받아 rebase 하고 다시 민다. 우리 커밋은 이미지/기록뿐이라
-    rebase 로 충돌이 날 여지가 사실상 없다.
+    원격 변경을 rebase 하고 재시도한다. 이미지나 발행 기록이 충돌하면
+    자동 병합으로 덮어쓰지 않고 중단한다.
     """
     last = ""
     for n in range(1, tries + 1):
@@ -72,12 +71,8 @@ def push(tries: int = 5) -> None:
                     sh("git", "rebase", "--abort")
                 except subprocess.CalledProcessError:
                     pass
-                # rebase 가 막히면 원격 위에 우리 변경만 다시 얹는다
-                try:
-                    sh("git", "fetch", "origin")
-                    sh("git", "merge", "--no-edit", "-X", "ours", "origin/main")
-                except subprocess.CalledProcessError:
-                    pass
+                raise RuntimeError("원격 변경과 충돌하여 발행을 중단했습니다. "
+                                   "발행 기록을 확인한 뒤 재실행하세요.") from None
             time.sleep(3 * n)
     raise RuntimeError(f"git push 실패(재시도 {tries}회): {last[:400]}")
 
@@ -298,9 +293,10 @@ def run_once(args) -> int:
         if mp4 is not None:
             try:
                 sh("git", "add", str(mp4))
-                sh("git", "-c", "user.name=donvalue-bot",
-                   "-c", "user.email=bot@users.noreply.github.com",
-                   "commit", "-m", f"reel: {item['id']}")
+                if sh("git", "diff", "--cached", "--name-only", str(mp4)):
+                    sh("git", "-c", "user.name=donvalue-bot",
+                       "-c", "user.email=bot@users.noreply.github.com",
+                       "commit", "-m", f"reel: {item['id']}")
                 push()
                 sha2 = sh("git", "rev-parse", "HEAD")
                 video_url = (f"https://raw.githubusercontent.com/{repo}/{sha2}"
