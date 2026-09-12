@@ -118,8 +118,9 @@ class Engine:
         commit([ROOT/'codex/assets'/key], 'Render immutable Codex media '+key)
         rec={'hash':digest,'manifest':manifest,'asset_commit':git('rev-parse','HEAD'),'review_kind':kind,'decision':'pending','operations':{}}
         self.state['records'][key]=rec; self.save()
+        music=('직접 합성한 '+('112' if item.get('music')=='original-playful-112bpm' else '88')+' BPM 리듬, 외부 샘플 없음') if 'video' in manifest else '정지 이미지 캐러셀 · 음원 없음'
         self.tell(('내일 게시 최종 승인 요청' if real else '사전 미리보기 · 테스트 버튼은 SNS에 게시하지 않습니다')+
-                  '\n주제: '+item['topic']+'\n예정: '+item['publish_at']+'\nInstagram '+item['format']+' / Threads 별도 글\n음원: 직접 합성한 88 BPM 리듬, 외부 샘플 없음')
+                  '\n주제: '+item['topic']+'\n예정: '+item['publish_at']+'\nInstagram '+item['format']+' / Threads 별도 글\n음원: '+music)
         for path in manifest['cards']:
             self.upload(path)
         if 'video' in manifest:
@@ -186,6 +187,14 @@ class Engine:
             if not response.ok or 'error' in data:
                 error=data.get('error',{})
                 print('CODEX_META_ERROR: '+platform+' http='+str(response.status_code)+' code='+str(error.get('code'))+' subcode='+str(error.get('error_subcode')))
+                detail=str(error.get('message',''))
+                for name in ('IG_ACCESS_TOKEN','TH_ACCESS_TOKEN','TELEGRAM_BOT_TOKEN','IG_USER_ID','TH_USER_ID'):
+                    value=os.environ.get(name,'')
+                    if len(value)>4: detail=detail.replace(value,'[redacted]')
+                detail=re.sub(r'https?://\S+','[url]',detail)
+                detail=re.sub(r'[A-Za-z0-9_\-]{40,}','[redacted]',detail)
+                detail=re.sub(r'\b\d{8,}\b','[id]',detail)
+                print('CODEX_META_REASON: '+platform+' '+detail[:350])
                 raise RuntimeError()
             return data
         except Exception:

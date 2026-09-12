@@ -14,8 +14,8 @@ class ApprovalTests(unittest.TestCase):
 
     def test_data(self):
         validate(self.item)
-        self.assertEqual(24000/50,480)
-        self.assertEqual(24000/300,80)
+        self.assertEqual((27900+5900)-(27900+3000),2900)
+        self.assertEqual(27900+2100,30000)
 
     def test_time_and_previous_day(self):
         self.assertTrue(eligible(self.item,self.record,datetime(2026,9,14,20,15,tzinfo=KST)))
