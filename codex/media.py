@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 
 
 @lru_cache(maxsize=32)
@@ -155,7 +155,47 @@ def pictogram(d, category, x, y, size, ink):
         line([(35,5),(59,19),(81,5)])
 
 
+def photographic_cover(item, slide, reel=False):
+    """Typeset verified copy over a staged AI photographic background."""
+    source = Path(__file__).resolve().parents[1] / item['cover_photo']['path']
+    with Image.open(source) as photo:
+        img = ImageOps.fit(photo.convert('RGB'), (1080, 1350))
+    d = ImageDraw.Draw(img)
+    accent = item.get('accent', '#E6F34A')
+    d.text((62, 46), '돈값하나?', font=font(32), fill=accent)
+    d.text((62, 98), item['series'], font=font(23), fill='#D5D9D5')
+    size = 100
+    while size > 64 and any(d.textlength(t, font=font(size)) > 950 for t in slide['title'].split('\n')):
+        size -= 2
+    title_lines = lines(d, slide['title'], size, 950)
+    if len(title_lines) > 3:
+        raise ValueError('Photo cover headline exceeds three lines')
+    y = 150
+    for index, line in enumerate(title_lines):
+        d.text((60, y), line, font=font(size), fill=accent if index == len(title_lines)-1 else 'white',
+               stroke_width=2, stroke_fill='#111614')
+        y += size * 1.18
+    if y > 510:
+        raise ValueError('Photo cover headline obscures its subject')
+    value = slide['visual'].get('value', '')
+    d.rounded_rectangle((62, 1137, 1018, 1240), radius=20, fill='#111614')
+    d.text((88, 1158), value, font=fitted_font(d, value, 49, 880), fill=accent)
+    d.text((64, 1272), '@dongabhana', font=font(23), fill='white', stroke_width=1, stroke_fill='#111614')
+    d.text((670, 1272), '가상 연출 이미지 · 01/06', font=font(23), fill='white', stroke_width=1, stroke_fill='#111614')
+    d.rectangle((0, 1339, 180, 1349), fill=accent)
+    if not reel:
+        return img
+    canvas = Image.new('RGB', (1080, 1920), '#111614')
+    canvas.paste(img, (0, 180))
+    rd = ImageDraw.Draw(canvas)
+    rd.text((66, 1630), slide['body'], font=fitted_font(rd, slide['body'], 30, 940), fill='white')
+    rd.text((66, 1700), '계산·조건은 다음 화면에서 확인해요', font=font(25), fill='#D5D9D5')
+    return canvas
+
+
 def editorial_card(item, slide, index, reel=False):
+    if index == 0 and item.get('cover_photo'):
+        return photographic_cover(item, slide, reel)
     ink='#151819'; paper='#F6F6F0'; gray='#686C67'
     accent=item.get('accent','#E6F34A'); cover=index==0
     bg=ink if cover else paper
@@ -229,7 +269,11 @@ def editorial_card(item, slide, index, reel=False):
 
 
 def render_editorial(item, root):
-    renderer='money-editorial-v2.4'
+    renderer='money-editorial-v3-photo'
+    if item.get('cover_photo'):
+        photo = root / item['cover_photo']['path']
+        if hashlib.sha256(photo.read_bytes()).hexdigest() != item['cover_photo']['sha256']:
+            raise ValueError('Cover photo changed; prepare and review a new content version')
     digest=hashlib.sha256(json.dumps({'item':item,'renderer':renderer},sort_keys=True,ensure_ascii=False).encode()).hexdigest()[:16]
     directory=root/'codex/assets'/item['id']/digest
     manifest=directory/'manifest.json'

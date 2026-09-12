@@ -274,7 +274,12 @@
         "구매가이드",
         "IT소비"
       ],
-      "threads_media": "carousel"
+      "threads_media": "carousel",
+      "cover_photo": {
+        "path": "assets/covers/laptop-photo-v1.jpg",
+        "sha256": "e0655923b813e4dfedcd41ecae79b1d2f50b5f26ec61028df4ba4e05428d067c",
+        "kind": "ai_staged_editorial"
+      }
     },
     {
       "id": "cx005-coupon-minimum",
@@ -408,7 +413,12 @@
         "소비습관",
         "장바구니"
       ],
-      "threads_media": "carousel"
+      "threads_media": "carousel",
+      "cover_photo": {
+        "path": "assets/covers/coupon-photo-v1.jpg",
+        "sha256": "557a3ec936a1ba32628f0066332bf7563af09213e147729a5d5928fe483cbfcd",
+        "kind": "ai_staged_editorial"
+      }
     },
     {
       "id": "cx006-vacation-app",
@@ -754,7 +764,12 @@
         "살림",
         "청소"
       ],
-      "threads_media": "carousel"
+      "threads_media": "carousel",
+      "cover_photo": {
+        "path": "assets/covers/robot-photo-v1.jpg",
+        "sha256": "b5f4c2a2b22162f9ea98d34f66f49c1bfba9bb511f8c5ad12f5fa3d1b4302f11",
+        "kind": "ai_staged_editorial"
+      }
     },
     {
       "id": "cx009-delivery-menu",
@@ -5732,7 +5747,12 @@
       },
       "music": "original-playful-112bpm",
       "visual_style": "money_editorial_v2",
-      "accent": "#69BCE8"
+      "accent": "#69BCE8",
+      "cover_photo": {
+        "path": "assets/covers/taxi-photo-v1.jpg",
+        "sha256": "9de1f4c5bf40302adab1acb18e530938223ad03385c82638d7761efef7da6551",
+        "kind": "ai_staged_editorial"
+      }
     }
   ]
 }
