@@ -1,0 +1,31 @@
+name: Codex six-card Threads recovery review
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/codex-seed-review.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: donvalue-publish
+  cancel-in-progress: false
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: pip install -r requirements.txt
+      - name: Review published feed and prepare original cards without publishing
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TH_USER_ID: ${{ secrets.TH_USER_ID }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+        run: python -u -m codex.seed_recovery_review
