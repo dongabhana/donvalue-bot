@@ -10,12 +10,32 @@ on:
       item_id:
         description: "특정 항목 id 를 강제 발행 (비우면 큐 순서대로)"
         required: false
+      pick:
+        description: "이 포맷으로 지정된 편만 고름 — carousel | reel (비우면 전체)"
+        required: false
+        default: ""
+      count:
+        description: "한 번에 낼 편 수 (프로필 채울 때만 크게. 1회 6편 이하 권장)"
+        required: false
+        default: "1"
+      approval:
+        description: "텔레그램 승인 요구 — true | false"
+        required: false
+        default: "true"
+      reel_style:
+        description: "릴스 화면 scene | cards (비우면 scene)"
+        required: false
+        default: "scene"
+      theme:
+        description: "디자인 테마 paper | midnight"
+        required: false
+        default: "paper"
       dry_run:
         description: "true 면 렌더링만 하고 발행하지 않음"
         required: false
         default: "false"
       skip_threads:
-        description: "true 면 쓰레드는 건너뛰고 인스타에만 발행 (이미 올린 편의 릴스 추가용)"
+        description: "true 면 쓰레드는 건너뛰고 인스타에만 발행"
         required: false
         default: "false"
 
@@ -29,6 +49,8 @@ concurrency:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    # 승인 대기(기본 45분) + 연속 발행 간격까지 감안한 여유. GitHub 한도는 6시간.
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v4
 
@@ -54,21 +76,40 @@ jobs:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           TH_USER_ID: ${{ secrets.TH_USER_ID }}
           TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+          # 텔레그램 승인 — 두 값이 없으면 승인 단계를 조용히 건너뜁니다.
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          APPROVAL_REQUIRED: ${{ github.event.inputs.approval == 'false' && '0' || '1' }}
+          APPROVAL_TIMEOUT_MIN: "45"
+          BURST_GAP_MIN: "40"
+          REEL_STYLE: ${{ github.event.inputs.reel_style }}
+          REEL_MUSIC_DB: "-3"
+          THEME: ${{ github.event.inputs.theme }}
           SKIP_THREADS: ${{ github.event.inputs.skip_threads }}
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.item_id }}" ]; then
             ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"
           fi
+          if [ -n "${{ github.event.inputs.pick }}" ]; then
+            ARGS="$ARGS --pick ${{ github.event.inputs.pick }}"
+          fi
+          if [ -n "${{ github.event.inputs.count }}" ]; then
+            ARGS="$ARGS --count ${{ github.event.inputs.count }}"
+          fi
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
           python -m src.run $ARGS
 
-      - name: 실패 시 렌더 결과 남기기
-        if: failure()
+      # 드라이런일 때도 결과물을 받아야 검수가 됩니다(.preview 에 렌더됨).
+      - name: 렌더 결과 내려받기
+        if: failure() || github.event.inputs.dry_run == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: rendered-cards
-          path: images/
+          name: rendered
+          path: |
+            images/
+            .preview/
           retention-days: 7
+          if-no-files-found: ignore
