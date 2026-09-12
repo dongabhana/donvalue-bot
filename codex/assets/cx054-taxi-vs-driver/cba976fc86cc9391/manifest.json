@@ -1,0 +1,24 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/01.jpg",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/02.jpg",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/03.jpg",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/04.jpg",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/05.jpg",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "video": "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/reel.mp4",
+  "duration_seconds": 17.799999999999997,
+  "opening_seconds": 1.8,
+  "sha256": {
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/01.jpg": "421d8fe8784f69e367465b9f313f479698661f1363e2ff21eb6d932701cd59fd",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/02.jpg": "ad5849c129c49241fb347a27e68c12e7b0f32e264658b018941e1ef5b240de5b",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/03.jpg": "0c6d02d3c328379def128c45b6ee9e1d2b7f6a843f2c7b49286f3e5c0955c35a",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/04.jpg": "16c7433098fe7e32d98d4b7677b9cf16b90a5af0a75dc7bc7ce2ef5e9df0b590",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/05.jpg": "4bbc2082770ea3e2c9e2d5498e42fabea1ebcdb5d5da97706f7ad982287f15ae",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/06.jpg": "4c38894daaa4916525dccd73f55058e9fda85f0ff6dfc29d8372a5d2c9ae6db5",
+    "codex/assets/cx054-taxi-vs-driver/cba976fc86cc9391/reel.mp4": "c1f562ef7dea94975477b98fa09705bd8a5f7e1445cce12bb0788bf057eb1f20"
+  }
+}
