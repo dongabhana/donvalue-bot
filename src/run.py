@@ -32,6 +32,7 @@ from src import notify                                  # noqa: E402
 ROOT = Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "content" / "queue.yaml"
 POSTED = ROOT / "content" / "posted.json"
+DELIVERY = ROOT / "content" / "delivery.json"
 IMAGES = ROOT / "images"
 # 미리보기 렌더는 저장소에 남기지 않는다(.gitignore 처리). 발행분만 images/ 에 커밋된다.
 PREVIEW = ROOT / ".preview"
@@ -81,6 +82,32 @@ def load_posted() -> list[dict]:
     if POSTED.exists():
         return json.loads(POSTED.read_text(encoding="utf-8"))
     return []
+
+
+def deliver_once(item_id: str, key: str, action):
+    """Persist the attempt before an external write; uncertain attempts need review."""
+    ledger = json.loads(DELIVERY.read_text()) if DELIVERY.exists() else {}
+    operations = ledger.setdefault(item_id, {})
+    old = operations.get(key)
+    if old:
+        if old['status'] == 'done':
+            return old['id']
+        raise RuntimeError(f"{item_id}/{key}: 이전 발행 결과 확인이 필요합니다")
+
+    def save():
+        DELIVERY.write_text(json.dumps(ledger, ensure_ascii=False, indent=2), encoding='utf-8')
+        sh('git', 'add', str(DELIVERY))
+        sh('git', '-c', 'user.name=donvalue-bot', '-c', 'user.email=bot@users.noreply.github.com',
+           'commit', '-m', f'delivery: {item_id}/{key} {operations[key]["status"]}')
+        push()
+
+    operations[key] = {'status': 'in_flight'}
+    save()
+    result = action()
+    operations[key] = {'status': 'done', 'id': result,
+                       'at': datetime.now(KST).isoformat(timespec='seconds')}
+    save()
+    return result
 
 
 def pick_next(queue: dict, posted_ids: set[str], only: str = "") -> dict | None:
@@ -181,6 +208,12 @@ def run_once(args) -> int:
         item = next((i for i in queue["items"] if i["id"] == args.id), None)
         if item is None:
             print(f"[stop] id '{args.id}' 를 큐에서 찾을 수 없습니다.")
+            return 1
+        if item['id'] in posted_ids:
+            print(f"[stop] {item['id']}는 이미 발행됐습니다")
+            return 0
+        if not item.get('verified'):
+            print(f"[stop] {item['id']}는 사실 검수가 필요합니다")
             return 1
     else:
         item = pick_next(queue, posted_ids, (args.pick or "").lower())
@@ -301,8 +334,8 @@ def run_once(args) -> int:
                 sha2 = sh("git", "rev-parse", "HEAD")
                 video_url = (f"https://raw.githubusercontent.com/{repo}/{sha2}"
                              f"/images/{item['id']}/{mp4.name}")
-                results["instagram_reel"] = publish.publish_instagram_reel(
-                    ig_id, ig_tok, video_url, build_caption(item, cta), urls[0])
+                results["instagram_reel"] = deliver_once(item['id'], 'instagram_reel', lambda: publish.publish_instagram_reel(
+                    ig_id, ig_tok, video_url, build_caption(item, cta), urls[0]))
                 print(f"[reel] 발행 완료 media_id={results['instagram_reel']}")
                 did_reel = True
             except Exception as e:                                # noqa: BLE001
@@ -313,13 +346,15 @@ def run_once(args) -> int:
         # 다만 이미 발행한 편을 --id 로 재실행한 경우엔 폴백하지 않는다.
         # 그 경우 폴백은 같은 내용을 두 번 올리는 중복 발행이 된다.
         already_posted = item["id"] in posted_ids
-        allow_fallback = (ig_format == "reel" and not did_reel and not already_posted)
+        ledger = json.loads(DELIVERY.read_text()) if DELIVERY.exists() else {}
+        uncertain_reel = ledger.get(item['id'], {}).get('instagram_reel', {}).get('status') == 'in_flight'
+        allow_fallback = (ig_format == "reel" and not did_reel and not already_posted and not uncertain_reel)
         if already_posted and not did_reel:
             print("[instagram] 이미 발행된 편이라 캐러셀 폴백을 건너뜁니다(중복 방지)")
         if ig_format in ("carousel", "both") or allow_fallback:
             try:
-                results["instagram"] = publish.publish_instagram(
-                    ig_id, ig_tok, urls, build_caption(item, cta))
+                results["instagram"] = deliver_once(item['id'], 'instagram', lambda: publish.publish_instagram(
+                    ig_id, ig_tok, urls, build_caption(item, cta)))
                 print(f"[instagram] 발행 완료 media_id={results['instagram']}")
             except Exception as e:                                # noqa: BLE001
                 errors.append(f"instagram: {e}")
@@ -334,7 +369,7 @@ def run_once(args) -> int:
                 if not mid:
                     continue
                 try:
-                    cid = publish.publish_instagram_comment(mid, ig_tok, first)
+                    cid = deliver_once(item['id'], key+'_comment', lambda: publish.publish_instagram_comment(mid, ig_tok, first))
                     results[f"{key}_comment"] = cid
                     print(f"[comment] {key} 첫 댓글 완료 id={cid}")
                 except Exception as e:                            # noqa: BLE001
@@ -360,16 +395,16 @@ def run_once(args) -> int:
             th_names = {p.name for p in threads_images(paths)}
             th_urls = [u for u in urls if u.rsplit("/", 1)[-1] in th_names]
             print(f"[threads] 이미지 {len(th_urls)}장 (표지+결론)")
-            results["threads"] = publish.publish_threads(
-                th_id, th_tok, th_urls, build_threads_text(item, cta, ig_format))
+            results["threads"] = deliver_once(item['id'], 'threads', lambda: publish.publish_threads(
+                th_id, th_tok, th_urls, build_threads_text(item, cta, ig_format), topic_tag=item.get('threads_tag')))
             print(f"[threads] 발행 완료 post_id={results['threads']}")
 
             # 내 글에 답글을 이어 단다. 쓰레드는 답글이 붙은 글을 더 밀어준다.
             chain = [t for t in (item.get("threads_chain") or []) if str(t).strip()]
             if chain:
                 try:
-                    ids = publish.publish_threads_chain(
-                        th_id, th_tok, results["threads"], chain)
+                    ids = deliver_once(item['id'], 'threads_chain', lambda: publish.publish_threads_chain(
+                        th_id, th_tok, results["threads"], chain))
                     results["threads_chain"] = ",".join(ids)
                     print(f"[threads] 답글 {len(ids)}개 완료")
                 except Exception as e:                            # noqa: BLE001
@@ -423,11 +458,13 @@ def main() -> int:
         print(f"[burst] {count}편을 {gap}분 간격으로 발행합니다")
 
     rc = 0
+    previous_start = None
     for n in range(count):
-        if n:
-            print(f"[burst] {gap}분 대기 후 {n + 1}번째 편")
-            if not args.dry_run:
-                time.sleep(gap * 60)
+        if previous_start is not None and not args.dry_run:
+            remaining = max(0, gap * 60 - (time.monotonic() - previous_start))
+            print(f"[burst] {remaining / 60:.1f}분 후 {n + 1}번째 편 (시작 간격 {gap}분)")
+            time.sleep(remaining)
+        previous_start = time.monotonic()
         rc = run_once(args)
         if rc:
             break
