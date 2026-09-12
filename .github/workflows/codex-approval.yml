@@ -1,0 +1,55 @@
+name: Codex preview approvals and publishing
+on:
+  schedule:
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: 'preview is a non-publishing test; tick processes owner approvals'
+        type: choice
+        options: [preview, tick]
+        default: preview
+  push:
+    branches: [main]
+    paths:
+      - codex/content.json
+      - codex/engine.py
+      - codex/media.py
+      - .github/workflows/codex-approval.yml
+permissions:
+  contents: write
+concurrency:
+  group: donvalue-publish
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install rendering dependencies
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+          pip install Pillow numpy requests cryptography
+      - name: Verify approval invariants
+        run: python -m unittest discover -s codex/tests -v
+      - name: Run isolated Codex engine
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          TH_USER_ID: ${{ secrets.TH_USER_ID }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+          MODE_INPUT: ${{ inputs.mode }}
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          mode=preview
+          if [ "$EVENT_NAME" = schedule ]; then mode=tick; fi
+          if [ "$EVENT_NAME" = workflow_dispatch ] && [ "$MODE_INPUT" = tick ]; then mode=tick; fi
+          python -m codex.engine "$mode"
