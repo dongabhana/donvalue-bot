@@ -222,3 +222,23 @@ donvalue-bot/
 ├─ tools/get_tokens.py       최초 토큰 발급 헬퍼
 └─ images/                   렌더 결과 (자동 커밋됨)
 ```
+
+---
+
+## 9. YouTube Shorts 자동 발행
+
+`youtube-shorts.yml`은 검수 완료 콘텐츠를 9:16 영상으로 만들고 한국어 AI 음성,
+자막 화면, 배경음을 합쳐 YouTube Shorts에 올립니다. 기본 일정은 월·수·토 20:15 KST이며
+Telegram 승인을 받아야 발행합니다.
+
+최초 한 번만 아래 설정이 필요합니다.
+
+1. Google Cloud에서 YouTube Data API v3를 사용 설정합니다.
+2. OAuth 동의 화면을 구성하고 본인 Google 계정을 테스트 사용자로 추가합니다.
+3. OAuth 클라이언트를 `데스크톱 앱` 유형으로 만들고 JSON을 내려받습니다.
+4. 저장소 루트에서 `python tools/get_youtube_token.py <받은-json-경로>`를 실행합니다.
+5. 생성된 `youtube_token.json` 전체를 GitHub Actions Secret `YOUTUBE_TOKEN_JSON`에 등록합니다.
+
+OAuth 파일과 토큰 파일은 `.gitignore`에 포함되어 저장소에 올라가지 않습니다.
+처음에는 Actions에서 `dry_run=true`로 영상과 음성을 확인하고, 실제 시험 업로드는
+`privacy=unlisted`로 진행하세요. 확인 뒤 `public`으로 바꾸면 예약 실행도 공개 발행됩니다.

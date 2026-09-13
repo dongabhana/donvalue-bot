@@ -12,3 +12,7 @@ out/
 
 # dry-run 미리보기 렌더 (발행분은 images/ 에 커밋된다)
 .preview/
+
+# YouTube OAuth 비밀정보
+client_secret*.json
+youtube_token.json
