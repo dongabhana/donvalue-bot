@@ -1,0 +1,71 @@
+name: 돈값하나 유튜브 쇼츠
+
+on:
+  schedule:
+    # 월·수·토 20:15 KST. 기존 콘텐츠 발행 뒤 15분 간격을 둔다.
+    - cron: "15 11 * * 1,3,6"
+  workflow_dispatch:
+    inputs:
+      item_id:
+        description: "특정 콘텐츠 ID (비우면 다음 검수 완료 콘텐츠)"
+        required: false
+      dry_run:
+        description: "true면 영상만 만들고 텔레그램으로 전송"
+        type: boolean
+        default: true
+      privacy:
+        description: "unlisted | public | private"
+        default: "unlisted"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: donvalue-youtube-shorts
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: 한글 폰트와 영상 도구 설치
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+      - name: 쇼츠 생성 및 발행
+        env:
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+          YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy || 'public' }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          APPROVAL_REQUIRED: "1"
+          APPROVAL_TIMEOUT_MIN: "45"
+          NOTIFY_LABEL: "🔴 YouTube"
+          TTS_VOICE: "ko-KR-InJoonNeural"
+          TTS_RATE: "+8%"
+        run: |
+          if [ -z "$YOUTUBE_TOKEN_JSON" ] && [ "${{ github.event.inputs.dry_run }}" != "true" ]; then
+            echo "[stop] 유튜브 인증 전이라 자동 발행을 건너뜁니다"
+            exit 0
+          fi
+          ARGS=""
+          if [ -n "${{ github.event.inputs.item_id }}" ]; then ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"; fi
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          python -m src.youtube_run $ARGS
+      - name: 시험 영상 내려받기
+        if: github.event.inputs.dry_run == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: youtube-short-preview
+          path: images/**/*-short.mp4
+          retention-days: 7
