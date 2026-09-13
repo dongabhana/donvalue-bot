@@ -38,6 +38,18 @@ on:
         description: "true 면 쓰레드는 건너뛰고 인스타에만 발행"
         required: false
         default: "false"
+      tts:
+        description: "나레이션(음성) 넣기 — true | false"
+        required: false
+        default: "true"
+      tts_voice:
+        description: "목소리 (비우면 ko-KR-HyunsuMultilingualNeural)"
+        required: false
+        default: ""
+      yt_privacy:
+        description: "유튜브 공개상태 private | unlisted | public (심사 전엔 private 고정)"
+        required: false
+        default: "private"
 
 permissions:
   contents: write
@@ -86,6 +98,18 @@ jobs:
           BURST_GAP_MIN: "40"
           REEL_STYLE: ${{ github.event.inputs.reel_style }}
           REEL_MUSIC_DB: "-3"
+          # 나레이션이 깔릴 때는 배경음을 더 내린다(말이 묻히면 안 된다)
+          REEL_MUSIC_VOICE_DB: "-13"
+          REEL_TTS: ${{ github.event.inputs.tts == 'false' && '0' || '1' }}
+          TTS_VOICE: ${{ github.event.inputs.tts_voice }}
+          TTS_RATE: "+10%"
+          # 유튜브 쇼츠 — 세 값이 없으면 조용히 건너뜁니다.
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
+          YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
+          YT_PRIVACY: ${{ github.event.inputs.yt_privacy || 'private' }}
+          YT_CATEGORY_ID: "22"
           THEME: ${{ github.event.inputs.theme }}
           SKIP_THREADS: ${{ github.event.inputs.skip_threads }}
         run: |

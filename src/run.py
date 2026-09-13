@@ -28,6 +28,7 @@ from src.reel import build_reel_for, plan_summary       # noqa: E402
 from src import publish                                 # noqa: E402
 from src import hooks                                   # noqa: E402
 from src import notify                                  # noqa: E402
+from src import youtube                                 # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "content" / "queue.yaml"
@@ -279,6 +280,11 @@ def run_once(args) -> int:
             print(f"--- 쓰레드 답글 {i} ---\n{t}")
         if not chain:
             print("--- 쓰레드 답글 ---\n(없음)")
+        if mp4:
+            h_yt = hooks.resolve(item)
+            print("--- 유튜브 제목 ---\n" + youtube.build_title(item, h_yt))
+            print("--- 유튜브 설명 ---\n"
+                  + youtube.build_description(item, build_caption(item, cta), handle))
         if notify.enabled():
             try:
                 preview = (f"[검토용 · 발행 안 함]\n\n{build_caption(item, cta)}")
@@ -377,6 +383,26 @@ def run_once(args) -> int:
                     print(f"[comment] {key} 첫 댓글 실패(발행은 정상): {e}")
     else:
         print("[instagram] 토큰 없음 → 건너뜀")
+
+    # ---------------- 유튜브 쇼츠
+    # 같은 mp4 를 그대로 올린다. 추가 제작비가 없고, 유튜브는 릴스와 달리
+    # 반년 뒤에도 검색·추천으로 조회가 붙어 '재고'로 남는다.
+    # ⚠ 구글 심사(audit) 전에는 올라간 영상이 비공개로 잠긴다 → YT_PRIVACY=private 기본
+    if mp4 is not None and youtube.configured():
+        try:
+            h_yt = hooks.resolve(item)
+            vid = deliver_once(item["id"], "youtube", lambda: youtube.publish_short(
+                item, mp4, build_caption(item, cta), handle, h_yt))
+            results["youtube"] = vid
+            privacy = os.getenv("YT_PRIVACY", "private")
+            print(f"[youtube] 발행 완료 {youtube.watch_url(vid)} (공개상태 {privacy})")
+            if privacy != "public":
+                print("[youtube] ※ 아직 비공개입니다. 심사 통과 후 YT_PRIVACY=public 으로 바꾸세요.")
+        except Exception as e:                                    # noqa: BLE001
+            errors.append(f"youtube: {e}")
+            print(f"[youtube] 실패: {e}")
+    elif mp4 is not None:
+        print("[youtube] 토큰 없음 → 건너뜀")
 
     # ---------------- 쓰레드
     # 같은 시각에 두 플랫폼에 같은 내용이 뜨면 서로 도달을 갉아먹는다.

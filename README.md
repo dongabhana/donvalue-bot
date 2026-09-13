@@ -97,6 +97,13 @@ python tools/get_tokens.py threads
 | `TH_USER_ID` | 쓰레드 user id | ✅ |
 | `TH_ACCESS_TOKEN` | 쓰레드 장기 토큰 | ✅ |
 | `SECRETS_PAT` | 토큰 자동 연장용 PAT (Secrets: write 권한) | 선택 |
+| `YT_CLIENT_ID` | 유튜브 OAuth 클라이언트 ID | 선택 |
+| `YT_CLIENT_SECRET` | 유튜브 OAuth 보안 비밀 | 선택 |
+| `YT_REFRESH_TOKEN` | 유튜브 리프레시 토큰 | 선택 |
+| `YOUTUBE_TOKEN_JSON` | 위 3개 대신 authorized_user JSON 통째로 | 선택 |
+
+유튜브 인증정보가 하나도 없으면 유튜브 단계는 조용히 건너뜁니다
+(인스타·쓰레드는 그대로 발행). 발급 방법은 **9. 유튜브 쇼츠** 참고.
 
 3. **Settings → Actions → General → Workflow permissions** 를 `Read and write permissions` 로 변경
    (봇이 이미지와 발행 이력을 커밋해야 합니다)
@@ -216,29 +223,89 @@ donvalue-bot/
 │  └─ posted.json            발행 이력 (자동 기록)
 ├─ src/
 │  ├─ render.py              카드뉴스 PNG 생성
+│  ├─ reel.py                세로영상(릴스/쇼츠) 생성
+│  ├─ tts.py                 나레이션(음성) 합성·싱크
+│  ├─ audio.py               배경음 · 말할 때 음악 더킹
 │  ├─ publish.py             인스타/쓰레드 API
+│  ├─ youtube.py             유튜브 쇼츠 업로드
+│  ├─ youtube_run.py         이미 나간 편을 유튜브에 따라 올리는 백필
 │  ├─ refresh.py             토큰 연장
 │  └─ run.py                 파이프라인 엔트리포인트
-├─ tools/get_tokens.py       최초 토큰 발급 헬퍼
+├─ tools/get_tokens.py       최초 토큰 발급 헬퍼(메타)
+├─ tools/get_yt_token.py     유튜브 리프레시 토큰 발급 헬퍼
 └─ images/                   렌더 결과 (자동 커밋됨)
 ```
 
 ---
 
-## 9. YouTube Shorts 자동 발행
+## 9. 유튜브 쇼츠 + 나레이션
 
-`youtube-shorts.yml`은 검수 완료 콘텐츠를 9:16 영상으로 만들고 한국어 AI 음성,
-자막 화면, 배경음을 합쳐 YouTube Shorts에 올립니다. 기본 일정은 월·수·토 20:15 KST이며
-Telegram 승인을 받아야 발행합니다.
+### 9-1. 뭐가 달라졌나
 
-최초 한 번만 아래 설정이 필요합니다.
+같은 세로영상 하나를 인스타 릴스와 유튜브 쇼츠에 **둘 다** 올립니다.
+추가 제작비는 0인데, 릴스는 며칠이면 도달이 끝나는 반면 유튜브는
+검색·추천으로 반년 뒤에도 조회가 붙습니다. 재고로 남는 자산이 다릅니다.
 
-1. Google Cloud에서 YouTube Data API v3를 사용 설정합니다.
-2. OAuth 동의 화면을 구성하고 본인 Google 계정을 테스트 사용자로 추가합니다.
-3. OAuth 클라이언트를 `데스크톱 앱` 유형으로 만들고 JSON을 내려받습니다.
-4. 저장소 루트에서 `python tools/get_youtube_token.py <받은-json-경로>`를 실행합니다.
-5. 생성된 `youtube_token.json` 전체를 GitHub Actions Secret `YOUTUBE_TOKEN_JSON`에 등록합니다.
+**같은 편이 같은 날 양쪽에 올라갑니다.** 플랫폼별 성장 속도를 비교하는 게
+목적이라, 편이 어긋나면 비교 자체가 무의미해지기 때문입니다.
+`post.yml` 이 릴스를 만든 그 자리에서 같은 mp4 를 쇼츠로도 올립니다.
 
-OAuth 파일과 토큰 파일은 `.gitignore`에 포함되어 저장소에 올라가지 않습니다.
-처음에는 Actions에서 `dry_run=true`로 영상과 음성을 확인하고, 실제 시험 업로드는
-`privacy=unlisted`로 진행하세요. 확인 뒤 `public`으로 바꾸면 예약 실행도 공개 발행됩니다.
+이미 인스타에만 나간 과거 편은 `youtube-shorts.yml`(수동 실행)로 따라 올립니다.
+채널이 비어 있으면 들어온 사람이 그냥 나가므로 초반에 몇 편 깔아두는 용도입니다.
+
+영상에는 **사람 목소리 나레이션**이 깔립니다(`src/tts.py`).
+글자만 있는 영상은 '읽어야 하는 것'이라 스크롤을 못 잡습니다.
+말소리가 나오는 구간에는 배경음이 자동으로 눌렸다가(더킹) 다시 올라옵니다.
+
+| 항목 | 값 |
+|---|---|
+| 음성 엔진 | edge-tts (무료, API 키 없음) |
+| 기본 목소리 | `ko-KR-HyunsuMultilingualNeural` (남성·차분) |
+| 다른 선택지 | `ko-KR-SunHiNeural`(여성·밝음) / `ko-KR-InJoonNeural`(남성·뉴스톤) |
+| 영상 길이 | 나레이션에 맞춰 늘어남 (대략 28초 → 35~45초) |
+| 실패하면 | 나레이션 없이 예전처럼 발행 (발행이 멈추지 않음) |
+
+끄고 싶으면 워크플로 실행 시 `tts: false`, 또는 `REEL_TTS=0`.
+
+### 9-2. ⚠ 먼저 알아야 할 제약 — 심사 전엔 비공개로 잠깁니다
+
+2020-07-28 이후 만든 구글 API 프로젝트로 영상을 올리면 **비공개(private)로
+고정**됩니다. 풀려면 구글에 **YouTube API Services 심사(audit)** 를 신청해
+통과해야 합니다. 그래서 기본값이 `private` 입니다.
+
+- 심사 신청: [YouTube API Services – Audit and Quota Extension Form](https://support.google.com/youtube/contact/yt_api_form)
+- 심사 통과 전까지는 영상이 채널에 비공개로 쌓입니다. 통과 후 워크플로 입력의
+  `yt_privacy` 를 `public` 으로 바꾸면 그때부터 바로 공개 발행됩니다.
+
+### 9-3. 세팅 (한 번만)
+
+1. [Google Cloud Console](https://console.cloud.google.com) → 새 프로젝트 생성
+2. **API 및 서비스 → 라이브러리** → `YouTube Data API v3` 사용 설정
+3. **OAuth 동의 화면** 설정
+   - User Type: 외부
+   - 범위에 `.../auth/youtube.upload` 추가
+   - **반드시 '앱 게시'(프로덕션)로 전환** ← 테스트 상태면 토큰이 7일 만에 죽습니다
+4. **사용자 인증 정보 → OAuth 클라이언트 ID → 데스크톱 앱** 생성
+5. 내 PC 에서 토큰 발급
+
+   ```bash
+   pip install requests
+   python tools/get_yt_token.py --id <클라이언트ID> --secret <보안비밀>
+   ```
+
+6. 출력된 3개 값을 GitHub Secrets(`YT_CLIENT_ID` / `YT_CLIENT_SECRET` /
+   `YT_REFRESH_TOKEN`)에 등록
+7. 연결 점검
+
+   ```bash
+   YT_CLIENT_ID=... YT_CLIENT_SECRET=... YT_REFRESH_TOKEN=... python -m src.youtube
+   ```
+
+### 9-4. 자주 나는 오류
+
+| 증상 | 원인 | 해결 |
+|---|---|---|
+| `invalid_grant` | 동의 화면이 '테스트' 상태 | 앱 게시로 전환 후 토큰 재발급 |
+| 영상이 계속 비공개 | 심사 미통과 | 9-2 의 심사 신청 |
+| `403 quotaExceeded` | 일일 할당량 소진 | 다음날 초기화 대기 |
+| 나레이션이 안 들어감 | edge-tts 차단/실패 | 로그의 `[tts]` 줄 확인. 발행은 정상 진행됨 |

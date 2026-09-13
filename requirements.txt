@@ -3,6 +3,5 @@ PyYAML>=6.0
 requests>=2.31
 numpy>=1.26
 cryptography>=42.0
+# 릴스·쇼츠 나레이션(무료 TTS). 실패해도 발행은 무음으로 계속된다.
 edge-tts>=7.0
-google-api-python-client>=2.0
-google-auth-oauthlib>=1.2

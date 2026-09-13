@@ -222,6 +222,7 @@ def _build_scene_reel(item: dict, outfile: Path, brand: str, handle: str) -> tup
     from src import audio as audio_mod
     from src import hooks as hooks_mod
     from src import reel_scenes as sc
+    from src import tts as tts_mod
 
     h = hooks_mod.resolve(item)
     cards = item.get("cards", [])
@@ -229,6 +230,23 @@ def _build_scene_reel(item: dict, outfile: Path, brand: str, handle: str) -> tup
 
     work = Path(tempfile.mkdtemp(prefix=f"reel_{item['id']}_"))
     try:
+        # 나레이션을 **먼저** 만든다. 말이 화면보다 길면 장면을 늘려야 하므로
+        # 인코딩 전에 길이가 확정돼 있어야 한다.
+        voices: list | None = None
+        if tts_mod.enabled():
+            if not tts_mod.available():
+                print("[tts] edge-tts 가 없어 나레이션 없이 진행합니다 "
+                      "(requirements.txt 확인)")
+            else:
+                try:
+                    lines = tts_mod.script_for(plan, item, h)
+                    plan, voices = tts_mod.plan_with_narration(
+                        plan, lines, work / "tts")
+                except Exception as e:                            # noqa: BLE001
+                    # 나레이션은 '있으면 좋은 것'이다. 실패해도 릴스는 나가야 한다.
+                    print(f"[tts] 나레이션 실패 → 무음으로 진행: {e}")
+                    voices = None
+
         segs: list[Path] = []
         for i, s in enumerate(plan):
             if s["kind"] == "hook":
@@ -254,13 +272,24 @@ def _build_scene_reel(item: dict, outfile: Path, brand: str, handle: str) -> tup
         seconds = audio_mod.probe_duration(silent)
         track, source = audio_mod.pick_track(item["id"], seconds, work, h["mood"])
         outfile.parent.mkdir(parents=True, exist_ok=True)
-        audio_mod.mux(silent, track, outfile)
+
+        narration = ""
+        if voices and any(v is not None for v in voices):
+            try:
+                vtrack = tts_mod.build_track(plan, voices, work)
+                audio_mod.mux_with_voice(silent, track, vtrack, outfile)
+                narration = f" / 나레이션 {sum(1 for v in voices if v)}컷"
+            except Exception as e:                                # noqa: BLE001
+                print(f"[tts] 오디오 합치기 실패 → 배경음만: {e}")
+                audio_mod.mux(silent, track, outfile)
+        else:
+            audio_mod.mux(silent, track, outfile)
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
     n_beats = sum(1 for s in plan if s["kind"] == "beat")
     note = (f"전용화면 · 본문 {n_beats}장 / "
-            f"{audio_mod.probe_duration(outfile):.1f}초 / 음원 {source}")
+            f"{audio_mod.probe_duration(outfile):.1f}초 / 음원 {source}{narration}")
     return outfile, note
 
 

@@ -220,6 +220,45 @@ def mux(video: Path, audio: Path, out: Path,
     return out
 
 
+def mux_with_voice(video: Path, music: Path, voice: Path, out: Path,
+                   music_db: float | None = None, fade_out: float = 1.2) -> Path:
+    """영상에 '나레이션 + 배경음'을 함께 입힌다.
+
+    두 소리를 그냥 섞으면 음악이 말을 덮는다. 그래서 두 겹으로 눌러준다.
+      1) 음악 자체를 REEL_MUSIC_VOICE_DB(기본 -13dB)만큼 내린다
+      2) sidechaincompress 로 **말할 때만** 음악을 추가로 더 눌렀다가
+         말이 끝나면 400ms 에 걸쳐 되돌린다 (라디오에서 쓰는 더킹)
+    말소리는 loudnorm 으로 -16 LUFS 에 맞춘다. 편마다 목소리 크기가
+    들쭉날쭉하면 그것만으로 아마추어처럼 들린다.
+    """
+    if music_db is None:
+        music_db = float(os.getenv("REEL_MUSIC_VOICE_DB", "-13"))
+    dur = probe_duration(video)
+    fc = (
+        f"[1:a]aloop=loop=-1:size=2e9,atrim=0:{dur:.3f},"
+        f"afade=t=in:st=0:d=0.6,"
+        f"afade=t=out:st={max(0.0, dur - fade_out):.3f}:d={fade_out},"
+        f"loudnorm=I=-16:TP=-1.5:LRA=11,volume={music_db}dB,"
+        f"aformat=sample_rates=44100:channel_layouts=stereo[m];"
+        f"[2:a]loudnorm=I=-16:TP=-1.5:LRA=11,"
+        f"aformat=sample_rates=44100:channel_layouts=stereo[v];"
+        f"[v]asplit=2[v1][vk];"
+        f"[m][vk]sidechaincompress=threshold=0.03:ratio=9:attack=15:release=400[md];"
+        f"[md][v1]amix=inputs=2:duration=first:dropout_transition=0:normalize=0,"
+        f"alimiter=limit=0.95[a]"
+    )
+    out.parent.mkdir(parents=True, exist_ok=True)
+    subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error",
+         "-i", str(video), "-i", str(music), "-i", str(voice),
+         "-filter_complex", fc,
+         "-map", "0:v", "-map", "[a]",
+         "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "44100",
+         "-shortest", "-movflags", "+faststart", str(out)],
+        check=True, capture_output=True, text=True)
+    return out
+
+
 def probe_duration(path: Path) -> float:
     r = subprocess.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",

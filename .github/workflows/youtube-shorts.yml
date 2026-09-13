@@ -1,21 +1,32 @@
-name: 돈값하나 유튜브 쇼츠
+name: 돈값하나 유튜브 쇼츠 백필
+
+# 평소 발행(post.yml)은 릴스를 만든 자리에서 같은 mp4 를 쇼츠로도 올립니다.
+# 이 워크플로는 **이미 인스타에만 나간 편**을 유튜브에 따라 올리는 용도입니다.
+# 채널이 비어 있으면 들어온 사람이 그냥 나가므로, 초반에 과거 편을 깔아둡니다.
 
 on:
-  schedule:
-    # 월·수·토 20:15 KST. 기존 콘텐츠 발행 뒤 15분 간격을 둔다.
-    - cron: "15 11 * * 1,3,6"
   workflow_dispatch:
     inputs:
       item_id:
-        description: "특정 콘텐츠 ID (비우면 다음 검수 완료 콘텐츠)"
+        description: "특정 편 id (비우면 발행 순서대로 오래된 것부터)"
         required: false
+        default: ""
+      count:
+        description: "몇 편 올릴지"
+        required: false
+        default: "1"
       dry_run:
-        description: "true면 영상만 만들고 텔레그램으로 전송"
-        type: boolean
-        default: true
+        description: "true 면 영상만 만들어 텔레그램으로 보냄 (업로드 안 함)"
+        required: false
+        default: "true"
       privacy:
-        description: "unlisted | public | private"
-        default: "unlisted"
+        description: "private | unlisted | public — 심사 통과 전에는 private 만 의미 있음"
+        required: false
+        default: "private"
+      tts_voice:
+        description: "목소리 (비우면 ko-KR-HyunsuMultilingualNeural)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -25,47 +36,65 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  publish:
+  backfill:
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 180
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
+
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
           cache: pip
-      - name: 한글 폰트와 영상 도구 설치
+
+      - name: 한글 폰트 · ffmpeg 설치
         run: |
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+
+      - name: ffmpeg 확인
+        run: ffmpeg -version
+
       - name: 의존성 설치
         run: pip install -r requirements.txt
-      - name: 쇼츠 생성 및 발행
+
+      - name: 쇼츠 백필
         env:
+          # 두 형태 다 받습니다. 있는 쪽이 쓰입니다.
+          YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
+          YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
+          YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
-          YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy || 'public' }}
+          YT_PRIVACY: ${{ github.event.inputs.privacy || 'private' }}
+          YT_CATEGORY_ID: "22"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           APPROVAL_REQUIRED: "1"
           APPROVAL_TIMEOUT_MIN: "45"
           NOTIFY_LABEL: "🔴 YouTube"
-          TTS_VOICE: "ko-KR-InJoonNeural"
-          TTS_RATE: "+8%"
+          YT_BACKFILL_GAP_MIN: "5"
+          REEL_TTS: "1"
+          TTS_VOICE: ${{ github.event.inputs.tts_voice }}
+          TTS_RATE: "+10%"
+          REEL_MUSIC_VOICE_DB: "-13"
+          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
-          if [ -z "$YOUTUBE_TOKEN_JSON" ] && [ "${{ github.event.inputs.dry_run }}" != "true" ]; then
-            echo "[stop] 유튜브 인증 전이라 자동 발행을 건너뜁니다"
-            exit 0
+          ARGS="--count ${{ github.event.inputs.count || '1' }}"
+          if [ -n "${{ github.event.inputs.item_id }}" ]; then
+            ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"
           fi
-          ARGS=""
-          if [ -n "${{ github.event.inputs.item_id }}" ]; then ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"; fi
-          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --dry-run"; fi
+          if [ "${{ github.event.inputs.dry_run }}" != "false" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
           python -m src.youtube_run $ARGS
-      - name: 시험 영상 내려받기
-        if: github.event.inputs.dry_run == 'true'
+
+      - name: 만든 영상 내려받기
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: youtube-short-preview
-          path: images/**/*-short.mp4
+          path: .preview/**/*.mp4
           retention-days: 7
+          if-no-files-found: ignore

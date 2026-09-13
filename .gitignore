@@ -16,3 +16,6 @@ out/
 # YouTube OAuth 비밀정보
 client_secret*.json
 youtube_token.json
+
+# TTS 음성 캐시 (같은 문장은 다시 합성하지 않는다)
+.cache/
