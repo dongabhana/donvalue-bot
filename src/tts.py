@@ -28,9 +28,11 @@
 
 환경변수
   REEL_TTS        1(기본) | 0    나레이션 자체를 끈다
-  TTS_VOICE       ko-KR-HyunsuMultilingualNeural (기본, 남성·차분)
-                  ko-KR-SunHiNeural (여성·밝음) / ko-KR-InJoonNeural (남성·뉴스)
-  TTS_RATE        +10% (기본)    쇼츠는 조금 빠른 편이 완주율이 낫다
+  TTS_VOICE       ko-KR-YuJinNeural (기본, 여성·또렷)
+                  ko-KR-JiMinNeural(여성·가벼움) / ko-KR-SunHiNeural(여성·표준)
+                  ko-KR-BongJinNeural(남성·활기) / ko-KR-InJoonNeural(남성·뉴스)
+                  ko-KR-HyunsuMultilingualNeural(남성·차분)
+  TTS_RATE        +22% (기본)    쇼츠는 빠른 편이 완주율이 낫다
   TTS_PITCH       +0Hz (기본)
 """
 from __future__ import annotations
@@ -51,9 +53,12 @@ SR = 44100
 
 LEAD = 0.28              # 장면이 바뀌고 말이 시작되기까지
 TAIL = 0.42              # 말이 끝나고 다음 장면까지 (숨 쉴 틈)
-MAX_LINE = 90            # 이보다 긴 문장은 한 장면에 안 들어간다
+MAX_LINE = 90            # 화면 문구를 읽을 때의 상한
+SCRIPT_LINE = 150        # 손으로 쓴 대본은 더 길어도 된다(장면이 늘어난다)
 
-DEFAULT_VOICE = "ko-KR-HyunsuMultilingualNeural"
+# 쇼츠는 또렷하고 빠른 편이 귀에 박힌다. 차분한 남성 톤은 설명이 늘어진다.
+DEFAULT_VOICE = "ko-KR-YuJinNeural"
+DEFAULT_RATE = "+22%"
 
 
 class TTSError(RuntimeError):
@@ -77,7 +82,7 @@ def available() -> bool:
 _NUM = re.compile(r"(\d),(\d)")
 
 
-def speakable(text: str) -> str:
+def speakable(text: str, limit: int = 0) -> str:
     """화면용 글자를 '읽었을 때 자연스러운' 문장으로 손본다.
 
     · 1,000 의 천단위 쉼표는 빼야 한다. 안 그러면 '일 쉼표 영영영'으로 읽는다.
@@ -104,24 +109,76 @@ def speakable(text: str) -> str:
     t = re.sub(r"[,]{2,}", ",", t)
     t = re.sub(r"[.…]{2,}", ".", t)             # '합계는 33800원..' 같은 겹침
     t = re.sub(r"\.\s*,", ".", t)
+    limit = limit or MAX_LINE
     t = re.sub(r"\s+", " ", t).strip(" ,.…")
-    if len(t) <= MAX_LINE:
+    if len(t) <= limit:
         return t
     # 길면 자른다. 다만 어절 한가운데서 끊으면 '…를 더하는' 처럼 말이 끊긴다.
     # 문장 경계 → 쉼표 → 어절 순으로 물러나며 자연스러운 지점을 찾는다.
-    cut = t[:MAX_LINE]
+    cut = t[:limit]
     for sep in (". ", "? ", "! ", ", ", " "):
         at = cut.rfind(sep)
-        if at >= MAX_LINE // 2:
+        if at >= limit // 2:
             return cut[:at].rstrip(" ,.…")
     return cut.rstrip(" ,.…")
+
+
+SCRIPTS = ROOT / "content" / "narration.yaml"
+_scripts_cache: dict | None = None
+
+
+def scripts() -> dict:
+    """편별 손으로 쓴 나레이션 대본. 없으면 빈 dict."""
+    global _scripts_cache
+    if _scripts_cache is None:
+        if SCRIPTS.exists():
+            import yaml
+            _scripts_cache = yaml.safe_load(SCRIPTS.read_text(encoding="utf-8")) or {}
+        else:
+            _scripts_cache = {}
+    return _scripts_cache
+
+
+def _from_script(plan: list[dict], sc: dict) -> list[str]:
+    """대본(narration.yaml)에서 장면별 문장을 뽑는다.
+
+    beats 는 **카드 번호 순서 그대로** 적는다. 길이 때문에 중간 카드가
+    빠져도 남은 카드가 자기 대사를 그대로 들고 간다.
+    """
+    beats = list(sc.get("beats") or [])
+    hook_last = max((i for i, s in enumerate(plan) if s["kind"] == "hook"), default=-1)
+    out: list[str] = []
+    for i, s in enumerate(plan):
+        k = s["kind"]
+        if k == "hook":
+            out.append(str(sc.get("hook") or "") if i == hook_last else "")
+        elif k == "stake":
+            out.append(str(sc.get("stake") or ""))
+        elif k == "beat":
+            n = s["card"] - 1
+            out.append(str(beats[n]) if 0 <= n < len(beats) else "")
+        elif k == "verdict":
+            out.append(str(sc.get("verdict") or ""))
+        else:
+            out.append(str(sc.get("loop") or ""))
+    return out
 
 
 def script_for(plan: list[dict], item: dict, h: dict) -> list[str]:
     """장면 계획과 같은 길이의 '장면별 읽을 문장' 목록을 만든다.
 
+    1순위는 content/narration.yaml 의 손으로 쓴 대본이다.
+    **화면 글자를 그대로 읽지 않는 게 핵심** — 화면은 숫자를 보여주고
+    목소리는 그 숫자가 왜 중요한지를 말해야 한다. 대본이 없는 편만
+    아래 폴백으로 화면 문구를 읽는다(있는 것보단 낫지만 딱딱하다).
+
     빈 문자열이면 그 장면은 말 없이 지나간다(훅 리빌 중간 컷 등).
     """
+    sc = scripts().get(item.get("id"))
+    if sc:
+        # 손으로 쓴 대본은 화면 글자수 제한과 무관하다. 조금 더 길어도 된다.
+        return [speakable(x, SCRIPT_LINE) for x in _from_script(plan, sc)]
+
     cards = item.get("cards", [])
     lines: list[str] = []
     hook_last = max((i for i, s in enumerate(plan) if s["kind"] == "hook"), default=-1)
@@ -172,7 +229,7 @@ def synth_line(text: str, out: Path, voice: str = "", rate: str = "",
 
     # 워크플로가 빈 문자열을 넘길 수 있어 getenv 기본값이 아니라 or 로 받는다
     voice = voice or os.getenv("TTS_VOICE") or DEFAULT_VOICE
-    rate = rate or os.getenv("TTS_RATE") or "+10%"
+    rate = rate or os.getenv("TTS_RATE") or DEFAULT_RATE
     pitch = pitch or os.getenv("TTS_PITCH") or "+0Hz"
 
     cached = _cache_path(text, voice, rate, pitch)

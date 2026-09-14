@@ -24,7 +24,7 @@ on:
         required: false
         default: "private"
       tts_voice:
-        description: "목소리 (비우면 ko-KR-HyunsuMultilingualNeural)"
+        description: "목소리 (비우면 ko-KR-YuJinNeural)"
         required: false
         default: ""
 
@@ -77,7 +77,7 @@ jobs:
           YT_BACKFILL_GAP_MIN: "5"
           REEL_TTS: "1"
           TTS_VOICE: ${{ github.event.inputs.tts_voice }}
-          TTS_RATE: "+10%"
+          TTS_RATE: "+22%"
           REEL_MUSIC_VOICE_DB: "-13"
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
@@ -90,11 +90,13 @@ jobs:
           fi
           python -m src.youtube_run $ARGS
 
-      - name: 만든 영상 내려받기
+      # 영상 + 제목·설명 텍스트를 한 폴더로 받는다. 유튜브에 손으로 올릴 때
+      # 제목·설명을 다시 짜맞출 필요가 없게 하려는 것.
+      - name: 완성본 내려받기 (영상 + 제목/설명)
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: youtube-short-preview
-          path: .preview/**/*.mp4
-          retention-days: 7
+          name: shorts-bundle
+          path: out/**
+          retention-days: 14
           if-no-files-found: ignore

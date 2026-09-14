@@ -26,6 +26,7 @@ import json
 import os
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 
 import yaml
@@ -34,8 +35,8 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from src import codex_bridge, hooks, notify, youtube      # noqa: E402
 from src.reel import build_reel_for                       # noqa: E402
 from src.render import render_item                        # noqa: E402
-from src.run import (DELIVERY, POSTED, PREVIEW, QUEUE,     # noqa: E402
-                     build_caption, deliver_once)
+from src.run import (DELIVERY, KST, POSTED, PREVIEW, QUEUE,  # noqa: E402
+                     ROOT, build_caption, deliver_once)
 
 GAP_MIN = int(os.getenv("YT_BACKFILL_GAP_MIN", "5"))
 
@@ -95,6 +96,28 @@ def pick(queue: dict, want: str = "", count: int = 1,
     return candidates(queue, source)[:count]
 
 
+def save_bundle(item: dict, mp4: Path, title: str, desc: str) -> Path:
+    """영상 + 제목 + 설명을 날짜 폴더 한 곳에 모은다.
+
+    유튜브 업로드 화면에서 제목·설명을 복붙만 하면 되게 만드는 게 목적이다.
+    심사 통과 전까지는 이 폴더가 사실상의 '발행 대기함'이다.
+        out/2026-09-14/
+          01_001-coupang-wow.mp4
+          01_001-coupang-wow.txt      ← 제목 첫 줄, 빈 줄, 설명
+    """
+    day = datetime.now(KST).strftime("%Y-%m-%d")
+    folder = ROOT / "out" / day
+    folder.mkdir(parents=True, exist_ok=True)
+    seq = len([p for p in folder.glob("*.mp4")]) + 1
+    stem = f"{seq:02d}_{item['id']}"
+
+    target = folder / f"{stem}.mp4"
+    target.write_bytes(mp4.read_bytes())
+    (folder / f"{stem}.txt").write_text(
+        f"{title}\n\n{desc}\n", encoding="utf-8")
+    return target
+
+
 def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
     brand = item.get("brand") or queue.get("brand", "돈값하나?")
     handle = queue.get("handle", "@dongabhana")
@@ -117,6 +140,10 @@ def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
     print(f"[title ] {title}")
 
     if dry_run:
+        # 손으로 올릴 거면 영상만 받아선 부족하다. 제목·설명을 매번 다시
+        # 짜맞추는 게 진짜 귀찮은 일이라, 한 폴더에 같이 떨어뜨린다.
+        bundle = save_bundle(item, mp4, title, desc)
+        print(f"[bundle] {bundle}")
         if notify.enabled():
             try:
                 notify.send_video(mp4, f"🔴 쇼츠 검토용 · {title}")

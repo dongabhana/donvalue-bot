@@ -43,7 +43,7 @@ on:
         required: false
         default: "true"
       tts_voice:
-        description: "목소리 (비우면 ko-KR-HyunsuMultilingualNeural)"
+        description: "목소리 (비우면 ko-KR-YuJinNeural)"
         required: false
         default: ""
       yt_privacy:
@@ -102,7 +102,7 @@ jobs:
           REEL_MUSIC_VOICE_DB: "-13"
           REEL_TTS: ${{ github.event.inputs.tts == 'false' && '0' || '1' }}
           TTS_VOICE: ${{ github.event.inputs.tts_voice }}
-          TTS_RATE: "+10%"
+          TTS_RATE: "+22%"
           # 유튜브 쇼츠 — 세 값이 없으면 조용히 건너뜁니다.
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
