@@ -8,6 +8,7 @@
   3) 공개상태 기본값이 private 이다 — 심사 통과 전에 실수로 public 을 쓰면
      구글이 어차피 잠그고, 우리는 잠긴 줄도 모르게 된다.
 """
+import json
 import subprocess
 from pathlib import Path
 
@@ -147,3 +148,48 @@ def _fake_synth(text: str, out: Path, **kw) -> Path:
          "-af", "tremolo=f=4:d=0.9,volume=0.5", "-ac", "2", str(out)],
         check=True, capture_output=True)
     return out
+
+
+# ------------------------------------------------------------------ codex 다리
+CODEX_ITEM = {
+    "id": "cx999-demo",
+    "publish_at": "2020-01-01T20:00:00+09:00",
+    "verified": True,
+    "topic": "무료배송을 채우는 순간 늘어난 결제액",
+    "hook_candidates": ["배송비 3,000원 아끼려다 2,900원 더 썼다", "무료배송 버튼의 숨은 가격표"],
+    "slides": [
+        {"title": "표지\n두 줄", "body": "표지 본문"},
+        {"title": "장바구니에\n27,900원", "body": "3만원부터 무료배송.", "note": "가정"},
+        {"title": "2,100원만\n더 담으면", "body": "필요 없는 5,900원짜리."},
+        {"title": "‘무료’ 말고\n마지막 합계", "body": "안 살 물건이면 멈추기."},
+        {"title": "당신의 채움템은\n뭐예요?", "body": "잘 썼나요?"},
+    ],
+    "caption": "본문입니다.\n#돈값하나 #무료배송 #장바구니",
+}
+
+
+def test_codex_item_maps_into_the_reel_schema():
+    from src import codex_bridge, hooks
+    it = codex_bridge.to_queue_item(CODEX_ITEM)
+
+    # 표지는 훅 장면이 담당한다 → 카드로 중복해 넣지 않는다
+    assert len(it["cards"]) == 2
+    assert "표지" not in json.dumps(it["cards"], ensure_ascii=False)
+    # 제목 두 줄을 한 줄로 합쳐야 금액이 살아남는다
+    assert "27,900원" in it["cards"][0]["title"]
+    # 결론은 참여유도 슬라이드가 아니라 그 앞 슬라이드
+    assert "마지막 합계" in it["verdict_text"]
+    assert "채움템" in it["reel"]["loop"]
+    # 꼬리표는 브랜드 태그가 아닌 주제어
+    assert it["product"] == "무료배송"
+    # 기존 파이프라인이 그대로 먹을 수 있어야 한다
+    h = hooks.resolve(it)
+    assert h["big"] and h["beats"]
+
+
+def test_codex_only_offers_episodes_already_on_instagram():
+    from src import codex_bridge
+    future = dict(CODEX_ITEM, publish_at="2099-01-01T20:00:00+09:00")
+    assert codex_bridge.already_on_instagram(CODEX_ITEM)
+    assert not codex_bridge.already_on_instagram(future)
+    assert codex_bridge.already_on_instagram(dict(future, posted_early_on="2026-09-12"))

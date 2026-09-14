@@ -102,8 +102,19 @@ def speakable(text: str) -> str:
     t = re.sub(r"#\S+", " ", t)
     t = re.sub(r"\s+([,.])", r"\1", t)          # ' ,' → ','
     t = re.sub(r"[,]{2,}", ",", t)
-    t = re.sub(r"\s+", " ", t).strip(" ,.")
-    return t[:MAX_LINE]
+    t = re.sub(r"[.…]{2,}", ".", t)             # '합계는 33800원..' 같은 겹침
+    t = re.sub(r"\.\s*,", ".", t)
+    t = re.sub(r"\s+", " ", t).strip(" ,.…")
+    if len(t) <= MAX_LINE:
+        return t
+    # 길면 자른다. 다만 어절 한가운데서 끊으면 '…를 더하는' 처럼 말이 끊긴다.
+    # 문장 경계 → 쉼표 → 어절 순으로 물러나며 자연스러운 지점을 찾는다.
+    cut = t[:MAX_LINE]
+    for sep in (". ", "? ", "! ", ", ", " "):
+        at = cut.rfind(sep)
+        if at >= MAX_LINE // 2:
+            return cut[:at].rstrip(" ,.…")
+    return cut.rstrip(" ,.…")
 
 
 def script_for(plan: list[dict], item: dict, h: dict) -> list[str]:
@@ -126,10 +137,19 @@ def script_for(plan: list[dict], item: dict, h: dict) -> list[str]:
             c = cards[s["card"] - 1]
             beat = h["beats"][s["card"] - 1] if s["card"] - 1 < len(h["beats"]) \
                 else c.get("body", "")
+            # 화면용 문구는 글자수 제한에 걸려 '…' 로 잘려 있다. 소리에는 그
+            # 제한이 없으니 원문(body)이 더 길면 원문을 읽는다.
+            body = str(c.get("body", "")).strip()
+            if beat.rstrip().endswith("…") and len(body) > len(beat):
+                beat = body
             title = str(c.get("title", "")).strip()
             # 제목과 본문이 사실상 같은 말이면 두 번 읽지 않는다
-            lines.append(beat if (title and title in beat) or not title
-                         else f"{title}. {beat}")
+            if not title or title in beat:
+                lines.append(beat)
+            else:
+                # 제목이 이미 ?/!/. 로 끝나면 마침표를 더 붙이지 않는다('부품?. 추가')
+                joiner = "" if title[-1] in "?!." else "."
+                lines.append(f"{title}{joiner} {beat}")
         elif kind == "verdict":
             v = str(item.get("verdict_text", "")).strip()
             lines.append(v)

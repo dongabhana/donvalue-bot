@@ -31,7 +31,7 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-from src import hooks, notify, youtube                    # noqa: E402
+from src import codex_bridge, hooks, notify, youtube      # noqa: E402
 from src.reel import build_reel_for                       # noqa: E402
 from src.render import render_item                        # noqa: E402
 from src.run import (DELIVERY, POSTED, PREVIEW, QUEUE,     # noqa: E402
@@ -60,23 +60,39 @@ def posted_ids() -> list[str]:
     return out
 
 
-def pick(queue: dict, want: str = "", count: int = 1) -> list[dict]:
-    by_id = {i["id"]: i for i in queue["items"]}
-    if want:
-        if want not in by_id:
-            print(f"[stop] 큐에서 '{want}' 를 찾을 수 없습니다")
-            return []
-        return [by_id[want]]
+def candidates(queue: dict, source: str = "all") -> list[dict]:
+    """유튜브에 올릴 수 있는 편들을 '인스타에 나간 순서'로.
 
+    콘텐츠가 두 군데(queue.yaml, codex/content.json)라 둘 다 훑는다.
+    한쪽만 보면 GPT 트랙 편들이 통째로 빠져 채널에 구멍이 생긴다.
+    """
     done = uploaded_ids()
-    out = []
-    for pid in posted_ids():
-        if pid in done or pid not in by_id:
-            continue
-        out.append(by_id[pid])
-        if len(out) >= count:
-            break
+    out: list[dict] = []
+
+    if source in ("all", "queue"):
+        by_id = {i["id"]: i for i in queue["items"]}
+        for pid in posted_ids():
+            if pid in by_id and pid not in done:
+                out.append(by_id[pid])
+
+    if source in ("all", "codex"):
+        for it in codex_bridge.load_items(only_published=True):
+            if it["id"] not in done:
+                out.append(it)
+
     return out
+
+
+def pick(queue: dict, want: str = "", count: int = 1,
+         source: str = "all") -> list[dict]:
+    if want:
+        pool = {i["id"]: i for i in queue["items"]}
+        pool.update({i["id"]: i for i in codex_bridge.load_items(only_published=False)})
+        if want not in pool:
+            print(f"[stop] '{want}' 를 두 콘텐츠 목록 어디서도 찾을 수 없습니다")
+            return []
+        return [pool[want]]
+    return candidates(queue, source)[:count]
 
 
 def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
@@ -91,7 +107,11 @@ def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
     _, note = build_reel_for(item, paths, mp4, brand, handle)
 
     title = youtube.build_title(item, h)
-    desc = youtube.build_description(item, build_caption(item, cta), handle)
+    # codex 편은 캡션에 해시태그까지 이미 들어 있다. build_caption 을 태우면
+    # 꼬리말과 태그가 두 번 붙는다.
+    caption = (item["caption"] if item.get("source") == "codex"
+               else build_caption(item, cta))
+    desc = youtube.build_description(item, caption, handle)
     size = mp4.stat().st_size / 1024 / 1024
     print(f"[shorts] {item['id']} · {note} ({size:.2f}MB)")
     print(f"[title ] {title}")
@@ -124,16 +144,31 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--id", default="", help="특정 편만")
     ap.add_argument("--count", type=int, default=1, help="몇 편 백필할지")
+    ap.add_argument("--source", default="all", choices=["all", "queue", "codex"],
+                    help="어느 콘텐츠 목록에서 고를지 (기본 all)")
+    ap.add_argument("--list", action="store_true",
+                    help="올릴 수 있는 편 목록만 보여주고 끝낸다")
     ap.add_argument("--dry-run", action="store_true",
                     help="올리지 않고 영상만 만들어 텔레그램으로 확인")
     args = ap.parse_args()
+
+    queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
+
+    if args.list:
+        rows = candidates(queue, args.source)
+        done = uploaded_ids()
+        print(f"이미 유튜브에 올림: {len(done)}편")
+        print(f"올릴 수 있는 편: {len(rows)}편\n")
+        for n, it in enumerate(rows, 1):
+            src = "codex" if it.get("source") == "codex" else "queue"
+            print(f"  {n:2}. [{src:5}] {it['id']:24} {it.get('product', '')}")
+        return 0
 
     if not args.dry_run and not youtube.configured():
         print("[stop] 유튜브 인증정보가 없습니다 (YT_* 또는 YOUTUBE_TOKEN_JSON)")
         return 0
 
-    queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
-    items = pick(queue, args.id, max(1, args.count))
+    items = pick(queue, args.id, max(1, args.count), args.source)
     if not items:
         print("[stop] 유튜브에 올릴 편이 없습니다 (이미 다 올렸거나 발행 이력이 없음)")
         return 0
