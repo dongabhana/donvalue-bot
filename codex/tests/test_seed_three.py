@@ -64,7 +64,9 @@ class SeedThreeTests(unittest.TestCase):
     def test_regular_queue_has_no_empty_seed_slots_and_keeps_approval(self):
         remaining=[i for i in self.items if i['id'] not in ITEM_IDS and not i.get('posted_early_on')]
         dates=[datetime.fromisoformat(i['publish_at']) for i in remaining]
-        self.assertEqual(len(dates),48)
+        # 2026-09-14 해외직구편(cx102) 삭제로 48 → 47.
+        # 발행할 때마다 관세청 페이지를 확인해야 하는 유일한 편이라 운영에서 뺐다.
+        self.assertEqual(len(dates),47)
         self.assertEqual(len(set(dates)),len(dates))
         taxi=next(i for i in remaining if i['id']=='cx054-taxi-vs-driver')
         self.assertEqual(taxi['publish_at'],'2026-09-14T20:00:00+09:00')

@@ -31,7 +31,7 @@ class OfficialPriceTests(unittest.TestCase):
     def test_queue_has_no_fictional_money_and_has_explicit_decisions(self):
         queue=json.loads((Path(__file__).parents[1]/'content.json').read_text())['items']
         revised=[x for x in queue if x.get('editorial_revision')]
-        self.assertEqual(len(revised),48)
+        self.assertEqual(len(revised),47)   # cx102(해외직구) 삭제로 48 → 47
         for item in revised:
             self.assertNotIn('가상 조건·창작 상황',item['caption'])
             self.assertTrue(item['slides'][3]['body'])
