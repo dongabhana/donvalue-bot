@@ -71,6 +71,14 @@ class SeedThreeTests(unittest.TestCase):
         taxi=next(i for i in remaining if i['id']=='cx054-taxi-vs-driver')
         self.assertEqual(taxi['publish_at'],'2026-09-14T20:00:00+09:00')
         self.assertFalse(taxi['verification']['live_driver_quote_obtained'])
+        self.assertFalse(taxi['verification']['real_world_price_claim'])
+        self.assertIn('택시가 500원 저렴', taxi['caption'])
+        self.assertIn('주차비가 10,500원을 넘', taxi['caption'])
+        self.assertIn('비교를 위한 가정', taxi['caption'])
+        caption_tags=re.findall(r'#([^\\s#]+)',taxi['caption'])
+        self.assertEqual(caption_tags,taxi['hashtags'])
+        self.assertEqual(len(caption_tags),5)
+        self.assertIn(taxi['threads_tag'],caption_tags)
         self.assertFalse(eligible(taxi,{'decision':'pending'},datetime(2026,9,14,20,tzinfo=KST)))
 
     def test_today_seed_cards_are_excluded_only_from_todays_regular_queue(self):
