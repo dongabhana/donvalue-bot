@@ -233,18 +233,23 @@ def _build_scene_reel(item: dict, outfile: Path, brand: str, handle: str) -> tup
         # 나레이션을 **먼저** 만든다. 말이 화면보다 길면 장면을 늘려야 하므로
         # 인코딩 전에 길이가 확정돼 있어야 한다.
         voices: list | None = None
+        narration_fail = ""
         if tts_mod.enabled():
             if not tts_mod.available():
-                print("[tts] edge-tts 가 없어 나레이션 없이 진행합니다 "
+                print("[tts] ⚠ edge-tts 가 없어 나레이션 없이 진행합니다 "
                       "(requirements.txt 확인)")
+                narration_fail = "edge-tts 미설치"
             else:
                 try:
                     lines = tts_mod.script_for(plan, item, h)
                     plan, voices = tts_mod.plan_with_narration(
                         plan, lines, work / "tts")
                 except Exception as e:                            # noqa: BLE001
-                    # 나레이션은 '있으면 좋은 것'이다. 실패해도 릴스는 나가야 한다.
-                    print(f"[tts] 나레이션 실패 → 무음으로 진행: {e}")
+                    # 나레이션은 '있으면 좋은 것'이라 실패해도 릴스는 나간다.
+                    # 다만 조용히 넘어가면 '소리 없는 영상'을 모르고 올리게 된다.
+                    # 그래서 결과 문구(note)에까지 실패를 실어 보낸다.
+                    print(f"[tts] ⚠ 나레이션 실패 → 무음으로 진행합니다: {e}")
+                    narration_fail = str(e)[:120]
                     voices = None
 
         segs: list[Path] = []
@@ -280,14 +285,19 @@ def _build_scene_reel(item: dict, outfile: Path, brand: str, handle: str) -> tup
                 audio_mod.mux_with_voice(silent, track, vtrack, outfile)
                 narration = f" / 나레이션 {sum(1 for v in voices if v)}컷"
             except Exception as e:                                # noqa: BLE001
-                print(f"[tts] 오디오 합치기 실패 → 배경음만: {e}")
+                print(f"[tts] ⚠ 오디오 합치기 실패 → 배경음만: {e}")
+                narration_fail = str(e)[:120]
                 audio_mod.mux(silent, track, outfile)
         else:
             audio_mod.mux(silent, track, outfile)
+            if tts_mod.enabled() and not narration_fail:
+                narration_fail = "읽을 문장이 없었습니다"
     finally:
         shutil.rmtree(work, ignore_errors=True)
 
     n_beats = sum(1 for s in plan if s["kind"] == "beat")
+    if narration_fail:
+        narration = f" / ⚠ 목소리 없음({narration_fail})"
     note = (f"전용화면 · 본문 {n_beats}장 / "
             f"{audio_mod.probe_duration(outfile):.1f}초 / 음원 {source}{narration}")
     return outfile, note

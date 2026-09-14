@@ -27,6 +27,7 @@ import os
 import sys
 import time
 from datetime import datetime
+from itertools import zip_longest
 from pathlib import Path
 
 import yaml
@@ -68,19 +69,28 @@ def candidates(queue: dict, source: str = "all") -> list[dict]:
     한쪽만 보면 GPT 트랙 편들이 통째로 빠져 채널에 구멍이 생긴다.
     """
     done = uploaded_ids()
-    out: list[dict] = []
+    q_rows: list[dict] = []
+    c_rows: list[dict] = []
 
     if source in ("all", "queue"):
         by_id = {i["id"]: i for i in queue["items"]}
         for pid in posted_ids():
             if pid in by_id and pid not in done:
-                out.append(by_id[pid])
+                q_rows.append(by_id[pid])
 
     if source in ("all", "codex"):
         for it in codex_bridge.load_items(only_published=True):
             if it["id"] not in done:
-                out.append(it)
+                c_rows.append(it)
 
+    # 두 트랙을 번갈아 낸다. 한쪽을 다 소진하고 넘어가면, 3편만 뽑을 때
+    # 한쪽 트랙만 나와서 '다른 쪽은 왜 빠졌냐'는 오해가 생긴다.
+    out: list[dict] = []
+    for a, b in zip_longest(q_rows, c_rows):
+        if a is not None:
+            out.append(a)
+        if b is not None:
+            out.append(b)
     return out
 
 
@@ -144,9 +154,12 @@ def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
         # 짜맞추는 게 진짜 귀찮은 일이라, 한 폴더에 같이 떨어뜨린다.
         bundle = save_bundle(item, mp4, title, desc)
         print(f"[bundle] {bundle}")
+        if "목소리 없음" in note:
+            print("[stop] ⚠ 나레이션이 들어가지 않았습니다. 위 [tts] 줄을 확인하세요.")
         if notify.enabled():
             try:
-                notify.send_video(mp4, f"🔴 쇼츠 검토용 · {title}")
+                warn = "  ⚠ 목소리 없음" if "목소리 없음" in note else ""
+                notify.send_video(mp4, f"🔴 쇼츠 검토용 · {title}{warn}")
             except Exception as e:                                # noqa: BLE001
                 print(f"[telegram] 전송 실패: {e}")
         return True

@@ -28,10 +28,9 @@
 
 환경변수
   REEL_TTS        1(기본) | 0    나레이션 자체를 끈다
-  TTS_VOICE       ko-KR-YuJinNeural (기본, 여성·또렷)
-                  ko-KR-JiMinNeural(여성·가벼움) / ko-KR-SunHiNeural(여성·표준)
-                  ko-KR-BongJinNeural(남성·활기) / ko-KR-InJoonNeural(남성·뉴스)
-                  ko-KR-HyunsuMultilingualNeural(남성·차분)
+  TTS_VOICE       ko-KR-SunHiNeural (기본, 여성 — 한국어 여성은 이것뿐)
+                  ko-KR-InJoonNeural(남성·뉴스) / ko-KR-HyunsuMultilingualNeural(남성·차분)
+                  ※ 이 셋 말고는 없다. 다른 이름을 넣으면 기본값으로 대체된다
   TTS_RATE        +22% (기본)    쇼츠는 빠른 편이 완주율이 낫다
   TTS_PITCH       +0Hz (기본)
 """
@@ -56,8 +55,16 @@ TAIL = 0.42              # 말이 끝나고 다음 장면까지 (숨 쉴 틈)
 MAX_LINE = 90            # 화면 문구를 읽을 때의 상한
 SCRIPT_LINE = 150        # 손으로 쓴 대본은 더 길어도 된다(장면이 늘어난다)
 
+# edge-tts 의 한국어 목소리는 이 셋뿐이다. 목록에 없는 이름을 넣으면
+# 합성이 통째로 실패하고, 폴백 때문에 '소리 없는 영상'이 조용히 나간다.
+# 그 사고를 막으려고 여기서 이름을 검사한다.
+KNOWN_VOICES = {
+    "ko-KR-SunHiNeural",                # 여성 (한국어 여성은 이것뿐)
+    "ko-KR-InJoonNeural",               # 남성·뉴스톤
+    "ko-KR-HyunsuMultilingualNeural",   # 남성·차분
+}
 # 쇼츠는 또렷하고 빠른 편이 귀에 박힌다. 차분한 남성 톤은 설명이 늘어진다.
-DEFAULT_VOICE = "ko-KR-YuJinNeural"
+DEFAULT_VOICE = "ko-KR-SunHiNeural"
 DEFAULT_RATE = "+22%"
 
 
@@ -229,6 +236,10 @@ def synth_line(text: str, out: Path, voice: str = "", rate: str = "",
 
     # 워크플로가 빈 문자열을 넘길 수 있어 getenv 기본값이 아니라 or 로 받는다
     voice = voice or os.getenv("TTS_VOICE") or DEFAULT_VOICE
+    if voice not in KNOWN_VOICES:
+        print(f"[tts] ⚠ '{voice}' 는 없는 목소리입니다 → {DEFAULT_VOICE} 로 대체합니다 "
+              f"(가능: {', '.join(sorted(KNOWN_VOICES))})")
+        voice = DEFAULT_VOICE
     rate = rate or os.getenv("TTS_RATE") or DEFAULT_RATE
     pitch = pitch or os.getenv("TTS_PITCH") or "+0Hz"
 
