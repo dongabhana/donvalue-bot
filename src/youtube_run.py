@@ -106,25 +106,53 @@ def pick(queue: dict, want: str = "", count: int = 1,
     return candidates(queue, source)[:count]
 
 
+# 윈도우에서 파일명에 못 쓰는 문자. 유튜브 제목엔 써도 되지만 파일명에선 빼야 한다.
+_BAD_FILENAME = str.maketrans({c: " " for c in '\\/:*?"<>|\n\r\t'})
+
+
+def filename_title(title: str) -> str:
+    """유튜브 업로드 화면이 파일명을 제목 기본값으로 채운다는 점을 이용한다.
+
+    파일명을 'NN_편id' 로 두면 업로드 후 26개 영상의 제목을 하나씩 지우고
+    다시 타이핑해야 한다. 파일명을 제목 그대로 두면 그 단계가 통째로 사라진다.
+    앞의 두 자리 번호는 업로드 순서를 유지하려고 남긴다(정렬용).
+    """
+    clean = " ".join(title.translate(_BAD_FILENAME).split())
+    return clean[:90].rstrip(" .")          # 유튜브 제목 100자, 여유 두고 자른다
+
+
 def save_bundle(item: dict, mp4: Path, title: str, desc: str) -> Path:
     """영상 + 제목 + 설명을 날짜 폴더 한 곳에 모은다.
 
-    유튜브 업로드 화면에서 제목·설명을 복붙만 하면 되게 만드는 게 목적이다.
     심사 통과 전까지는 이 폴더가 사실상의 '발행 대기함'이다.
         out/2026-09-14/
-          01_001-coupang-wow.mp4
-          01_001-coupang-wow.txt      ← 제목 첫 줄, 빈 줄, 설명
+          01 쿠팡 와우 월 7890원, 본전 뽑는 사람 적다.mp4   ← 파일명 = 제목
+          01 쿠팡 와우 월 7890원, 본전 뽑는 사람 적다.txt   ← 설명(그대로 붙여넣기)
+          _업로드안내.txt                                  ← 전체 목록 한 장
+    영상 여러 개를 한 번에 끌어다 놓으면 제목은 이미 채워져 있고,
+    설명만 편당 한 번 붙여넣으면 된다.
     """
     day = datetime.now(KST).strftime("%Y-%m-%d")
     folder = ROOT / "out" / day
     folder.mkdir(parents=True, exist_ok=True)
     seq = len([p for p in folder.glob("*.mp4")]) + 1
-    stem = f"{seq:02d}_{item['id']}"
+    stem = f"{seq:02d} {filename_title(title)}"
 
     target = folder / f"{stem}.mp4"
     target.write_bytes(mp4.read_bytes())
-    (folder / f"{stem}.txt").write_text(
-        f"{title}\n\n{desc}\n", encoding="utf-8")
+    (folder / f"{stem}.txt").write_text(desc + "\n", encoding="utf-8")
+
+    guide = folder / "_업로드안내.txt"
+    if not guide.exists():
+        guide.write_text(
+            "유튜브 스튜디오 → 만들기 → 동영상 업로드\n"
+            "mp4 를 한 번에 여러 개 끌어다 놓으면 제목은 파일명으로 자동으로 채워진다.\n"
+            "편당 할 일은 설명 붙여넣기 하나뿐이다. 아래는 편별 설명 전문.\n"
+            "공개 범위는 심사 통과 전까지 '비공개' 로 두지 말고 직접 올린 것이므로\n"
+            "바로 공개해도 된다(API 로 올린 영상만 잠긴다).\n"
+            + "=" * 60 + "\n", encoding="utf-8")
+    with guide.open("a", encoding="utf-8") as fh:
+        fh.write(f"\n[{seq:02d}] {title}\n{'-' * 60}\n{desc}\n")
     return target
 
 
