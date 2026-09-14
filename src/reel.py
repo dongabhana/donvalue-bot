@@ -404,6 +404,18 @@ def build_reel_for(item: dict, paths: list[Path], outfile: Path,
     if not ffmpeg_available():
         raise ReelError("ffmpeg 가 없습니다. 워크플로에서 apt-get install ffmpeg 를 확인하세요.")
 
+    # GPT(codex) 편은 codex 자신의 화면으로 만든다. 사진 표지·픽토그램·팔레트가
+    # 그쪽에 이미 있는데 이쪽 화면으로 다시 그리면 표지부터 나빠진다.
+    if item.get("source") == "codex":
+        try:
+            from src import codex_reel
+            cx = codex_reel.raw_item(item["id"])
+            if cx:
+                return codex_reel.build(cx, outfile)
+            print(f"[codex] {item['id']} 원본을 못 찾아 기본 화면으로 진행합니다")
+        except Exception as e:                                    # noqa: BLE001
+            print(f"[codex] 자체 화면 실패 → 기본 화면으로 진행: {e}")
+
     style = (style or os.getenv("REEL_STYLE") or "scene").lower()
     if style == "scene":
         try:
