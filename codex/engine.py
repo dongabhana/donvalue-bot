@@ -38,7 +38,9 @@ def validate(item):
     assert item['format'] in ('reel', 'carousel')
     due = datetime.fromisoformat(item['publish_at'])
     assert due.utcoffset() == timedelta(hours=9)
-    assert due.weekday() in (0, 2, 5) and due.hour == 20 and due.minute == 0
+    # 2026-09-14 월·수·토 → 월·수·금·토. 남은 편을 연내에 다 내려면
+    # 주 3회로는 슬롯이 모자라 금요일을 열었다(Claude 트랙은 화·목·일).
+    assert due.weekday() in (0, 2, 4, 5) and due.hour == 20 and due.minute == 0
     assert 2 <= len(item['slides']) <= 10
     assert len(item['caption']) <= 2200
     assert all(0 < len(t) <= 500 for t in [item['threads_text'], *item['threads_chain']])
