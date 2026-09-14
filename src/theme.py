@@ -324,7 +324,14 @@ def motif_from(item: dict, h: dict | None = None) -> str:
 
 def load_cover(root, item_id: str, w: int, h: int, seed: str,
                motif: str = "") -> Image.Image:
-    """assets/covers 에 사진이 있으면 그걸 꽉 채워 쓰고, 없으면 생성 배경을 쓴다."""
+    """표지 배경을 고른다. 우선순위 세 단계.
+
+      1) assets/covers/<편id>.jpg  — 그 편 전용으로 넣어둔 사진이 있으면 그게 1순위.
+         '파일만 넣으면 표지가 바뀐다'는 규칙은 단순해야 쓸모가 있다.
+      2) cover_variants 레시피 — 전용 사진이 없으면, 갖고 있는 사진들을 편마다
+         다르게 조합해 만든다. 같은 사진이 프로필에서 여러 번 보이는 걸 막는다.
+      3) 둘 다 없으면 직접 만든 배경(hero_background).
+    """
     from pathlib import Path
     for ext in (".jpg", ".jpeg", ".png", ".webp"):
         p = Path(root) / COVER_DIR / f"{item_id}{ext}"
@@ -335,6 +342,15 @@ def load_cover(root, item_id: str, w: int, h: int, seed: str,
                              Image.LANCZOS)
             left, top = (src.width - w) // 2, (src.height - h) // 2
             return src.crop((left, top, left + w, top + h))
+
+    try:
+        from src import cover_variants
+        made = cover_variants.render_variant(root, item_id, w, h)
+        if made is not None:
+            return made
+    except Exception:                                             # noqa: BLE001
+        pass                      # 표지는 있으면 좋은 것. 실패해도 배경으로 간다.
+
     return hero_background(w, h, seed, motif)
 
 
