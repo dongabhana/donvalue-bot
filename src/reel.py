@@ -33,6 +33,7 @@ v2 에서 바뀐 것 (2026-09)
 from __future__ import annotations
 
 import shutil
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -40,6 +41,12 @@ from pathlib import Path
 W, H = 1080, 1920
 BG = "#101217"
 FPS = 30
+
+# 화질/용량 손잡이. 숫자가 클수록 파일이 작아진다(화질은 조금 내려간다).
+# 회사망처럼 업로드 용량 제한이 있는 곳에서 손으로 올려야 할 때 쓴다.
+#   20 = 기본(편당 10MB 안팎) / 28 = 가벼움(편당 3MB 안팎)
+# 유튜브는 어차피 받아서 다시 인코딩하므로 28 정도까지는 체감 차이가 작다.
+CRF = os.getenv("REEL_CRF", "20")
 
 CPS = 17.5          # 초당 읽는 글자 수. 릴스는 정독이 아니라 훑는 속도다.
 MIN_SEC = 3.2       # 이보다 짧으면 무슨 장이었는지도 남지 않는다
@@ -197,7 +204,7 @@ def _encode_scene(png: Path, seconds: float, motion: str, out: Path) -> Path:
     r = subprocess.run(
         ["ffmpeg", "-y", "-loglevel", "error", "-i", str(png),
          "-vf", vf, "-frames:v", str(n),
-         "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+         "-c:v", "libx264", "-preset", "medium", "-crf", CRF,
          "-pix_fmt", "yuv420p", "-r", str(FPS), str(out)],
         capture_output=True, text=True)
     if r.returncode != 0 or not out.exists():
@@ -334,7 +341,7 @@ def _build_reel_motion(card_paths: list[Path], durations: list[float],
 
     args += ["-filter_complex", "".join(parts),
              "-map", "[v]", "-map", f"{len(card_paths)+1}:a",
-             "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+             "-c:v", "libx264", "-preset", "medium", "-crf", CRF,
              "-pix_fmt", "yuv420p", "-movflags", "+faststart",
              "-c:a", "aac", "-b:a", "96k", "-shortest", str(outfile)]
 
@@ -380,7 +387,7 @@ def build_reel(card_paths: list[Path], outfile: Path,
            "-f", "concat", "-safe", "0", "-i", str(concat),
            "-f", "lavfi", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
            "-vf", vf, "-r", str(FPS),
-           "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+           "-c:v", "libx264", "-preset", "medium", "-crf", CRF,
            "-pix_fmt", "yuv420p", "-movflags", "+faststart",
            "-c:a", "aac", "-b:a", "96k", "-shortest", str(outfile)]
     r = subprocess.run(cmd, capture_output=True, text=True)

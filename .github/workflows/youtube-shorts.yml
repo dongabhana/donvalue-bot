@@ -23,6 +23,10 @@ on:
         description: "private | unlisted | public — 심사 통과 전에는 private 만 의미 있음"
         required: false
         default: "private"
+      crf:
+        description: "화질/용량 — 20 기본(편당 10MB 안팎) | 28 가벼움(편당 3MB 안팎). 업로드 용량 제한이 있을 때 28"
+        required: false
+        default: "20"
       tts_voice:
         description: "목소리 — SunHi(여) | InJoon(남·뉴스) | HyunsuMultilingual(남). 비우면 ko-KR-SunHiNeural"
         required: false
@@ -77,6 +81,7 @@ jobs:
           YT_BACKFILL_GAP_MIN: "5"
           REEL_TTS: "1"
           TTS_VOICE: ${{ github.event.inputs.tts_voice }}
+          REEL_CRF: ${{ github.event.inputs.crf || '20' }}
           TTS_RATE: "+22%"
           REEL_MUSIC_VOICE_DB: "-13"
           GITHUB_REPOSITORY: ${{ github.repository }}

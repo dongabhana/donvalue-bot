@@ -23,6 +23,7 @@ GPT(codex) 편은 codex 자신의 화면으로 영상을 만든다.
 from __future__ import annotations
 
 import shutil
+import os
 import subprocess
 import tempfile
 from pathlib import Path
@@ -30,6 +31,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 W, H = 1080, 1920
 FPS = 30
+
+# 화질/용량 손잡이. 숫자가 클수록 파일이 작아진다(화질은 조금 내려간다).
+# 회사망처럼 업로드 용량 제한이 있는 곳에서 손으로 올려야 할 때 쓴다.
+#   20 = 기본(편당 10MB 안팎) / 28 = 가벼움(편당 3MB 안팎)
+# 유튜브는 어차피 받아서 다시 인코딩하므로 28 정도까지는 체감 차이가 작다.
+CRF = os.getenv("REEL_CRF", "21")
 
 # codex 카드가 1080x1350 으로 나오는 스타일은 세로로 채워야 한다.
 PAD_TOP = 250
@@ -107,7 +114,7 @@ def _encode(png: Path, seconds: float, out: Path, pad_bg: str | None) -> Path:
     r = subprocess.run(
         ["ffmpeg", "-y", "-loglevel", "error", "-i", str(png), "-vf", vf,
          "-frames:v", str(n), "-c:v", "libx264", "-preset", "medium",
-         "-crf", "21", "-pix_fmt", "yuv420p", "-r", str(FPS), str(out)],
+         "-crf", CRF, "-pix_fmt", "yuv420p", "-r", str(FPS), str(out)],
         capture_output=True, text=True)
     if r.returncode != 0 or not out.exists():
         raise CodexReelError(f"ffmpeg(codex 장면) 실패: {r.stderr[:300]}")
