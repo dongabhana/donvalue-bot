@@ -6,6 +6,7 @@ ROOT=Path(__file__).resolve().parent.parent
 SRC=ROOT/'codex/threshold_specs.json'; DST=ROOT/'codex/content.json'
 CUTOFF=datetime.fromisoformat('2026-09-16T00:00:00+09:00')
 CUSTOMS='https://www.customs.go.kr/kcs/ad/tax/BuyTaxCalculation.do'
+# Cover hashes are computed from repository bytes, so changing a source photo cannot silently publish stale art.
 
 def slide(title,body,note,value,seconds):
     return {'title':title,'body':body,'note':note,'seconds':seconds,'visual':{'kind':'metric','value':value,'label':'분기점'}}
