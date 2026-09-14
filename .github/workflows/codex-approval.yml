@@ -1,5 +1,11 @@
 name: Codex preview approvals and publishing
 on:
+  push:
+    branches: [main]
+    paths:
+      - 'codex/threshold_specs.json'
+      - 'codex/build_threshold_queue.py'
+      - '.github/workflows/codex-approval.yml'
   schedule:
     - cron: '*/15 * * * *'
   workflow_dispatch:
@@ -22,6 +28,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -30,6 +37,17 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
           pip install -r requirements.txt
+      - name: Build and persist threshold queue
+        run: |
+          python codex/build_threshold_queue.py
+          git config user.name donvalue-bot
+          git config user.email bot@users.noreply.github.com
+          git add codex/content.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'Activate GPT threshold-track queue'
+            git pull --rebase origin main
+            git push origin main
+          fi
       - name: Verify approval invariants
         run: python -m unittest discover -s codex/tests -v
       - name: Run isolated Codex engine
