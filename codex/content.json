@@ -560,7 +560,7 @@
     },
     {
       "id": "cx019-camera-rent",
-      "publish_at": "2026-10-14T20:00:00+09:00",
+      "publish_at": "2026-10-07T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -676,7 +676,7 @@
     },
     {
       "id": "cx020-gaming-hours",
-      "publish_at": "2026-10-17T20:00:00+09:00",
+      "publish_at": "2026-10-09T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -792,7 +792,7 @@
     },
     {
       "id": "cx021-coupon-cap",
-      "publish_at": "2026-10-19T20:00:00+09:00",
+      "publish_at": "2026-10-10T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -908,7 +908,7 @@
     },
     {
       "id": "cx022-cloud-tier",
-      "publish_at": "2026-10-21T20:00:00+09:00",
+      "publish_at": "2026-10-12T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -1044,7 +1044,7 @@
     },
     {
       "id": "cx023-detergent-dose",
-      "publish_at": "2026-10-24T20:00:00+09:00",
+      "publish_at": "2026-10-14T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1160,7 +1160,7 @@
     },
     {
       "id": "cx024-rental-total",
-      "publish_at": "2026-10-26T20:00:00+09:00",
+      "publish_at": "2026-10-16T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1276,7 +1276,7 @@
     },
     {
       "id": "cx025-stamp-detour",
-      "publish_at": "2026-10-28T20:00:00+09:00",
+      "publish_at": "2026-10-17T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -1392,7 +1392,7 @@
     },
     {
       "id": "cx026-fuel-detour",
-      "publish_at": "2026-10-31T20:00:00+09:00",
+      "publish_at": "2026-10-19T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1508,7 +1508,7 @@
     },
     {
       "id": "cx027-game-season",
-      "publish_at": "2026-11-02T20:00:00+09:00",
+      "publish_at": "2026-10-21T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1643,7 +1643,7 @@
     },
     {
       "id": "cx028-cloud-and-disk",
-      "publish_at": "2026-11-04T20:00:00+09:00",
+      "publish_at": "2026-10-23T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -1794,7 +1794,7 @@
     },
     {
       "id": "cx029-monthly-price",
-      "publish_at": "2026-11-07T20:00:00+09:00",
+      "publish_at": "2026-10-24T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -1926,7 +1926,7 @@
     },
     {
       "id": "cx030-benefit-net",
-      "publish_at": "2026-11-09T20:00:00+09:00",
+      "publish_at": "2026-10-26T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2042,7 +2042,7 @@
     },
     {
       "id": "cx031-bulk-space",
-      "publish_at": "2026-11-11T20:00:00+09:00",
+      "publish_at": "2026-10-28T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -2158,7 +2158,7 @@
     },
     {
       "id": "cx032-noise-demo",
-      "publish_at": "2026-11-14T20:00:00+09:00",
+      "publish_at": "2026-10-30T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2274,7 +2274,7 @@
     },
     {
       "id": "cx033-portion-weight",
-      "publish_at": "2026-11-16T20:00:00+09:00",
+      "publish_at": "2026-10-31T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2390,7 +2390,7 @@
     },
     {
       "id": "cx034-transport-pass",
-      "publish_at": "2026-11-18T20:00:00+09:00",
+      "publish_at": "2026-11-02T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -2506,7 +2506,7 @@
     },
     {
       "id": "cx035-display-extra",
-      "publish_at": "2026-11-21T20:00:00+09:00",
+      "publish_at": "2026-11-04T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2622,7 +2622,7 @@
     },
     {
       "id": "cx036-keyboard-use",
-      "publish_at": "2026-11-23T20:00:00+09:00",
+      "publish_at": "2026-11-06T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2738,7 +2738,7 @@
     },
     {
       "id": "cx037-return-cost",
-      "publish_at": "2026-11-25T20:00:00+09:00",
+      "publish_at": "2026-11-07T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -2854,7 +2854,7 @@
     },
     {
       "id": "cx038-wash-pack",
-      "publish_at": "2026-11-28T20:00:00+09:00",
+      "publish_at": "2026-11-09T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -2970,7 +2970,7 @@
     },
     {
       "id": "cx039-reusable-use",
-      "publish_at": "2026-11-30T20:00:00+09:00",
+      "publish_at": "2026-11-11T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3086,7 +3086,7 @@
     },
     {
       "id": "cx040-energy-premium",
-      "publish_at": "2026-12-02T20:00:00+09:00",
+      "publish_at": "2026-11-13T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -3202,7 +3202,7 @@
     },
     {
       "id": "cx041-buffet-choice",
-      "publish_at": "2026-12-05T20:00:00+09:00",
+      "publish_at": "2026-11-14T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3318,7 +3318,7 @@
     },
     {
       "id": "cx042-bike-rental",
-      "publish_at": "2026-12-07T20:00:00+09:00",
+      "publish_at": "2026-11-16T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3434,7 +3434,7 @@
     },
     {
       "id": "cx043-class-attendance",
-      "publish_at": "2026-12-09T20:00:00+09:00",
+      "publish_at": "2026-11-18T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -3550,7 +3550,7 @@
     },
     {
       "id": "cx044-monitor-desk",
-      "publish_at": "2026-12-12T20:00:00+09:00",
+      "publish_at": "2026-11-20T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3666,7 +3666,7 @@
     },
     {
       "id": "cx045-bundle-unused",
-      "publish_at": "2026-12-14T20:00:00+09:00",
+      "publish_at": "2026-11-21T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -3800,7 +3800,7 @@
     },
     {
       "id": "cx046-pair-plan",
-      "publish_at": "2026-12-16T20:00:00+09:00",
+      "publish_at": "2026-11-23T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -3935,7 +3935,7 @@
     },
     {
       "id": "cx047-recharge-count",
-      "publish_at": "2026-12-19T20:00:00+09:00",
+      "publish_at": "2026-11-25T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4051,7 +4051,7 @@
     },
     {
       "id": "cx048-used-install",
-      "publish_at": "2026-12-21T20:00:00+09:00",
+      "publish_at": "2026-11-27T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4167,7 +4167,7 @@
     },
     {
       "id": "cx049-voucher-use",
-      "publish_at": "2026-12-23T20:00:00+09:00",
+      "publish_at": "2026-11-28T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -4283,7 +4283,7 @@
     },
     {
       "id": "cx050-hotel-total",
-      "publish_at": "2026-12-26T20:00:00+09:00",
+      "publish_at": "2026-11-30T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4399,7 +4399,7 @@
     },
     {
       "id": "cx051-study-tool",
-      "publish_at": "2026-12-28T20:00:00+09:00",
+      "publish_at": "2026-12-02T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4515,7 +4515,7 @@
     },
     {
       "id": "cx052-ports-needed",
-      "publish_at": "2026-12-30T20:00:00+09:00",
+      "publish_at": "2026-12-04T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -4658,7 +4658,7 @@
     },
     {
       "id": "cx053-point-mission",
-      "publish_at": "2027-01-02T20:00:00+09:00",
+      "publish_at": "2026-12-05T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -4774,7 +4774,7 @@
     },
     {
       "id": "cx054-taxi-vs-driver",
-      "publish_at": "2026-09-14T20:00:00+09:00",
+      "publish_at": "2026-09-18T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -5131,137 +5131,8 @@
       "track": "threshold-v2"
     },
     {
-      "id": "cx102-import-domestic",
-      "publish_at": "2026-09-26T20:00:00+09:00",
-      "format": "reel",
-      "verified": true,
-      "content_version": 2,
-      "category": "직구",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "102-import-domestic",
-      "topic": "해외직구 vs 국내 구매",
-      "hook": "151달러면 초과 1달러만 세금? 아니다",
-      "hook_candidates": [
-        "151달러면 초과 1달러만 세금? 아니다",
-        "$150에서 답이 갈린다",
-        "해외직구 vs 국내 구매, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "151달러면 초과 1달러만 세금? 아니다",
-          "body": "해외직구 vs 국내 구매. 이번 편은 $150에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "$150",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "수입신고 150달러 이하 = 면세",
-          "body": "자가사용 수입신고 물품은 물품가격 미화 150달러 이하일 때 관세·부가세 면세.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "$150",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "151달러면 초과 1달러만 과세? X",
-          "body": "150달러를 빼고 남은 부분만 과세하는 방식이 아니다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "$150",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "$150 넘으면 전체 과세가격 기준",
-          "body": "150달러 초과 시 공제 없이 총과세가격 전체에 과세.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "$150",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "미국발 목록통관은 $200 예외",
-          "body": "미국발 목록통관 대상은 200달러 이하 기준 가능.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "$150",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "직구 최종가는 운임·보험까지",
-          "body": "국제운임·보험·세금·반품비·A/S까지 합쳐 국내가와 비교.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.0,
-          "visual": {
-            "kind": "metric",
-            "value": "$150",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "151달러면 초과 1달러만 세금? 아니다\n\n150달러 초과 시 공제 없이 총과세가격 전체에 과세.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 자가사용 수입신고 물품은 물품가격 미화 150달러 이하일 때 관세·부가세 면세. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "해외직구 vs 국내 구매.\n\n핵심 분기점은 $150. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "자가사용 수입신고 물품은 물품가격 미화 150달러 이하일 때 관세·부가세 면세. / 150달러를 빼고 남은 부분만 과세하는 방식이 아니다. / 150달러 초과 시 공제 없이 총과세가격 전체에 과세. / 미국발 목록통관 대상은 200달러 이하 기준 가능. / 국제운임·보험·세금·반품비·A/S까지 합쳐 국내가와 비교. / 관세청: https://www.customs.go.kr/kcs/ad/tax/BuyTaxCalculation.do",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": true,
-        "sources": [
-          {
-            "name": "관세청 해외직구물품 예상세액 조회",
-            "url": "https://www.customs.go.kr/kcs/ad/tax/BuyTaxCalculation.do",
-            "scope_start": "자가사용물품 면세기준(금액)",
-            "scope_end": "자가사용물품 면세기준(물품가격 미화150달러) 국가별 환산금액",
-            "required_tokens": [
-              "물품가격미화150달러이하",
-              "미국은200달러이하",
-              "미화150달러초과",
-              "공제없이총과세가격"
-            ],
-            "offers": [
-              "자가사용물품 면세기준"
-            ]
-          }
-        ],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "자가사용 수입신고 물품은 물품가격 미화 150달러 이하일 때 관세·부가세 면세. / 150달러를 빼고 남은 부분만 과세하는 방식이 아니다. / 150달러 초과 시 공제 없이 총과세가격 전체에 과세."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "official_rule_verified",
-      "cover_photo": {
-        "path": "assets/covers/household-photo-v2.jpg",
-        "sha256": "1c5eee16bc960d9244fd4e6002a610d4e200818081ae1f14a122cd82d601ca14",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
       "id": "cx103-taxi-transit",
-      "publish_at": "2026-09-28T20:00:00+09:00",
+      "publish_at": "2026-09-25T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -5374,7 +5245,7 @@
     },
     {
       "id": "cx104-self-full-gas",
-      "publish_at": "2026-09-30T20:00:00+09:00",
+      "publish_at": "2026-09-26T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -5487,7 +5358,7 @@
     },
     {
       "id": "cx105-daily-monthly-lens",
-      "publish_at": "2026-10-03T20:00:00+09:00",
+      "publish_at": "2026-09-28T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -5600,7 +5471,7 @@
     },
     {
       "id": "cx106-refurb-new",
-      "publish_at": "2026-10-05T20:00:00+09:00",
+      "publish_at": "2026-09-30T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -5713,7 +5584,7 @@
     },
     {
       "id": "cx107-filter-service",
-      "publish_at": "2026-10-07T20:00:00+09:00",
+      "publish_at": "2026-10-02T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -5826,7 +5697,7 @@
     },
     {
       "id": "cx108-subscribe-ondemand",
-      "publish_at": "2026-10-10T20:00:00+09:00",
+      "publish_at": "2026-10-03T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -5939,7 +5810,7 @@
     },
     {
       "id": "cx109-printer-tank",
-      "publish_at": "2026-10-12T20:00:00+09:00",
+      "publish_at": "2026-10-05T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,
@@ -6052,7 +5923,7 @@
     },
     {
       "id": "cx110-bulk-small",
-      "publish_at": "2027-01-04T20:00:00+09:00",
+      "publish_at": "2026-12-07T20:00:00+09:00",
       "format": "reel",
       "verified": true,
       "content_version": 2,
@@ -6165,7 +6036,7 @@
     },
     {
       "id": "cx111-annual-monthly",
-      "publish_at": "2027-01-06T20:00:00+09:00",
+      "publish_at": "2026-12-09T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "content_version": 2,

@@ -3,8 +3,7 @@ import re, unicodedata, requests
 from html.parser import HTMLParser
 from urllib.parse import urlparse
 
-ALLOWED_HOSTS={'support.apple.com','www.apple.com','www.microsoft.com','store.nintendo.co.kr',
-               'news.seoul.go.kr','www.customs.go.kr'}
+ALLOWED_HOSTS={'support.apple.com','www.apple.com','www.microsoft.com','store.nintendo.co.kr','news.seoul.go.kr'}
 
 class VisibleText(HTMLParser):
     def __init__(self):

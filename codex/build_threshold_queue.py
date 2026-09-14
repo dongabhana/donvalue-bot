@@ -16,7 +16,7 @@ def item(row,due,ident_override=None):
     ident=ident_override or ident
     slides=[slide(hook,f'{a} vs {b}. 이번 편은 {thr}에서 답이 갈린다.',note,thr,1.8)]
     slides += [slide(t,b,note,thr,3.4 if i<4 else 3.0) for i,(t,b) in enumerate(cards)]
-    real='해외직구' in topic
+    real=False
     sources=[]
     if real:
         sources=[{
@@ -59,7 +59,7 @@ def item(row,due,ident_override=None):
 def validate(x):
     assert re.fullmatch(r'cx[0-9]{3}-[a-z0-9-]+',x['id']) and x['verified'] is True
     d=datetime.fromisoformat(x['publish_at'])
-    assert d.utcoffset()==timedelta(hours=9) and d.weekday() in (0,2,5) and d.hour==20
+    assert d.utcoffset()==timedelta(hours=9) and d.weekday() in (0,2,4,5) and d.hour==20
     assert len(x['slides'])==6 and len({s['title'] for s in x['slides'][1:]})==5
     assert x['slides'][0]['title']==x['hook'] and x['threads_chain']==[]
     assert re.search(r'\d',x['slides'][0]['visual']['value'])
@@ -69,17 +69,16 @@ def validate(x):
 def main():
     data=json.loads(SRC.read_text(encoding='utf-8'))
     rows=data['items']; schedule=data['schedule']
-    assert len(rows)==len(schedule)==12 and len(set(schedule))==12
+    assert len(rows)==len(schedule)==11 and len(set(schedule))==11
     old=json.loads(DST.read_text(encoding='utf-8'))['items']
-    target=[x for x in old if x.get('track')=='threshold-v1']
+    target=[x for x in old if x.get('track')=='threshold-v2']
     target_ids={x['id'] for x in target}
     keep=[x for x in old if x['id'] not in target_ids]
     new=[item(row,due,'cx006-vacation-app' if i==0 else None) for i,(row,due) in enumerate(zip(rows,schedule))]
     for x in new: validate(x)
     occupied={x['publish_at'] for x in keep if not x.get('posted_early_on')}
     assert not (occupied & set(schedule))
-    assert all(not d.startswith(('2026-09-16','2026-09-23')) for d in schedule)
-    assert len({x['cover_photo']['path'] for x in new})==12
+    assert len({x['cover_photo']['path'] for x in new})==11
     DST.write_text(json.dumps({'items':keep+new},ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
     print('THRESHOLD_V2_OK',[(x['id'],x['publish_at'],x['slides'][0]['visual']['value']) for x in new])
 
