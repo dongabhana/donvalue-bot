@@ -24,7 +24,7 @@ on:
         required: false
         default: "private"
       tts_voice:
-        description: "목소리 (비우면 ko-KR-YuJinNeural)"
+        description: "목소리 — SunHi(여) | InJoon(남·뉴스) | HyunsuMultilingual(남). 비우면 ko-KR-SunHiNeural"
         required: false
         default: ""
 
