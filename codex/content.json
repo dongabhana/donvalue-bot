@@ -5011,8 +5011,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/cafe-photo-v2.jpg",
-        "sha256": "2769760d226545e4c554a3c13b7d5e65717abf7b2383433489b2a772e5bc7bf6",
+        "path": "assets/covers/travel-photo-v2.jpg",
+        "sha256": "427f0e099a4ef7af0a318f2d7e6b90839548642a0dc96eb6eda65a87bbdb1f1d",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v1"
@@ -5237,8 +5237,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "path": "assets/covers/household-photo-v2.jpg",
+        "sha256": "1c5eee16bc960d9244fd4e6002a610d4e200818081ae1f14a122cd82d601ca14",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v1"
