@@ -413,7 +413,7 @@ def build_reel_for(item: dict, paths: list[Path], outfile: Path,
 
     # GPT(codex) 편은 codex 자신의 화면으로 만든다. 사진 표지·픽토그램·팔레트가
     # 그쪽에 이미 있는데 이쪽 화면으로 다시 그리면 표지부터 나빠진다.
-    if item.get("source") == "codex":
+    if item.get("track") == "codex":
         try:
             from src import codex_reel
             cx = codex_reel.raw_item(item["id"])
