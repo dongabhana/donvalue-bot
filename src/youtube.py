@@ -153,7 +153,9 @@ def build_description(item: dict, caption: str = "",
     caption = (caption or item.get("caption") or "").strip()
     tags = " ".join(f"#{str(t).lstrip('#')}" for t in (item.get("hashtags") or []))
     parts = [caption]
-    src = str(item.get("source") or item.get("sources") or "").strip()
+    # 사람에게 보여줄 근거 출처만 넣는다. 어느 트랙에서 왔는지(track)는 내부용이라
+    # 설명란에 나가면 안 된다 — 예전엔 "기준·출처: codex" 가 그대로 나갔다.
+    src = str(item.get("sources") or "").strip()
     if src:
         parts.append(f"기준·출처: {src}")
     parts.append(f"{handle} · 돈값하나?")
