@@ -66,7 +66,10 @@ class SeedThreeTests(unittest.TestCase):
         dates=[datetime.fromisoformat(i['publish_at']) for i in remaining]
         # 2026-09-14 해외직구편(cx102) 삭제로 48 → 47.
         # 발행할 때마다 관세청 페이지를 확인해야 하는 유일한 편이라 운영에서 뺐다.
-        self.assertEqual(len(dates),47)
+        # 2026-09-15 충전기편(cx112) 추가로 47 → 48.
+        # ⚠ 큐에 편을 넣거나 빼면 이 숫자도 같이 고쳐야 한다. 실수로 편이 사라지는 것을
+        #   잡으려고 일부러 하드코딩해 둔 값이다.
+        self.assertEqual(len(dates),48)
         self.assertEqual(len(set(dates)),len(dates))
         taxi=next(i for i in remaining if i['id']=='cx054-taxi-vs-driver')
         self.assertEqual(taxi['publish_at'],'2026-09-14T20:00:00+09:00')
