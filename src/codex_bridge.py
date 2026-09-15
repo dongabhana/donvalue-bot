@@ -141,7 +141,9 @@ def to_queue_item(cx: dict) -> dict:
         "hashtags": tags,
         "first_comment": _clean(cx.get("first_comment")),
         "verified": bool(cx.get("verified")),
-        "source": "codex",
+        # 어느 트랙에서 왔는지 표시하는 내부 값. 사람에게 보여줄 출처가 아니므로
+        # 유튜브 설명란 등에 새어나가면 안 된다 (예전 이름은 "source" 였다).
+        "track": "codex",
         "reel": {
             "big": _split_big(hooks_[0] if hooks_ else cx.get("topic", "")),
             "sub": _clean(hooks_[1]) if len(hooks_) > 1 else "",
