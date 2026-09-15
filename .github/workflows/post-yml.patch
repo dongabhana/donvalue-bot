@@ -1,0 +1,63 @@
+diff --git a/.github/workflows/post.yml b/.github/workflows/post.yml
+index ee3eef6..6906774 100644
+--- a/.github/workflows/post.yml
++++ b/.github/workflows/post.yml
+@@ -2,11 +2,21 @@ name: 돈값하나 자동 발행
+ 
+ on:
+   schedule:
+-    # 화·목·일 20:00 KST (= 11:00 UTC). GitHub cron 은 UTC 기준이며
++    # 발행: 화·목·일 20:00 KST (= 11:00 UTC). GitHub cron 은 UTC 기준이며
+     # 러너 혼잡도에 따라 수 분~수십 분 지연될 수 있습니다.
+     - cron: "0 11 * * 0,2,4"
++    # 전날 승인 요청: 월·수·토 20:00 KST. 다음 날 나갈 편을 렌더해 텔레그램으로
++    # 미리 보여주고 [승인]/[수정] 을 받아 content/approval.json 에 남깁니다.
++    # 승인이 남아 있으면 다음 날 발행 크론은 다시 묻지 않고 그대로 올립니다.
++    - cron: "0 11 * * 1,3,6"
+   workflow_dispatch:
+     inputs:
++      mode:
++        description: "publish = 지금 발행 | ask = 내일 나갈 편을 미리 승인받기"
++        required: false
++        type: choice
++        options: [publish, ask]
++        default: publish
+       item_id:
+         description: "특정 항목 id 를 강제 발행 (비우면 큐 순서대로)"
+         required: false
+@@ -55,7 +65,10 @@ permissions:
+   contents: write
+ 
+ concurrency:
+-  group: donvalue-publish
++  # 전날 승인 요청은 최대 3시간 응답을 기다린다. 발행용 잠금(donvalue-publish)을
++  # 그대로 쓰면 그 3시간 동안 GPT 트랙(codex-approval)의 15분 틱이 전부 줄을 서서
++  # 같은 날 GPT 발행이 통째로 밀린다. 그래서 승인 대기만 별도 잠금을 쓴다.
++  group: ${{ (github.event.schedule == '0 11 * * 1,3,6' || github.event.inputs.mode == 'ask') && 'donvalue-eve-approval' || 'donvalue-publish' }}
+   cancel-in-progress: false
+ 
+ jobs:
+@@ -95,6 +108,9 @@ jobs:
+           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+           APPROVAL_REQUIRED: ${{ github.event.inputs.approval == 'false' && '0' || '1' }}
+           APPROVAL_TIMEOUT_MIN: "45"
++          # 전날 승인은 저녁에 여유 있게 기다립니다(20:00~23:00).
++          # 이 안에 응답이 없으면 다음 날 20:00 에 한 번 더 물어봅니다.
++          EVE_APPROVAL_TIMEOUT_MIN: "180"
+           BURST_GAP_MIN: "40"
+           REEL_STYLE: ${{ github.event.inputs.reel_style }}
+           REEL_MUSIC_DB: "-3"
+@@ -114,6 +130,13 @@ jobs:
+           SKIP_THREADS: ${{ github.event.inputs.skip_threads }}
+         run: |
+           ARGS=""
++          # 월·수·토 크론이거나 수동 실행에서 mode=ask 면 '내일 나갈 편 승인받기'.
++          if [ "${{ github.event.schedule }}" = "0 11 * * 1,3,6" ] \
++             || [ "${{ github.event.inputs.mode }}" = "ask" ]; then
++            echo "[mode] 전날 승인 요청 — 내일 나갈 편을 렌더해 텔레그램으로 보냅니다"
++            python -m src.run --ask-tomorrow
++            exit $?
++          fi
+           if [ -n "${{ github.event.inputs.item_id }}" ]; then
+             ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"
+           fi
