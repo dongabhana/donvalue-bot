@@ -170,7 +170,7 @@ def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
     title = youtube.build_title(item, h)
     # codex 편은 캡션에 해시태그까지 이미 들어 있다. build_caption 을 태우면
     # 꼬리말과 태그가 두 번 붙는다.
-    caption = (item["caption"] if item.get("source") == "codex"
+    caption = (item["caption"] if item.get("track") == "codex"
                else build_caption(item, cta))
     desc = youtube.build_description(item, caption, handle)
     size = mp4.stat().st_size / 1024 / 1024
@@ -228,7 +228,7 @@ def main() -> int:
         print(f"이미 유튜브에 올림: {len(done)}편")
         print(f"올릴 수 있는 편: {len(rows)}편\n")
         for n, it in enumerate(rows, 1):
-            src = "codex" if it.get("source") == "codex" else "queue"
+            src = "codex" if it.get("track") == "codex" else "queue"
             print(f"  {n:2}. [{src:5}] {it['id']:24} {it.get('product', '')}")
         return 0
 
