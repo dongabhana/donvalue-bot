@@ -4896,1249 +4896,6 @@
       ]
     },
     {
-      "id": "cx006-vacation-app",
-      "publish_at": "2026-09-18T20:00:00+09:00",
-      "format": "reel",
-      "verified": true,
-      "content_version": 2,
-      "category": "여행",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "006-vacation-app",
-      "topic": "얼리버드 항공권 vs 변경가능 운임",
-      "hook": "20% 싸도 일정이 바뀌면 더 비싸진다",
-      "hook_candidates": [
-        "20% 싸도 일정이 바뀌면 더 비싸진다",
-        "25%에서 답이 갈린다",
-        "얼리버드 vs 변경가능, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "20% 싸도 일정이 바뀌면 더 비싸진다",
-          "body": "얼리버드 vs 변경가능. 이번 편은 25%에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "25%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "환불불가 12만원 / 변경가능 15만원",
-          "body": "예시 운임. 지금 아끼는 돈은 3만원이다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "25%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "3만원 절약 vs 취소 시 12만원 손실",
-          "body": "취소하면 12만원을 잃는다고 가정하면 3만원 ÷ 12만원 = 25%.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "25%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "변경확률 25%가 분기점",
-          "body": "25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "25%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "변경확률 10%면 얼리버드 승",
-          "body": "예상손실은 1.2만원이라 3만원 추가요금보다 작다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "25%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "예약 전 25%부터 체크",
-          "body": "휴가 승인·동행 일정·출장 가능성을 보고 내 변경확률부터 잡는다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "25%",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "20% 싸도 일정이 바뀌면 더 비싸진다\n\n25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 예시 운임. 지금 아끼는 돈은 3만원이다. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "얼리버드 vs 변경가능.\n\n핵심 분기점은 25%. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "예시 운임. 지금 아끼는 돈은 3만원이다. / 취소하면 12만원을 잃는다고 가정하면 3만원 ÷ 12만원 = 25%. / 25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다. / 예상손실은 1.2만원이라 3만원 추가요금보다 작다. / 휴가 승인·동행 일정·출장 가능성을 보고 내 변경확률부터 잡는다.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "예시 운임. 지금 아끼는 돈은 3만원이다. / 취소하면 12만원을 잃는다고 가정하면 3만원 ÷ 12만원 = 25%. / 25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/travel-photo-v2.jpg",
-        "sha256": "427f0e099a4ef7af0a318f2d7e6b90839548642a0dc96eb6eda65a87bbdb1f1d",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx101-installment-cash",
-      "publish_at": "2026-09-19T20:00:00+09:00",
-      "format": "carousel",
-      "verified": true,
-      "content_version": 2,
-      "category": "결제",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "101-installment-cash",
-      "topic": "무이자 할부 vs 일시불 할인",
-      "hook": "무이자 12개월보다 3% 할인이 이길 때",
-      "hook_candidates": [
-        "무이자 12개월보다 3% 할인이 이길 때",
-        "3%에서 답이 갈린다",
-        "무이자 할부 vs 일시불 할인, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "무이자 12개월보다 3% 할인이 이길 때",
-          "body": "무이자 할부 vs 일시불 할인. 이번 편은 3%에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "3%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "일시불 3% = 바로 3만원",
-          "body": "100만원 상품의 3% 할인은 즉시 3만원 절약.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "할부로 남긴 100만원 / 1년 이익은?",
-          "body": "세후수익과 카드혜택을 모두 더한다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "세후수익+혜택 3만원이 분기점",
-          "body": "3만원을 넘으면 할부, 못 넘으면 일시불이 유리.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "2만원밖에 못 벌면 일시불 승",
-          "body": "즉시 할인보다 1만원 부족하다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3%",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "무이자 적립 제외부터 확인",
-          "body": "무이자 이용 시 적립·마일리지 제외 여부를 확인한다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "3%",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "무이자 12개월보다 3% 할인이 이길 때\n\n해당 금액을 넘으면 할부, 못 넘으면 일시불이 유리.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 100만원 상품의 3% 할인은 즉시 3만원 절약. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "무이자 할부 vs 일시불 할인.\n\n핵심 분기점은 3%. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "100만원 상품의 3% 할인은 즉시 3만원 절약. / 세후수익과 카드혜택을 모두 더한다. / 3만원을 넘으면 할부, 못 넘으면 일시불이 유리. / 즉시 할인보다 1만원 부족하다. / 무이자 이용 시 적립·마일리지 제외 여부를 확인한다.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "100만원 상품의 3% 할인은 즉시 3만원 절약. / 세후수익과 카드혜택을 모두 더한다. / 3만원을 넘으면 할부, 못 넘으면 일시불이 유리."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx103-taxi-transit",
-      "publish_at": "2026-09-21T20:00:00+09:00",
-      "format": "carousel",
-      "verified": true,
-      "content_version": 2,
-      "category": "이동",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "103-taxi-transit",
-      "topic": "택시 vs 대중교통",
-      "hook": "3명이면 택시가 사치가 아닐 수 있다",
-      "hook_candidates": [
-        "3명이면 택시가 사치가 아닐 수 있다",
-        "3명에서 답이 갈린다",
-        "택시 vs 대중교통, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "3명이면 택시가 사치가 아닐 수 있다",
-          "body": "택시 vs 대중교통. 이번 편은 3명에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "3명",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "택시 1.8만원 ÷ 3명 = 6천원",
-          "body": "택시 18,000원을 3명이 나누는 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3명",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "대중교통 2천원 + 시간값 4천원",
-          "body": "대중교통 체감비용도 6,000원으로 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3명",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "3명이면 1인 6천원으로 동률",
-          "body": "이 가정에서 세 명이 분기점.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3명",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "2명이면 택시 9천원 / 대중교통 승",
-          "body": "두 명이면 택시 1인 부담이 커진다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "3명",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "4명이면 택시 4,500원 / 택시 승",
-          "body": "실제 거리·할증·막차 여부로 다시 계산.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "3명",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "3명이면 택시가 사치가 아닐 수 있다\n\n이 가정에서 세 명이 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 택시 18,000원을 3명이 나누는 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "택시 vs 대중교통.\n\n핵심 분기점은 3명. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "택시 18,000원을 3명이 나누는 가정. / 대중교통 체감비용도 6,000원으로 가정. / 이 가정에서 세 명이 분기점. / 두 명이면 택시 1인 부담이 커진다. / 실제 거리·할증·막차 여부로 다시 계산.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "택시 18,000원을 3명이 나누는 가정. / 대중교통 체감비용도 6,000원으로 가정. / 이 가정에서 세 명이 분기점."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/taxi-photo-v1.jpg",
-        "sha256": "9de1f4c5bf40302adab1acb18e530938223ad03385c82638d7761efef7da6551",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx104-self-full-gas",
-      "publish_at": "2026-09-25T20:00:00+09:00",
-      "format": "reel",
-      "verified": true,
-      "content_version": 2,
-      "category": "자동차",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "104-self-full-gas",
-      "topic": "셀프주유 vs 일반주유",
-      "hook": "40L부터 셀프주유 5분이 돈이 된다",
-      "hook_candidates": [
-        "40L부터 셀프주유 5분이 돈이 된다",
-        "40L에서 답이 갈린다",
-        "셀프주유 vs 일반주유, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "40L부터 셀프주유 5분이 돈이 된다",
-          "body": "셀프주유 vs 일반주유. 이번 편은 40L에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "40L",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "40L × 리터당 30원 = 1,200원",
-          "body": "40L에서 1,200원 절약 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "40L",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "셀프 5분의 시간값도 1,200원",
-          "body": "시간당 14,400원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "40L",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "40L에서 돈과 시간이 동률",
-          "body": "40L가 분기점.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "40L",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "20L면 절약 600원 / 일반주유 쪽",
-          "body": "절약액이 시간값보다 작다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "40L",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "60L면 절약 1,800원 / 셀프 쪽",
-          "body": "실제 주유소 가격차로 바꿔 계산.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "40L",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "40L부터 셀프주유 5분이 돈이 된다\n\n40L가 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 40L에서 1,200원 절약 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "셀프주유 vs 일반주유.\n\n핵심 분기점은 40L. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "40L에서 1,200원 절약 가정. / 시간당 14,400원 가정. / 40L가 분기점. / 절약액이 시간값보다 작다. / 실제 주유소 가격차로 바꿔 계산.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "40L에서 1,200원 절약 가정. / 시간당 14,400원 가정. / 40L가 분기점."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/parking-photo-v2.jpg",
-        "sha256": "b5c776d5f1297df81cf46046902c821ee7179147d4fd2913a3edabca702210af",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx105-daily-monthly-lens",
-      "publish_at": "2026-09-26T20:00:00+09:00",
-      "format": "carousel",
-      "verified": true,
-      "content_version": 2,
-      "category": "생활",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "105-daily-monthly-lens",
-      "topic": "원데이 렌즈 vs 한달용 렌즈",
-      "hook": "월 12일 쓰면 원데이와 한달용이 갈린다",
-      "hook_candidates": [
-        "월 12일 쓰면 원데이와 한달용이 갈린다",
-        "월 12일에서 답이 갈린다",
-        "원데이 vs 한달용, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "월 12일 쓰면 원데이와 한달용이 갈린다",
-          "body": "원데이 vs 한달용. 이번 편은 월 12일에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "월 12일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "원데이 2천원 × 12일 = 2.4만원",
-          "body": "양안 하루 2,000원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "월 12일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "한달용+세정액 = 월 2.4만원",
-          "body": "월간 렌즈 총비용 24,000원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "월 12일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "월 12일이 비용 분기점",
-          "body": "12일을 넘으면 월간 쪽 비용이 낮아짐.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "월 12일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "월 8일이면 원데이 1.6만원",
-          "body": "가끔 쓰면 원데이가 유리.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "월 12일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "월 20일이면 원데이 4만원",
-          "body": "실제 제품가와 교체주기로 재계산.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "월 12일",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "월 12일 쓰면 원데이와 한달용이 갈린다\n\n12일을 넘으면 월간 쪽 비용이 낮아짐.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 양안 하루 2,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "원데이 vs 한달용.\n\n핵심 분기점은 월 12일. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "양안 하루 2,000원 가정. / 월간 렌즈 총비용 24,000원 가정. / 12일을 넘으면 월간 쪽 비용이 낮아짐. / 가끔 쓰면 원데이가 유리. / 실제 제품가와 교체주기로 재계산.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "양안 하루 2,000원 가정. / 월간 렌즈 총비용 24,000원 가정. / 12일을 넘으면 월간 쪽 비용이 낮아짐."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/hobby-photo-v2.jpg",
-        "sha256": "31868c375aade9fc8a41bb9586b35aa927c73edbcb9c73733798f3e22d60daeb",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx106-refurb-new",
-      "publish_at": "2026-09-28T20:00:00+09:00",
-      "format": "reel",
-      "verified": true,
-      "content_version": 2,
-      "category": "IT",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "106-refurb-new",
-      "topic": "리퍼·전시상품 vs 신품",
-      "hook": "리퍼는 최소 20% 싸야 고민할 이유가 생긴다",
-      "hook_candidates": [
-        "리퍼는 최소 20% 싸야 고민할 이유가 생긴다",
-        "20% 할인에서 답이 갈린다",
-        "리퍼 vs 신품, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "리퍼는 최소 20% 싸야 고민할 이유가 생긴다",
-          "body": "리퍼 vs 신품. 이번 편은 20% 할인에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "20% 할인",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "신품 100만원 / 리퍼 80만원",
-          "body": "차액 20만원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "20% 할인",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "20만원 차이 = 정확히 20%",
-          "body": "같은 모델 기준.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "20% 할인",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "보증 12개월 같다면 20%부터",
-          "body": "보증 동일 시 리퍼 매력이 커진다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "20% 할인",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "보증 3개월이면 20%도 애매",
-          "body": "고장 리스크를 더 떠안는다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "20% 할인",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "가격보다 보증·배터리·반품",
-          "body": "점검주체와 반품기간까지 확인.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "20% 할인",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "리퍼는 최소 20% 싸야 고민할 이유가 생긴다\n\n보증 동일 시 리퍼 매력이 커진다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 차액 20만원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "리퍼 vs 신품.\n\n핵심 분기점은 20% 할인. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "차액 20만원 가정. / 같은 모델 기준. / 보증 동일 시 리퍼 매력이 커진다. / 고장 리스크를 더 떠안는다. / 점검주체와 반품기간까지 확인.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "차액 20만원 가정. / 같은 모델 기준. / 보증 동일 시 리퍼 매력이 커진다."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/camera-photo-v2.jpg",
-        "sha256": "c690449692167190f902fb9519ed7ab05f864c1f5cb14d0634e4030469063d15",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx107-filter-service",
-      "publish_at": "2026-09-30T20:00:00+09:00",
-      "format": "carousel",
-      "verified": true,
-      "content_version": 2,
-      "category": "가전",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "107-filter-service",
-      "topic": "정수기 필터 자가교체 vs 방문관리",
-      "hook": "연 4회 관리면 방문값을 따로 계산해야 한다",
-      "hook_candidates": [
-        "연 4회 관리면 방문값을 따로 계산해야 한다",
-        "연 4회에서 답이 갈린다",
-        "자가교체 vs 방문관리, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "연 4회 관리면 방문값을 따로 계산해야 한다",
-          "body": "자가교체 vs 방문관리. 이번 편은 연 4회에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "연 4회",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "방문관리 추가비 4.8만원/년",
-          "body": "연 48,000원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 4회",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "1회 점검가치 1.2만원으로 보면",
-          "body": "1회당 12,000원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 4회",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "연 4회면 4.8만원으로 동률",
-          "body": "4회가 분기점.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 4회",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "연 2회만 필요하면 자가교체",
-          "body": "체감가치가 24,000원.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 4회",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "연 6회 가치면 방문관리 쪽",
-          "body": "실제 계약 주기로 재계산.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "연 4회",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "연 4회 관리면 방문값을 따로 계산해야 한다\n\n4회가 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 연 48,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "자가교체 vs 방문관리.\n\n핵심 분기점은 연 4회. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "연 48,000원 가정. / 1회당 12,000원 가정. / 4회가 분기점. / 체감가치가 24,000원. / 실제 계약 주기로 재계산.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "연 48,000원 가정. / 1회당 12,000원 가정. / 4회가 분기점."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/refill-photo-v2.jpg",
-        "sha256": "fe940a832a377868afea4dcc3157b0f47062a7500d9ef0e4a961a2eaa31b5235",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx108-subscribe-ondemand",
-      "publish_at": "2026-10-02T20:00:00+09:00",
-      "format": "reel",
-      "verified": true,
-      "content_version": 2,
-      "category": "생활",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "108-subscribe-ondemand",
-      "topic": "정기배송 할인 vs 필요할 때 구매",
-      "hook": "소비주기 30일보다 느리면 할인보다 재고가 쌓인다",
-      "hook_candidates": [
-        "소비주기 30일보다 느리면 할인보다 재고가 쌓인다",
-        "30일에서 답이 갈린다",
-        "정기배송 vs 필요할 때, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "소비주기 30일보다 느리면 할인보다 재고가 쌓인다",
-          "body": "정기배송 vs 필요할 때. 이번 편은 30일에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "30일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "배송 30일 / 실제 소비 40일",
-          "body": "40일 소비 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "30일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "1년 12회 배송 / 실제 소비 약 9회",
-          "body": "약 3회 차이.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "30일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "소비주기 30일이 분기점",
-          "body": "30일 안에 다 쓰면 정기배송과 맞는다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "30일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "40일이면 1년에 약 3개 재고",
-          "body": "할인보다 선결제가 커질 수 있다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "30일",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "25일이면 정기배송이 편하다",
-          "body": "최근 실제 소비 간격을 평균낸다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "30일",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "소비주기 30일보다 느리면 할인보다 재고가 쌓인다\n\n30일 안에 다 쓰면 정기배송과 맞는다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 40일 소비 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "정기배송 vs 필요할 때.\n\n핵심 분기점은 30일. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "40일 소비 가정. / 약 3회 차이. / 30일 안에 다 쓰면 정기배송과 맞는다. / 할인보다 선결제가 커질 수 있다. / 최근 실제 소비 간격을 평균낸다.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "40일 소비 가정. / 약 3회 차이. / 30일 안에 다 쓰면 정기배송과 맞는다."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/food-photo-v2.jpg",
-        "sha256": "fe6ea34da1a826b4365c791c97d0147461dd77030d3fab57a928349f969c0063",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx109-printer-tank",
-      "publish_at": "2026-10-03T20:00:00+09:00",
-      "format": "carousel",
-      "verified": true,
-      "content_version": 2,
-      "category": "IT",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "109-printer-tank",
-      "topic": "저가 프린터 vs 무한잉크 복합기",
-      "hook": "연 500장부터 비싼 본체가 더 싸질 수 있다",
-      "hook_candidates": [
-        "연 500장부터 비싼 본체가 더 싸질 수 있다",
-        "연 500장에서 답이 갈린다",
-        "저가 본체 vs 무한잉크, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "연 500장부터 비싼 본체가 더 싸질 수 있다",
-          "body": "저가 본체 vs 무한잉크. 이번 편은 연 500장에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "연 500장",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "본체 가격차 10만원",
-          "body": "초기 가격차 100,000원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 500장",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "장당 유지비 차이 200원",
-          "body": "잉크·토너 포함 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 500장",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "10만원 ÷ 200원 = 500장",
-          "body": "500장이 분기점.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 500장",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "연 200장이면 저가 본체",
-          "body": "유지비 차이 약 40,000원.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "연 500장",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "연 1,000장이면 무한잉크",
-          "body": "실제 모델의 잉크 가격으로 재계산.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "연 500장",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "연 500장부터 비싼 본체가 더 싸질 수 있다\n\n500장이 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 초기 가격차 100,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "저가 본체 vs 무한잉크.\n\n핵심 분기점은 연 500장. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "초기 가격차 100,000원 가정. / 잉크·토너 포함 가정. / 500장이 분기점. / 유지비 차이 약 40,000원. / 실제 모델의 잉크 가격으로 재계산.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "초기 가격차 100,000원 가정. / 잉크·토너 포함 가정. / 500장이 분기점."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx110-bulk-small",
-      "publish_at": "2026-12-05T20:00:00+09:00",
-      "format": "reel",
-      "verified": true,
-      "content_version": 2,
-      "category": "생활",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "110-bulk-small",
-      "topic": "1년치 대용량 vs 3개월치 소용량",
-      "hook": "30% 싸도 70% 못 쓰면 대용량이 안 싸다",
-      "hook_candidates": [
-        "30% 싸도 70% 못 쓰면 대용량이 안 싸다",
-        "70% 사용에서 답이 갈린다",
-        "1년 대용량 vs 3개월 소용량, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "30% 싸도 70% 못 쓰면 대용량이 안 싸다",
-          "body": "1년 대용량 vs 3개월 소용량. 이번 편은 70% 사용에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "70% 사용",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "소용량 합계 100 / 대용량 가격 70",
-          "body": "30% 할인 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "70% 사용",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "30% 남기면 실제 사용량도 70",
-          "body": "가격 70 ÷ 사용량 70 = 단가 1.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "70% 사용",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "70% 사용이 정확한 분기점",
-          "body": "70% 이상 써야 실사용 단가가 낮아진다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "70% 사용",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "절반만 쓰면 실사용 단가 40%↑",
-          "body": "70 ÷ 50 = 1.4.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "70% 사용",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "90% 쓰면 대용량 단가 약 22%↓",
-          "body": "유통기한·보관공간까지 함께 본다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "70% 사용",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "30% 싸도 70% 못 쓰면 대용량이 안 싸다\n\n70% 이상 써야 실사용 단가가 낮아진다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 30% 할인 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "1년 대용량 vs 3개월 소용량.\n\n핵심 분기점은 70% 사용. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "30% 할인 가정. / 가격 70 ÷ 사용량 70 = 단가 1. / 70% 이상 써야 실사용 단가가 낮아진다. / 70 ÷ 50 = 1.4. / 유통기한·보관공간까지 함께 본다.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "30% 할인 가정. / 가격 70 ÷ 사용량 70 = 단가 1. / 70% 이상 써야 실사용 단가가 낮아진다."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/cafe-photo-v2.jpg",
-        "sha256": "2769760d226545e4c554a3c13b7d5e65717abf7b2383433489b2a772e5bc7bf6",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
-      "id": "cx111-annual-monthly",
-      "publish_at": "2026-12-07T20:00:00+09:00",
-      "format": "carousel",
-      "verified": true,
-      "content_version": 2,
-      "category": "구독",
-      "series": "분기점 계산",
-      "threads_tag": "비교분석",
-      "topic_key": "111-annual-monthly",
-      "topic": "연간결제 vs 월결제",
-      "hook": "2개월 무료면 10개월이 진짜 본전선이다",
-      "hook_candidates": [
-        "2개월 무료면 10개월이 진짜 본전선이다",
-        "10개월에서 답이 갈린다",
-        "연간결제 vs 월결제, 어디서 뒤집힐까"
-      ],
-      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
-      "slides": [
-        {
-          "title": "2개월 무료면 10개월이 진짜 본전선이다",
-          "body": "연간결제 vs 월결제. 이번 편은 10개월에서 답이 갈린다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 1.8,
-          "visual": {
-            "kind": "metric",
-            "value": "10개월",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "월 1만원 × 10개월 = 10만원",
-          "body": "월요금 10,000원 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "10개월",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "연간 10만원 = 사실상 2개월 무료",
-          "body": "12개월을 100,000원에 파는 가정.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "10개월",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "10개월이 정확한 손익분기",
-          "body": "10개월부터 연간결제가 유리.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "10개월",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "8개월만 쓰면 월결제 8만원",
-          "body": "연간보다 20,000원 적다.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3.4,
-          "visual": {
-            "kind": "metric",
-            "value": "10개월",
-            "label": "분기점"
-          }
-        },
-        {
-          "title": "12개월 다 쓰면 연간 2만원 절약",
-          "body": "환불 규정을 함께 확인.",
-          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-          "seconds": 3,
-          "visual": {
-            "kind": "metric",
-            "value": "10개월",
-            "label": "분기점"
-          }
-        }
-      ],
-      "caption": "2개월 무료면 10개월이 진짜 본전선이다\n\n10개월부터 연간결제가 유리.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
-      "first_comment": "계산 기준: 월요금 10,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-      "threads_text": "연간결제 vs 월결제.\n\n핵심 분기점은 10개월. 그 숫자 위와 아래에서 승자가 바뀐다.",
-      "threads_chain": [],
-      "faq": [],
-      "evidence": "월요금 10,000원 가정. / 12개월을 100,000원에 파는 가정. / 10개월부터 연간결제가 유리. / 연간보다 20,000원 적다. / 환불 규정을 함께 확인.",
-      "verification": {
-        "kind": "threshold_decision_model",
-        "checked_at": "2026-09-14",
-        "real_world_price_claim": false,
-        "sources": [],
-        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
-        "calculation": "월요금 10,000원 가정. / 12개월을 100,000원에 파는 가정. / 10개월부터 연간결제가 유리."
-      },
-      "music": "original-playful-112bpm",
-      "visual_style": "money_editorial_v2",
-      "accent": "#E6F34A",
-      "threads_media": "carousel",
-      "editorial_revision": "official-comparison-2026-09-12",
-      "pricing_status": "assumption_labeled",
-      "cover_photo": {
-        "path": "assets/covers/subscription-photo-v2.jpg",
-        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
-        "kind": "ai_staged_editorial"
-      },
-      "track": "threshold-v2"
-    },
-    {
       "id": "cx112-charger-drawer",
       "publish_at": "2026-09-16T20:00:00+09:00",
       "format": "carousel",
@@ -6256,6 +5013,1249 @@
       "music": "none",
       "visual_style": "checkout_pop",
       "palette": "coral"
+    },
+    {
+      "id": "cx006-vacation-app",
+      "publish_at": "2026-09-18T20:00:00+09:00",
+      "format": "reel",
+      "verified": true,
+      "content_version": 2,
+      "category": "여행",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "006-vacation-app",
+      "topic": "얼리버드 항공권 vs 변경가능 운임",
+      "hook": "20% 싸도 일정이 바뀌면 더 비싸진다",
+      "hook_candidates": [
+        "20% 싸도 일정이 바뀌면 더 비싸진다",
+        "25%에서 답이 갈린다",
+        "얼리버드 vs 변경가능, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "20% 싸도 일정이 바뀌면 더 비싸진다",
+          "body": "얼리버드 vs 변경가능. 이번 편은 25%에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "25%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "환불불가 12만원 / 변경가능 15만원",
+          "body": "예시 운임. 지금 아끼는 돈은 3만원이다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "25%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "3만원 절약 vs 취소 시 12만원 손실",
+          "body": "취소하면 12만원을 잃는다고 가정하면 3만원 ÷ 12만원 = 25%.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "25%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "변경확률 25%가 분기점",
+          "body": "25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "25%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "변경확률 10%면 얼리버드 승",
+          "body": "예상손실은 1.2만원이라 3만원 추가요금보다 작다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "25%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "예약 전 25%부터 체크",
+          "body": "휴가 승인·동행 일정·출장 가능성을 보고 내 변경확률부터 잡는다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "25%",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "20% 싸도 일정이 바뀌면 더 비싸진다\n\n25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 예시 운임. 지금 아끼는 돈은 3만원이다. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "얼리버드 vs 변경가능.\n\n핵심 분기점은 25%. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "예시 운임. 지금 아끼는 돈은 3만원이다. / 취소하면 12만원을 잃는다고 가정하면 3만원 ÷ 12만원 = 25%. / 25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다. / 예상손실은 1.2만원이라 3만원 추가요금보다 작다. / 휴가 승인·동행 일정·출장 가능성을 보고 내 변경확률부터 잡는다.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "예시 운임. 지금 아끼는 돈은 3만원이다. / 취소하면 12만원을 잃는다고 가정하면 3만원 ÷ 12만원 = 25%. / 25%보다 높게 보면 변경가능 운임의 기대비용이 더 낮다."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/travel-photo-v2.jpg",
+        "sha256": "427f0e099a4ef7af0a318f2d7e6b90839548642a0dc96eb6eda65a87bbdb1f1d",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx101-installment-cash",
+      "publish_at": "2026-09-19T20:00:00+09:00",
+      "format": "carousel",
+      "verified": true,
+      "content_version": 2,
+      "category": "결제",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "101-installment-cash",
+      "topic": "무이자 할부 vs 일시불 할인",
+      "hook": "무이자 12개월보다 3% 할인이 이길 때",
+      "hook_candidates": [
+        "무이자 12개월보다 3% 할인이 이길 때",
+        "3%에서 답이 갈린다",
+        "무이자 할부 vs 일시불 할인, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "무이자 12개월보다 3% 할인이 이길 때",
+          "body": "무이자 할부 vs 일시불 할인. 이번 편은 3%에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "3%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "일시불 3% = 바로 3만원",
+          "body": "100만원 상품의 3% 할인은 즉시 3만원 절약.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "할부로 남긴 100만원 / 1년 이익은?",
+          "body": "세후수익과 카드혜택을 모두 더한다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "세후수익+혜택 3만원이 분기점",
+          "body": "3만원을 넘으면 할부, 못 넘으면 일시불이 유리.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "2만원밖에 못 벌면 일시불 승",
+          "body": "즉시 할인보다 1만원 부족하다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3%",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "무이자 적립 제외부터 확인",
+          "body": "무이자 이용 시 적립·마일리지 제외 여부를 확인한다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "3%",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "무이자 12개월보다 3% 할인이 이길 때\n\n해당 금액을 넘으면 할부, 못 넘으면 일시불이 유리.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 100만원 상품의 3% 할인은 즉시 3만원 절약. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "무이자 할부 vs 일시불 할인.\n\n핵심 분기점은 3%. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "100만원 상품의 3% 할인은 즉시 3만원 절약. / 세후수익과 카드혜택을 모두 더한다. / 3만원을 넘으면 할부, 못 넘으면 일시불이 유리. / 즉시 할인보다 1만원 부족하다. / 무이자 이용 시 적립·마일리지 제외 여부를 확인한다.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "100만원 상품의 3% 할인은 즉시 3만원 절약. / 세후수익과 카드혜택을 모두 더한다. / 3만원을 넘으면 할부, 못 넘으면 일시불이 유리."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/desk-photo-v2.jpg",
+        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx103-taxi-transit",
+      "publish_at": "2026-09-21T20:00:00+09:00",
+      "format": "carousel",
+      "verified": true,
+      "content_version": 2,
+      "category": "이동",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "103-taxi-transit",
+      "topic": "택시 vs 대중교통",
+      "hook": "3명이면 택시가 사치가 아닐 수 있다",
+      "hook_candidates": [
+        "3명이면 택시가 사치가 아닐 수 있다",
+        "3명에서 답이 갈린다",
+        "택시 vs 대중교통, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "3명이면 택시가 사치가 아닐 수 있다",
+          "body": "택시 vs 대중교통. 이번 편은 3명에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "3명",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "택시 1.8만원 ÷ 3명 = 6천원",
+          "body": "택시 18,000원을 3명이 나누는 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3명",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "대중교통 2천원 + 시간값 4천원",
+          "body": "대중교통 체감비용도 6,000원으로 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3명",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "3명이면 1인 6천원으로 동률",
+          "body": "이 가정에서 세 명이 분기점.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3명",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "2명이면 택시 9천원 / 대중교통 승",
+          "body": "두 명이면 택시 1인 부담이 커진다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "3명",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "4명이면 택시 4,500원 / 택시 승",
+          "body": "실제 거리·할증·막차 여부로 다시 계산.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "3명",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "3명이면 택시가 사치가 아닐 수 있다\n\n이 가정에서 세 명이 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 택시 18,000원을 3명이 나누는 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "택시 vs 대중교통.\n\n핵심 분기점은 3명. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "택시 18,000원을 3명이 나누는 가정. / 대중교통 체감비용도 6,000원으로 가정. / 이 가정에서 세 명이 분기점. / 두 명이면 택시 1인 부담이 커진다. / 실제 거리·할증·막차 여부로 다시 계산.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "택시 18,000원을 3명이 나누는 가정. / 대중교통 체감비용도 6,000원으로 가정. / 이 가정에서 세 명이 분기점."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/taxi-photo-v1.jpg",
+        "sha256": "9de1f4c5bf40302adab1acb18e530938223ad03385c82638d7761efef7da6551",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx104-self-full-gas",
+      "publish_at": "2026-09-25T20:00:00+09:00",
+      "format": "reel",
+      "verified": true,
+      "content_version": 2,
+      "category": "자동차",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "104-self-full-gas",
+      "topic": "셀프주유 vs 일반주유",
+      "hook": "40L부터 셀프주유 5분이 돈이 된다",
+      "hook_candidates": [
+        "40L부터 셀프주유 5분이 돈이 된다",
+        "40L에서 답이 갈린다",
+        "셀프주유 vs 일반주유, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "40L부터 셀프주유 5분이 돈이 된다",
+          "body": "셀프주유 vs 일반주유. 이번 편은 40L에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "40L",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "40L × 리터당 30원 = 1,200원",
+          "body": "40L에서 1,200원 절약 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "40L",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "셀프 5분의 시간값도 1,200원",
+          "body": "시간당 14,400원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "40L",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "40L에서 돈과 시간이 동률",
+          "body": "40L가 분기점.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "40L",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "20L면 절약 600원 / 일반주유 쪽",
+          "body": "절약액이 시간값보다 작다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "40L",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "60L면 절약 1,800원 / 셀프 쪽",
+          "body": "실제 주유소 가격차로 바꿔 계산.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "40L",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "40L부터 셀프주유 5분이 돈이 된다\n\n40L가 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 40L에서 1,200원 절약 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "셀프주유 vs 일반주유.\n\n핵심 분기점은 40L. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "40L에서 1,200원 절약 가정. / 시간당 14,400원 가정. / 40L가 분기점. / 절약액이 시간값보다 작다. / 실제 주유소 가격차로 바꿔 계산.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "40L에서 1,200원 절약 가정. / 시간당 14,400원 가정. / 40L가 분기점."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/parking-photo-v2.jpg",
+        "sha256": "b5c776d5f1297df81cf46046902c821ee7179147d4fd2913a3edabca702210af",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx105-daily-monthly-lens",
+      "publish_at": "2026-09-26T20:00:00+09:00",
+      "format": "carousel",
+      "verified": true,
+      "content_version": 2,
+      "category": "생활",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "105-daily-monthly-lens",
+      "topic": "원데이 렌즈 vs 한달용 렌즈",
+      "hook": "월 12일 쓰면 원데이와 한달용이 갈린다",
+      "hook_candidates": [
+        "월 12일 쓰면 원데이와 한달용이 갈린다",
+        "월 12일에서 답이 갈린다",
+        "원데이 vs 한달용, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "월 12일 쓰면 원데이와 한달용이 갈린다",
+          "body": "원데이 vs 한달용. 이번 편은 월 12일에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "월 12일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "원데이 2천원 × 12일 = 2.4만원",
+          "body": "양안 하루 2,000원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "월 12일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "한달용+세정액 = 월 2.4만원",
+          "body": "월간 렌즈 총비용 24,000원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "월 12일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "월 12일이 비용 분기점",
+          "body": "12일을 넘으면 월간 쪽 비용이 낮아짐.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "월 12일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "월 8일이면 원데이 1.6만원",
+          "body": "가끔 쓰면 원데이가 유리.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "월 12일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "월 20일이면 원데이 4만원",
+          "body": "실제 제품가와 교체주기로 재계산.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "월 12일",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "월 12일 쓰면 원데이와 한달용이 갈린다\n\n12일을 넘으면 월간 쪽 비용이 낮아짐.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 양안 하루 2,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "원데이 vs 한달용.\n\n핵심 분기점은 월 12일. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "양안 하루 2,000원 가정. / 월간 렌즈 총비용 24,000원 가정. / 12일을 넘으면 월간 쪽 비용이 낮아짐. / 가끔 쓰면 원데이가 유리. / 실제 제품가와 교체주기로 재계산.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "양안 하루 2,000원 가정. / 월간 렌즈 총비용 24,000원 가정. / 12일을 넘으면 월간 쪽 비용이 낮아짐."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/hobby-photo-v2.jpg",
+        "sha256": "31868c375aade9fc8a41bb9586b35aa927c73edbcb9c73733798f3e22d60daeb",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx106-refurb-new",
+      "publish_at": "2026-09-28T20:00:00+09:00",
+      "format": "reel",
+      "verified": true,
+      "content_version": 2,
+      "category": "IT",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "106-refurb-new",
+      "topic": "리퍼·전시상품 vs 신품",
+      "hook": "리퍼는 최소 20% 싸야 고민할 이유가 생긴다",
+      "hook_candidates": [
+        "리퍼는 최소 20% 싸야 고민할 이유가 생긴다",
+        "20% 할인에서 답이 갈린다",
+        "리퍼 vs 신품, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "리퍼는 최소 20% 싸야 고민할 이유가 생긴다",
+          "body": "리퍼 vs 신품. 이번 편은 20% 할인에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "20% 할인",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "신품 100만원 / 리퍼 80만원",
+          "body": "차액 20만원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "20% 할인",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "20만원 차이 = 정확히 20%",
+          "body": "같은 모델 기준.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "20% 할인",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "보증 12개월 같다면 20%부터",
+          "body": "보증 동일 시 리퍼 매력이 커진다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "20% 할인",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "보증 3개월이면 20%도 애매",
+          "body": "고장 리스크를 더 떠안는다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "20% 할인",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "가격보다 보증·배터리·반품",
+          "body": "점검주체와 반품기간까지 확인.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "20% 할인",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "리퍼는 최소 20% 싸야 고민할 이유가 생긴다\n\n보증 동일 시 리퍼 매력이 커진다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 차액 20만원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "리퍼 vs 신품.\n\n핵심 분기점은 20% 할인. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "차액 20만원 가정. / 같은 모델 기준. / 보증 동일 시 리퍼 매력이 커진다. / 고장 리스크를 더 떠안는다. / 점검주체와 반품기간까지 확인.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "차액 20만원 가정. / 같은 모델 기준. / 보증 동일 시 리퍼 매력이 커진다."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/camera-photo-v2.jpg",
+        "sha256": "c690449692167190f902fb9519ed7ab05f864c1f5cb14d0634e4030469063d15",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx107-filter-service",
+      "publish_at": "2026-09-30T20:00:00+09:00",
+      "format": "carousel",
+      "verified": true,
+      "content_version": 2,
+      "category": "가전",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "107-filter-service",
+      "topic": "정수기 필터 자가교체 vs 방문관리",
+      "hook": "연 4회 관리면 방문값을 따로 계산해야 한다",
+      "hook_candidates": [
+        "연 4회 관리면 방문값을 따로 계산해야 한다",
+        "연 4회에서 답이 갈린다",
+        "자가교체 vs 방문관리, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "연 4회 관리면 방문값을 따로 계산해야 한다",
+          "body": "자가교체 vs 방문관리. 이번 편은 연 4회에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "연 4회",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "방문관리 추가비 4.8만원/년",
+          "body": "연 48,000원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 4회",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "1회 점검가치 1.2만원으로 보면",
+          "body": "1회당 12,000원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 4회",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "연 4회면 4.8만원으로 동률",
+          "body": "4회가 분기점.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 4회",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "연 2회만 필요하면 자가교체",
+          "body": "체감가치가 24,000원.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 4회",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "연 6회 가치면 방문관리 쪽",
+          "body": "실제 계약 주기로 재계산.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "연 4회",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "연 4회 관리면 방문값을 따로 계산해야 한다\n\n4회가 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 연 48,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "자가교체 vs 방문관리.\n\n핵심 분기점은 연 4회. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "연 48,000원 가정. / 1회당 12,000원 가정. / 4회가 분기점. / 체감가치가 24,000원. / 실제 계약 주기로 재계산.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "연 48,000원 가정. / 1회당 12,000원 가정. / 4회가 분기점."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/refill-photo-v2.jpg",
+        "sha256": "fe940a832a377868afea4dcc3157b0f47062a7500d9ef0e4a961a2eaa31b5235",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx108-subscribe-ondemand",
+      "publish_at": "2026-10-02T20:00:00+09:00",
+      "format": "reel",
+      "verified": true,
+      "content_version": 2,
+      "category": "생활",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "108-subscribe-ondemand",
+      "topic": "정기배송 할인 vs 필요할 때 구매",
+      "hook": "소비주기 30일보다 느리면 할인보다 재고가 쌓인다",
+      "hook_candidates": [
+        "소비주기 30일보다 느리면 할인보다 재고가 쌓인다",
+        "30일에서 답이 갈린다",
+        "정기배송 vs 필요할 때, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "소비주기 30일보다 느리면 할인보다 재고가 쌓인다",
+          "body": "정기배송 vs 필요할 때. 이번 편은 30일에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "30일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "배송 30일 / 실제 소비 40일",
+          "body": "40일 소비 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "30일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "1년 12회 배송 / 실제 소비 약 9회",
+          "body": "약 3회 차이.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "30일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "소비주기 30일이 분기점",
+          "body": "30일 안에 다 쓰면 정기배송과 맞는다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "30일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "40일이면 1년에 약 3개 재고",
+          "body": "할인보다 선결제가 커질 수 있다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "30일",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "25일이면 정기배송이 편하다",
+          "body": "최근 실제 소비 간격을 평균낸다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "30일",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "소비주기 30일보다 느리면 할인보다 재고가 쌓인다\n\n30일 안에 다 쓰면 정기배송과 맞는다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 40일 소비 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "정기배송 vs 필요할 때.\n\n핵심 분기점은 30일. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "40일 소비 가정. / 약 3회 차이. / 30일 안에 다 쓰면 정기배송과 맞는다. / 할인보다 선결제가 커질 수 있다. / 최근 실제 소비 간격을 평균낸다.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "40일 소비 가정. / 약 3회 차이. / 30일 안에 다 쓰면 정기배송과 맞는다."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/food-photo-v2.jpg",
+        "sha256": "fe6ea34da1a826b4365c791c97d0147461dd77030d3fab57a928349f969c0063",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx109-printer-tank",
+      "publish_at": "2026-10-03T20:00:00+09:00",
+      "format": "carousel",
+      "verified": true,
+      "content_version": 2,
+      "category": "IT",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "109-printer-tank",
+      "topic": "저가 프린터 vs 무한잉크 복합기",
+      "hook": "연 500장부터 비싼 본체가 더 싸질 수 있다",
+      "hook_candidates": [
+        "연 500장부터 비싼 본체가 더 싸질 수 있다",
+        "연 500장에서 답이 갈린다",
+        "저가 본체 vs 무한잉크, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "연 500장부터 비싼 본체가 더 싸질 수 있다",
+          "body": "저가 본체 vs 무한잉크. 이번 편은 연 500장에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "연 500장",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "본체 가격차 10만원",
+          "body": "초기 가격차 100,000원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 500장",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "장당 유지비 차이 200원",
+          "body": "잉크·토너 포함 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 500장",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "10만원 ÷ 200원 = 500장",
+          "body": "500장이 분기점.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 500장",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "연 200장이면 저가 본체",
+          "body": "유지비 차이 약 40,000원.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "연 500장",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "연 1,000장이면 무한잉크",
+          "body": "실제 모델의 잉크 가격으로 재계산.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "연 500장",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "연 500장부터 비싼 본체가 더 싸질 수 있다\n\n500장이 분기점.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 초기 가격차 100,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "저가 본체 vs 무한잉크.\n\n핵심 분기점은 연 500장. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "초기 가격차 100,000원 가정. / 잉크·토너 포함 가정. / 500장이 분기점. / 유지비 차이 약 40,000원. / 실제 모델의 잉크 가격으로 재계산.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "초기 가격차 100,000원 가정. / 잉크·토너 포함 가정. / 500장이 분기점."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/appliance-photo-v2.jpg",
+        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx110-bulk-small",
+      "publish_at": "2026-12-05T20:00:00+09:00",
+      "format": "reel",
+      "verified": true,
+      "content_version": 2,
+      "category": "생활",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "110-bulk-small",
+      "topic": "1년치 대용량 vs 3개월치 소용량",
+      "hook": "30% 싸도 70% 못 쓰면 대용량이 안 싸다",
+      "hook_candidates": [
+        "30% 싸도 70% 못 쓰면 대용량이 안 싸다",
+        "70% 사용에서 답이 갈린다",
+        "1년 대용량 vs 3개월 소용량, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "30% 싸도 70% 못 쓰면 대용량이 안 싸다",
+          "body": "1년 대용량 vs 3개월 소용량. 이번 편은 70% 사용에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "70% 사용",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "소용량 합계 100 / 대용량 가격 70",
+          "body": "30% 할인 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "70% 사용",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "30% 남기면 실제 사용량도 70",
+          "body": "가격 70 ÷ 사용량 70 = 단가 1.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "70% 사용",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "70% 사용이 정확한 분기점",
+          "body": "70% 이상 써야 실사용 단가가 낮아진다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "70% 사용",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "절반만 쓰면 실사용 단가 40%↑",
+          "body": "70 ÷ 50 = 1.4.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "70% 사용",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "90% 쓰면 대용량 단가 약 22%↓",
+          "body": "유통기한·보관공간까지 함께 본다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "70% 사용",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "30% 싸도 70% 못 쓰면 대용량이 안 싸다\n\n70% 이상 써야 실사용 단가가 낮아진다.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 30% 할인 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "1년 대용량 vs 3개월 소용량.\n\n핵심 분기점은 70% 사용. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "30% 할인 가정. / 가격 70 ÷ 사용량 70 = 단가 1. / 70% 이상 써야 실사용 단가가 낮아진다. / 70 ÷ 50 = 1.4. / 유통기한·보관공간까지 함께 본다.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "30% 할인 가정. / 가격 70 ÷ 사용량 70 = 단가 1. / 70% 이상 써야 실사용 단가가 낮아진다."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/cafe-photo-v2.jpg",
+        "sha256": "2769760d226545e4c554a3c13b7d5e65717abf7b2383433489b2a772e5bc7bf6",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
+    },
+    {
+      "id": "cx111-annual-monthly",
+      "publish_at": "2026-12-07T20:00:00+09:00",
+      "format": "carousel",
+      "verified": true,
+      "content_version": 2,
+      "category": "구독",
+      "series": "분기점 계산",
+      "threads_tag": "비교분석",
+      "topic_key": "111-annual-monthly",
+      "topic": "연간결제 vs 월결제",
+      "hook": "2개월 무료면 10개월이 진짜 본전선이다",
+      "hook_candidates": [
+        "2개월 무료면 10개월이 진짜 본전선이다",
+        "10개월에서 답이 갈린다",
+        "연간결제 vs 월결제, 어디서 뒤집힐까"
+      ],
+      "hook_reason": "변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.",
+      "slides": [
+        {
+          "title": "2개월 무료면 10개월이 진짜 본전선이다",
+          "body": "연간결제 vs 월결제. 이번 편은 10개월에서 답이 갈린다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 1.8,
+          "visual": {
+            "kind": "metric",
+            "value": "10개월",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "월 1만원 × 10개월 = 10만원",
+          "body": "월요금 10,000원 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "10개월",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "연간 10만원 = 사실상 2개월 무료",
+          "body": "12개월을 100,000원에 파는 가정.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "10개월",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "10개월이 정확한 손익분기",
+          "body": "10개월부터 연간결제가 유리.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "10개월",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "8개월만 쓰면 월결제 8만원",
+          "body": "연간보다 20,000원 적다.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.4,
+          "visual": {
+            "kind": "metric",
+            "value": "10개월",
+            "label": "분기점"
+          }
+        },
+        {
+          "title": "12개월 다 쓰면 연간 2만원 절약",
+          "body": "환불 규정을 함께 확인.",
+          "note": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+          "seconds": 3.0,
+          "visual": {
+            "kind": "metric",
+            "value": "10개월",
+            "label": "분기점"
+          }
+        }
+      ],
+      "caption": "2개월 무료면 10개월이 진짜 본전선이다\n\n10개월부터 연간결제가 유리.\n\n설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.\n#돈값하나 #비교분석 #분기점",
+      "first_comment": "계산 기준: 월요금 10,000원 가정. 설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+      "threads_text": "연간결제 vs 월결제.\n\n핵심 분기점은 10개월. 그 숫자 위와 아래에서 승자가 바뀐다.",
+      "threads_chain": [],
+      "faq": [],
+      "evidence": "월요금 10,000원 가정. / 12개월을 100,000원에 파는 가정. / 10개월부터 연간결제가 유리. / 연간보다 20,000원 적다. / 환불 규정을 함께 확인.",
+      "verification": {
+        "kind": "threshold_decision_model",
+        "checked_at": "2026-09-14",
+        "real_world_price_claim": false,
+        "sources": [],
+        "assumptions": "설명용 가정값은 가정으로 표시하고 실제 가격·규정은 발행 직전 재확인.",
+        "calculation": "월요금 10,000원 가정. / 12개월을 100,000원에 파는 가정. / 10개월부터 연간결제가 유리."
+      },
+      "music": "original-playful-112bpm",
+      "visual_style": "money_editorial_v2",
+      "accent": "#E6F34A",
+      "threads_media": "carousel",
+      "editorial_revision": "official-comparison-2026-09-12",
+      "pricing_status": "assumption_labeled",
+      "cover_photo": {
+        "path": "assets/covers/subscription-photo-v2.jpg",
+        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
+        "kind": "ai_staged_editorial"
+      },
+      "track": "threshold-v2"
     }
   ]
 }
