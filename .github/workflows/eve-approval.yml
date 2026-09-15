@@ -1,0 +1,100 @@
+name: 돈값하나 전날 승인 요청
+
+# 발행 전날 20:00 KST 에 '내일 나갈 편'을 통째로 렌더해 텔레그램으로 보내고
+# [✅ 승인] / [✏️ 수정] 을 받아 content/approval.json 에 남깁니다.
+#
+# 다음 날 post.yml(화·목·일 20:00)은 그 승인을 읽어 다시 묻지 않고 바로 올립니다.
+# 이때 어제 승인한 그림·영상을 다시 렌더하지 않고 그대로 씁니다 —
+# 재렌더하면 그레인·음원·나레이션 때문에 '승인한 것과 다른 것'이 나갈 수 있습니다.
+#
+# 무응답이면 아무것도 확정하지 않습니다(pending). 그 경우 다음 날 20:00 에
+# 기존 방식대로 그 자리에서 한 번 더 물어봅니다.
+#
+# ⚠ post.yml 과 잠금(concurrency)을 일부러 분리했습니다. 승인 대기가 최대 3시간이라
+#   발행용 잠금을 같이 쓰면 그동안 GPT 트랙(codex-approval)의 15분 틱이 전부 줄을 서서
+#   같은 날 GPT 발행이 통째로 밀립니다.
+
+on:
+  schedule:
+    # 월·수·토 20:00 KST (= 11:00 UTC) → 각각 화·목·일 발행분을 미리 승인받습니다.
+    # GitHub cron 은 UTC 기준이며 러너 혼잡도에 따라 수 분~수십 분 지연될 수 있습니다.
+    - cron: "0 11 * * 1,3,6"
+  workflow_dispatch:
+    inputs:
+      tts:
+        description: "나레이션(음성) 넣기 — true | false"
+        required: false
+        default: "true"
+      tts_voice:
+        description: "목소리 — SunHi(여) | InJoon(남·뉴스) | HyunsuMultilingual(남). 비우면 ko-KR-SunHiNeural"
+        required: false
+        default: ""
+      theme:
+        description: "디자인 테마 paper | midnight"
+        required: false
+        default: "paper"
+      reel_style:
+        description: "릴스 화면 scene | cards (비우면 scene)"
+        required: false
+        default: "scene"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: donvalue-eve-approval
+  cancel-in-progress: false
+
+jobs:
+  ask:
+    runs-on: ubuntu-latest
+    # 승인 대기 180분 + 렌더 시간 여유. GitHub 한도는 6시간.
+    timeout-minutes: 240
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: 한글 폰트 · ffmpeg 설치
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+
+      - name: ffmpeg 확인 (없으면 여기서 실패해야 한다)
+        run: ffmpeg -version
+
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+
+      - name: 내일 나갈 편을 승인받기
+        env:
+          # 텔레그램이 없으면 승인을 받을 수 없으므로 이 워크플로는 실패해야 합니다.
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          # 저녁에 여유 있게 기다립니다(20:00~23:00).
+          EVE_APPROVAL_TIMEOUT_MIN: "180"
+          # ⚠ 아래 렌더 설정은 post.yml 과 반드시 같아야 합니다.
+          #   여기서 만든 결과물이 내일 그대로 발행되기 때문입니다.
+          REEL_STYLE: ${{ github.event.inputs.reel_style }}
+          REEL_MUSIC_DB: "-3"
+          REEL_MUSIC_VOICE_DB: "-13"
+          REEL_TTS: ${{ github.event.inputs.tts == 'false' && '0' || '1' }}
+          TTS_VOICE: ${{ github.event.inputs.tts_voice }}
+          TTS_RATE: "+22%"
+          THEME: ${{ github.event.inputs.theme }}
+        run: python -m src.run --ask-tomorrow
+
+      # 실패했을 때 무엇이 렌더됐는지는 봐야 합니다.
+      - name: 렌더 결과 내려받기
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eve-preview
+          path: images/
+          retention-days: 7
+          if-no-files-found: ignore
