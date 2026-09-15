@@ -6,15 +6,22 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
-# 26 queued items -> 26 deterministic compositions.
-# Existing AI-staged photo assets are recomposed rather than copied 1:1, so
-# repeated source photos never produce the same visible cover in the profile.
+# 표지 사진 규칙 (2026-09-15)
+#   주제와 '직접' 맞는 사진이 있을 때만 쓴다. 대충 비슷한 사진을 깔면 정수기 편에
+#   세제 사진이, 헬스장 편에 등산 배낭 사진이 깔린다. 무엇에 대한 글인지 흐려진다.
+#   맞는 사진이 없으면 여기서 아예 빼고, 코드가 만든 배경(팔레트 + 거대한 숫자)으로
+#   가게 둔다. 사진 없는 표지가 엉뚱한 사진이 붙은 표지보다 낫다.
+#   편 전용 사진은 assets/covers/<편id>.jpg 로 넣으면 이 표보다 우선한다.
+#
+# 가진 사진이 실제로 무엇인지 (2026-09-15 눈으로 확인):
+#   appliance=에어프라이어·오븐 / bike=자전거 / cafe=테이크아웃컵 / camera=카메라
+#   coupon=장바구니·영수증 / desk=책상·모니터 / food=도시락 / hobby=등산배낭·등산화
+#   household=세제·수납함 / laptop=노트북 / parking=주차장의 차 / refill=청소용품
+#   robot=로봇청소기 / subscription=폰·이어폰 / taxi=야간 도로의 택시 / travel=캐리어·침대
 PHOTO_RECIPES = {
     "001-coupang-wow": ("coupon-photo-v1.jpg", "household-photo-v2.jpg"),
-    "002-water-purifier": ("household-photo-v2.jpg", "appliance-photo-v2.jpg"),
-    "003-gym-annual": ("hobby-photo-v2.jpg", "desk-photo-v2.jpg"),
     "004-ott-stack": ("subscription-photo-v2.jpg", "camera-photo-v2.jpg"),
-    "005-mvno": ("refill-photo-v2.jpg", "laptop-photo-v1.jpg"),
+    "005-mvno": ("subscription-photo-v2.jpg", "laptop-photo-v1.jpg"),
     "006-car-tco": ("parking-photo-v2.jpg", "travel-photo-v2.jpg"),
     "007-dishwasher": ("appliance-photo-v2.jpg", "household-photo-v2.jpg"),
     "008-commute-vs-rent": ("travel-photo-v2.jpg", "desk-photo-v2.jpg"),
@@ -22,18 +29,18 @@ PHOTO_RECIPES = {
     "010-coffee": ("cafe-photo-v2.jpg", "food-photo-v2.jpg"),
     "011-ai-subscription": ("laptop-photo-v1.jpg", "camera-photo-v2.jpg"),
     "012-youtube-premium": ("camera-photo-v2.jpg", "subscription-photo-v2.jpg"),
-    "013-airpods-vs-cheap": ("hobby-photo-v2.jpg", "camera-photo-v2.jpg"),
+    "013-airpods-vs-cheap": ("subscription-photo-v2.jpg", "camera-photo-v2.jpg"),
     "014-delivery-vs-pickup": ("food-photo-v2.jpg", "cafe-photo-v2.jpg"),
     "015-card-annual-fee": ("desk-photo-v2.jpg", "coupon-photo-v1.jpg"),
     "016-office-chair": ("desk-photo-v2.jpg", "household-photo-v2.jpg"),
-    "017-premium-gas": ("taxi-photo-v1.jpg", "parking-photo-v2.jpg"),
-    "018-mvno-vs-5g": ("refill-photo-v2.jpg", "camera-photo-v2.jpg"),
+    "017-premium-gas": ("parking-photo-v2.jpg", "taxi-photo-v1.jpg"),
+    "018-mvno-vs-5g": ("subscription-photo-v2.jpg", "laptop-photo-v1.jpg"),
     "019-dryer": ("appliance-photo-v2.jpg", "food-photo-v2.jpg"),
     "020-starbucks-vs-mega": ("cafe-photo-v2.jpg", "travel-photo-v2.jpg"),
     "021-ott-bundle": ("subscription-photo-v2.jpg", "laptop-photo-v1.jpg"),
-    "022-aircon-90min": ("household-photo-v2.jpg", "travel-photo-v2.jpg"),
+    "022-aircon-90min": ("appliance-photo-v2.jpg", "household-photo-v2.jpg"),
     "023-card-golden-ratio": ("coupon-photo-v1.jpg", "desk-photo-v2.jpg"),
-    "024-choice-discount": ("camera-photo-v2.jpg", "refill-photo-v2.jpg"),
+    "024-choice-discount": ("subscription-photo-v2.jpg", "coupon-photo-v1.jpg"),
     "025-mileage-rider": ("parking-photo-v2.jpg", "taxi-photo-v1.jpg"),
     "026-energy-cashback": ("appliance-photo-v2.jpg", "travel-photo-v2.jpg"),
 }
