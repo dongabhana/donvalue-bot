@@ -4897,7 +4897,8 @@
     },
     {
       "id": "cx112-charger-drawer",
-      "publish_at": "2026-09-16T20:00:00+09:00",
+      "hook": "집에 4개 있는데\n5번째 충전기를 샀다",
+      "publish_at": "2026-12-09T20:00:00+09:00",
       "format": "carousel",
       "verified": true,
       "topic": "배터리 3%인데 집에 있는 충전기를 또 사는 순간",
