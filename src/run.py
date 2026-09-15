@@ -29,6 +29,7 @@ from src import publish                                 # noqa: E402
 from src import hooks                                   # noqa: E402
 from src import notify                                  # noqa: E402
 from src import youtube                                 # noqa: E402
+from src import approval                                # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 QUEUE = ROOT / "content" / "queue.yaml"
@@ -199,7 +200,60 @@ def threads_images(paths: list) -> list:
     return [paths[0], paths[-1]]
 
 
+def _commit(paths: list, message: str) -> bool:
+    """대상에 바뀐 게 있을 때만 커밋·푸시한다. 반환값은 실제로 커밋했는지 여부."""
+    targets = [str(p) for p in paths]
+    sh("git", "add", *targets)
+    if not sh("git", "status", "--porcelain", *targets):
+        return False
+    sh("git", "-c", "user.name=donvalue-bot",
+       "-c", "user.email=bot@users.noreply.github.com",
+       "commit", "-m", message)
+    push()
+    return True
+
+
+def ask_for_tomorrow(item: dict, ig_format: str, paths: list, mp4, body: str,
+                     digest: str) -> int:
+    """발행 전날 20:00 — 내일 나갈 것을 통째로 보여주고 승인을 받아 둔다.
+
+    승인 결과를 저장소(content/approval.json)에 남기는 이유는, 내일 20:00 의
+    실행이 오늘 이 실행과 완전히 다른 런이라 메모리를 공유하지 않기 때문이다.
+    렌더 결과물도 지금 커밋해 둔다. 내일 다시 렌더하면 승인한 것과 달라질 수 있다.
+    """
+    outdir = Path(paths[0]).parent
+    publish_date = approval.publish_date_for()
+
+    _commit([outdir], f"preview: {item['id']} ({publish_date} 발행 예정)")
+
+    if not notify.enabled():
+        print("[stop] 텔레그램이 설정되지 않아 전날 승인을 받을 수 없습니다.")
+        return 1
+
+    wait = int(os.getenv("EVE_APPROVAL_TIMEOUT_MIN", "180"))
+    answer = notify.ask(
+        item["id"], f"{item['product']} ({ig_format})", body,
+        video=mp4, photos=[paths[0], paths[-1]] if not mp4 else None,
+        timeout_min=wait,
+        prompt=(f"{notify.LABEL} · 내일 {publish_date} 20:00 에 이대로 나갑니다.\n"
+                f"[승인] 을 누르면 내일 자동으로 발행되고, "
+                f"[수정] 을 누르면 발행하지 않습니다.\n"
+                f"({wait}분 안에 응답이 없으면 내일 20:00 에 한 번 더 물어봅니다)"),
+        approve_label="✅ 승인", reject_label="✏️ 수정", collect_note=True)
+
+    decision = {True: approval.APPROVED,
+                False: approval.REVISE}.get(answer, approval.PENDING)
+    approval.record(item["id"], decision, ig_format, digest, publish_date,
+                    note=notify.last_note.get(item["id"], ""))
+    _commit([approval.LEDGER], f"approval: {item['id']} {decision} ({publish_date})")
+    print(f"[approval] {item['id']} → {decision} (발행 예정일 {publish_date})")
+    return 0
+
+
 def run_once(args) -> int:
+    # 직접 Namespace 를 만들어 호출하는 곳(테스트 등)이 있어 기본값을 여기서 채운다.
+    ask_tomorrow = getattr(args, "ask_tomorrow", False)
+
     # content/hooks.yaml 을 각 항목의 reel 블록으로 합친다(릴스 훅·화자·배경음 무드).
     queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
     posted = load_posted()
@@ -233,22 +287,39 @@ def run_once(args) -> int:
     # 0=월 … 6=일. 큐의 ig_format_by_weekday 로 언제든 바꿀 수 있다.
     # 쓰레드 꼬리말도 이 값을 보고 갈리므로 dry-run(전날 검토)에서도 먼저 정해둔다.
     by_weekday = queue.get("ig_format_by_weekday") or {1: "reel", 3: "carousel", 6: "reel"}
-    when = datetime.now(KST) + timedelta(days=1 if args.tomorrow else 0)
+    when = datetime.now(KST) + timedelta(days=1 if (args.tomorrow or ask_tomorrow) else 0)
     wd = when.weekday()
     ig_format = ((args.pick or "").lower() or item.get("ig_format")
                  or os.getenv("IG_FORMAT")
                  or by_weekday.get(wd)
                  or queue.get("ig_format_default")
                  or "reel").lower()
-    print(f"[format] {'내일' if args.tomorrow else '오늘'} "
+    print(f"[format] {'내일' if (args.tomorrow or ask_tomorrow) else '오늘'} "
           f"{'월화수목금토일'[wd]}요일 → {ig_format}")
 
     for w in hooks.validate(item):
         print(f"[hook] ⚠ {item['id']}: {w}")
 
     outdir = (PREVIEW if args.dry_run else IMAGES) / item["id"]
-    paths = render_item(item, outdir, brand, handle, cta)
-    print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
+
+    # ---------------- 전날 승인분 재사용
+    # 어제 승인받은 그림·영상을 그대로 올린다. 다시 렌더하면 그레인·음원 선택·
+    # 나레이션 합성처럼 매번 달라질 수 있는 요소 때문에 '승인한 것과 다른 것'이
+    # 나갈 수 있다. 승인의 의미를 지키려면 결과물을 재사용해야 한다.
+    prior = (None if (args.dry_run or ask_tomorrow or args.id)
+             else approval.lookup(item["id"]))
+    cached_mp4 = outdir / f"{item['id']}.mp4"
+    reused = False
+    if prior and prior.get("decision") == approval.APPROVED \
+            and prior.get("ig_format") == ig_format:
+        cached = sorted(outdir.glob("*.png"))
+        if cached and (ig_format == "carousel" or cached_mp4.exists()):
+            paths, reused = cached, True
+            print(f"[approval] 전날 승인분 재사용 → {len(paths)}장"
+                  + (f" + {cached_mp4.name}" if cached_mp4.exists() else ""))
+    if not reused:
+        paths = render_item(item, outdir, brand, handle, cta)
+        print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
 
     results: dict[str, str] = {}
     errors: list[str] = []
@@ -256,7 +327,11 @@ def run_once(args) -> int:
     # 릴스는 발행 전에 미리 만들어 둔다. 승인 화면에 '실제로 나갈 영상'이 보여야
     # 검토가 의미가 있고, 승인 후 인코딩을 기다릴 필요도 없다.
     mp4: Path | None = None
-    if ig_format in ("reel", "both"):
+    if ig_format in ("reel", "both") and reused and cached_mp4.exists():
+        mp4 = cached_mp4
+        print(f"[reel] 전날 승인분 재사용 {mp4.name} "
+              f"({mp4.stat().st_size / 1024 / 1024:.2f}MB)")
+    elif ig_format in ("reel", "both"):
         try:
             mp4 = outdir / f"{item['id']}.mp4"
             _, plan_note = build_reel_for(item, paths, mp4, brand, handle)
@@ -300,9 +375,44 @@ def run_once(args) -> int:
 
     # ---------------- 발행 승인 (텔레그램)
     # 승인이 아니면 큐를 소진하지 않는다. 같은 편이 다음 회차에 다시 올라온다.
-    if notify.enabled() and os.getenv("APPROVAL_REQUIRED", "1") == "1":
-        body = ("--- 인스타 캡션 ---\n" + build_caption(item, cta)
-                + "\n\n--- 쓰레드 ---\n" + build_threads_text(item, cta, ig_format))
+    caption_text = build_caption(item, cta)
+    # threads_text 가 없는 편(인스타 전용)도 있으므로 없으면 빈 값으로 둔다.
+    threads_preview = (build_threads_text(item, cta, ig_format)
+                       if item.get("threads_text") else "")
+    digest = approval.fingerprint(item["id"], ig_format, caption_text,
+                                  threads_preview,
+                                  list(paths) + ([mp4] if mp4 else []))
+    body = ("--- 인스타 캡션 ---\n" + caption_text
+            + "\n\n--- 쓰레드 ---\n" + threads_preview)
+
+    if ask_tomorrow:
+        return ask_for_tomorrow(item, ig_format, paths, mp4, body, digest)
+
+    approved_earlier = False
+    if prior and prior.get("decision") == approval.REVISE:
+        note = prior.get("note") or "(메모 없음)"
+        print(f"[stop] 전날 검토에서 '수정'을 선택한 편입니다 → 발행하지 않습니다. "
+              f"메모: {note}")
+        if notify.enabled():
+            try:
+                notify.send_message(
+                    f"{notify.LABEL} · 오늘 발행을 건너뜁니다\n"
+                    f"{item['product']} <{item['id']}>\n"
+                    f"전날 검토에서 '수정'을 선택하셨습니다.\n메모: {note}")
+            except Exception as e:                                # noqa: BLE001
+                print(f"[telegram] 통보 실패: {e}")
+        return 0
+    if prior and prior.get("decision") == approval.APPROVED:
+        if prior.get("fingerprint") == digest:
+            approved_earlier = True
+            print(f"[approval] 전날 승인({prior.get('decided_at', '')}) 확인 "
+                  f"→ 바로 발행합니다")
+        else:
+            # 승인한 것과 지금 나갈 것이 다르다. 조용히 넘기면 승인이 무의미해진다.
+            print("[approval] ⚠ 승인 이후 내용이 바뀌었습니다 → 지금 다시 확인합니다")
+
+    if (not approved_earlier) and notify.enabled() \
+            and os.getenv("APPROVAL_REQUIRED", "1") == "1":
         answer = notify.ask(item["id"], f"{item['product']} ({ig_format})", body,
                             video=mp4,
                             photos=[paths[0], paths[-1]] if not mp4 else None)
@@ -456,7 +566,11 @@ def run_once(args) -> int:
     })
     POSTED.write_text(json.dumps(posted, ensure_ascii=False, indent=2), encoding="utf-8")
     notify.done(item["id"], item["product"], results, errors)
-    sh("git", "add", str(POSTED))
+    # 다 쓴 승인은 원장에서 지운다. 남겨두면 나중에 같은 승인이 또 통과할 수 있다.
+    approval.consume(item["id"])
+    targets = [str(POSTED)] + ([str(approval.LEDGER)] if approval.LEDGER.exists()
+                               else [])
+    sh("git", "add", "-A", *targets)
     sh("git", "-c", "user.name=donvalue-bot",
        "-c", "user.email=bot@users.noreply.github.com",
        "commit", "-m", f"posted: {item['id']}")
@@ -470,11 +584,20 @@ def main() -> int:
     ap.add_argument("--id", help="특정 항목 강제 발행")
     ap.add_argument("--tomorrow", action="store_true",
                     help="내일 기준으로 포맷을 계산 (발행 전날 검토용)")
+    ap.add_argument("--ask-tomorrow", action="store_true",
+                    help="내일 나갈 편을 렌더해 텔레그램으로 승인받아 둔다 "
+                         "(발행 전날 20:00). 승인은 content/approval.json 에 남는다")
     ap.add_argument("--pick", default="",
                     help="이 ig_format 으로 지정된 편만 고른다 (carousel | reel)")
     ap.add_argument("--count", type=int, default=1,
                     help="한 번에 몇 편을 낼지. 밀린 카드뉴스 소진용 (기본 1)")
     args = ap.parse_args()
+
+    # 전날 승인 모드는 '내일 나갈 것'을 보여주는 것이므로 포맷도 내일 기준이어야 한다.
+    # 그리고 하루에 한 편만 묻는다(여러 편을 한꺼번에 승인받으면 무엇을 승인했는지 흐려진다).
+    if args.ask_tomorrow:
+        args.tomorrow = True
+        args.count = 1
 
     # 같은 날 여러 편을 몰아 올리면 뒤 글이 앞 글의 도달을 먹는다.
     # 그래도 프로필을 채워야 할 때가 있어 간격을 두고 순차 발행한다.

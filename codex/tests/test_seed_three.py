@@ -75,7 +75,9 @@ class SeedThreeTests(unittest.TestCase):
         self.assertIn('택시가 500원 저렴', taxi['caption'])
         self.assertIn('주차비가 10,500원을 넘', taxi['caption'])
         self.assertIn('비교를 위한 가정', taxi['caption'])
-        caption_tags=re.findall(r'#([^\\s#]+)',taxi['caption'])
+        # r'[^\\s#]' 은 raw 문자열이라 '공백 아님'이 아니라 '백슬래시·s 문자 아님'으로
+        # 해석돼 태그 뒤 공백까지 캡처한다. 공백 제외는 \s 한 번만 써야 한다.
+        caption_tags=re.findall(r'#([^\s#]+)',taxi['caption'])
         self.assertEqual(caption_tags,taxi['hashtags'])
         self.assertEqual(len(caption_tags),5)
         self.assertIn(taxi['threads_tag'],caption_tags)

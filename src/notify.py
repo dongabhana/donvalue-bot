@@ -144,12 +144,20 @@ def _drain_offset() -> int:
     return (ups[-1]["update_id"] + 1) if ups else 0
 
 
+last_note: dict[str, str] = {}   # ask() 가 마지막으로 받은 수정 요청 메모
+
+
 def ask(item_id: str, title: str, body: str,
         video: Path | None = None, photos: list[Path] | None = None,
-        timeout_min: int | None = None) -> bool | None:
+        timeout_min: int | None = None, prompt: str | None = None,
+        approve_label: str = "✅ 발행", reject_label: str = "✋ 건너뛰기",
+        collect_note: bool = False) -> bool | None:
     """발행 승인을 묻는다. True=승인 / False=반려 / None=무응답.
 
     반환이 True 가 아니면 호출부는 발행하지 않고 큐도 소진하지 않아야 한다.
+
+    collect_note=True 면 '수정'을 눌렀을 때 뒤이어 보내는 메시지를 잠시 더 기다려
+    last_note[item_id] 에 담는다. 무엇을 고쳐야 하는지가 남아야 다음 회차에 쓴다.
     """
     if not enabled():
         return True                                   # 설정이 없으면 승인 단계를 건너뛴다
@@ -183,9 +191,10 @@ def ask(item_id: str, title: str, body: str,
 
     ok_data, no_data = f"ok:{item_id}", f"no:{item_id}"
     send_message(
-        f"{LABEL} · 이대로 발행할까요?\n({wait}분 안에 응답이 없으면 발행하지 않습니다)",
-        buttons=[[{"text": "✅ 발행", "callback_data": ok_data},
-                  {"text": "✋ 건너뛰기", "callback_data": no_data}]])
+        prompt or (f"{LABEL} · 이대로 발행할까요?\n"
+                   f"({wait}분 안에 응답이 없으면 발행하지 않습니다)"),
+        buttons=[[{"text": approve_label, "callback_data": ok_data},
+                  {"text": reject_label, "callback_data": no_data}]])
 
     deadline = time.time() + wait * 60
     while time.time() < deadline:
@@ -209,14 +218,49 @@ def ask(item_id: str, title: str, body: str,
                 if data == ok_data:
                     return True
                 if data == no_data:
+                    if collect_note:
+                        _collect_note(item_id, offset)
                     return False
                 continue
             text = ((u.get("message") or {}).get("text") or "").strip().lower()
             if text in ("ok", "o", "ㅇ", "발행", "승인", "/ok"):
                 return True
-            if text in ("no", "n", "ㄴ", "취소", "건너뛰기", "/no"):
+            if text in ("no", "n", "ㄴ", "취소", "건너뛰기", "수정", "/no"):
+                if collect_note:
+                    _collect_note(item_id, offset)
                 return False
     return None
+
+
+def _collect_note(item_id: str, offset: int, wait_min: int = 15) -> str:
+    """'수정'을 누른 뒤 이어서 보내는 한 줄을 받는다.
+
+    무엇을 고쳐야 하는지가 안 남으면 다음 회차에 같은 걸 또 물어보게 된다.
+    응답이 없어도 실패가 아니다 — 반려는 이미 확정이고 메모만 비는 것이다.
+    """
+    try:
+        send_message(f"{LABEL} · 어디를 고칠지 이 방에 한 줄로 보내주세요.\n"
+                     f"({wait_min}분 안에 보내주시면 기록해 둡니다)")
+    except Exception:                                             # noqa: BLE001
+        return ""
+    deadline = time.time() + wait_min * 60
+    while time.time() < deadline:
+        try:
+            ups = _call("getUpdates", {"offset": offset, "timeout": 30})
+        except Exception:                                         # noqa: BLE001
+            time.sleep(10)
+            continue
+        for u in ups:
+            offset = u["update_id"] + 1
+            text = ((u.get("message") or {}).get("text") or "").strip()
+            if text:
+                last_note[item_id] = text[:500]
+                try:
+                    send_message(f"{LABEL} · 기록했습니다: {text[:200]}")
+                except Exception:                                 # noqa: BLE001
+                    pass
+                return last_note[item_id]
+    return ""
 
 
 def done(item_id: str, product: str, results: dict, errors: list[str]) -> None:
