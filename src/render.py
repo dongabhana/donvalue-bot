@@ -109,6 +109,9 @@ def _paper(brand, handle, ratio, th, page=None):
 
 # ---------------------------------------------------------------- 표지
 def cover(item, brand, handle, total, root="."):
+    from src import photo_covers
+    if photo_covers.available(root, item):
+        return photo_covers.render(item, brand, handle, root)
     th = T.get_theme(item.get("theme"))
     h = _hook(item)
     img = T.load_cover(root, item.get("id", "cover"), W, H,

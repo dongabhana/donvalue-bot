@@ -669,8 +669,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/camera-photo-v2.jpg",
-        "sha256": "c690449692167190f902fb9519ed7ab05f864c1f5cb14d0634e4030469063d15",
+        "path": "assets/covers/cx019-camera-rent.editorial-v3.jpg",
+        "sha256": "14f0f9755372a8806fb7d8b8622a3a9b4a688fa001468d7714d5a2b9ac3c9a34",
         "kind": "ai_staged_editorial"
       }
     },
@@ -785,8 +785,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx020-gaming-hours.editorial-v3.jpg",
+        "sha256": "fca4938ab30f85b2c10758ab4acee141b04d47675d787ba057fdcfdfb7479234",
         "kind": "ai_staged_editorial"
       }
     },
@@ -901,8 +901,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/coupon-photo-v1.jpg",
-        "sha256": "557a3ec936a1ba32628f0066332bf7563af09213e147729a5d5928fe483cbfcd",
+        "path": "assets/covers/cx021-coupon-cap.editorial-v3.jpg",
+        "sha256": "285c75db83fc622feda98507e72505bd7dd5d4cf40945c0b17b6a75999094895",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1037,8 +1037,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/subscription-photo-v2.jpg",
-        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
+        "path": "assets/covers/cx022-cloud-tier.editorial-v3.jpg",
+        "sha256": "1a0882b1a3277e6877deb69807ac34ce47b0f67817329c9596d7884c56567749",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1153,8 +1153,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/household-photo-v2.jpg",
-        "sha256": "1c5eee16bc960d9244fd4e6002a610d4e200818081ae1f14a122cd82d601ca14",
+        "path": "assets/covers/cx023-detergent-dose.editorial-v3.jpg",
+        "sha256": "98724b6fcb6d30bf44581b450a8e16cc7e5d40fb40cf08d0a1e38507d7bb26c1",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1269,8 +1269,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "path": "assets/covers/cx024-rental-total.editorial-v3.jpg",
+        "sha256": "a85570906be57d96dd8e013b0f00f346b01a42c712e534a944d56ba903ca1f7c",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1385,8 +1385,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/cafe-photo-v2.jpg",
-        "sha256": "2769760d226545e4c554a3c13b7d5e65717abf7b2383433489b2a772e5bc7bf6",
+        "path": "assets/covers/cx025-stamp-detour.editorial-v3.jpg",
+        "sha256": "54e76d07eafe4613b53da546522ea23fa82b7d2fd51bfaeec4a9b112f59281be",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1501,8 +1501,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/parking-photo-v2.jpg",
-        "sha256": "b5c776d5f1297df81cf46046902c821ee7179147d4fd2913a3edabca702210af",
+        "path": "assets/covers/cx026-fuel-detour.editorial-v3.jpg",
+        "sha256": "03c81976666752f50896e127d24b5a871eb9d96e9dcf305aaf1707957e2cc396",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1636,8 +1636,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx027-game-season.editorial-v3.jpg",
+        "sha256": "34cf661f8102a7990fdc3c641b9ecba064e4d3dc893310aa7fee0a312cc99a28",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1787,8 +1787,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/subscription-photo-v2.jpg",
-        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
+        "path": "assets/covers/cx028-cloud-and-disk.editorial-v3.jpg",
+        "sha256": "b7c692e7570fd221119890158ff6b815f4012bab74bf8398500af59aae525cbe",
         "kind": "ai_staged_editorial"
       }
     },
@@ -1919,8 +1919,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/subscription-photo-v2.jpg",
-        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
+        "path": "assets/covers/cx029-monthly-price.editorial-v3.jpg",
+        "sha256": "513596e8e4853f0701f7f5f69a97a348ea90b7bb2e66cb12962ced8d1835fc13",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2035,8 +2035,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/coupon-photo-v1.jpg",
-        "sha256": "557a3ec936a1ba32628f0066332bf7563af09213e147729a5d5928fe483cbfcd",
+        "path": "assets/covers/cx030-benefit-net.editorial-v3.jpg",
+        "sha256": "40b4651b4fee24b2f9ca1d41a1962bbed8da893897470445675faf36e782d663",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2151,8 +2151,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/household-photo-v2.jpg",
-        "sha256": "1c5eee16bc960d9244fd4e6002a610d4e200818081ae1f14a122cd82d601ca14",
+        "path": "assets/covers/cx031-bulk-space.editorial-v3.jpg",
+        "sha256": "01271020b3836bae5d1fb19d717ef47f7dbec7cb9f62754e3602cdedb70290bd",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2267,8 +2267,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "path": "assets/covers/cx032-noise-demo.editorial-v3.jpg",
+        "sha256": "3ec1cffb7cd503f9fab69732e47c601513fda23040c70782c52998d00fa5e684",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2383,8 +2383,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/food-photo-v2.jpg",
-        "sha256": "fe6ea34da1a826b4365c791c97d0147461dd77030d3fab57a928349f969c0063",
+        "path": "assets/covers/cx033-portion-weight.editorial-v3.jpg",
+        "sha256": "e344823768ae20ab58a6e110b4a082b6003b84dacacf61b6fe7830d384858602",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2499,8 +2499,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/taxi-photo-v1.jpg",
-        "sha256": "9de1f4c5bf40302adab1acb18e530938223ad03385c82638d7761efef7da6551",
+        "path": "assets/covers/cx034-transport-pass.editorial-v3.jpg",
+        "sha256": "7b2300f7f175b74c3fa9c611ca15c655ce0923de428296bcabf8e406bea504a8",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2615,8 +2615,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx035-display-extra.editorial-v3.jpg",
+        "sha256": "2550a74ec5120747e35629d60256f4b44afa86d09db529f819ad2f7b0bc0f02f",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2731,8 +2731,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx036-keyboard-use.editorial-v3.jpg",
+        "sha256": "34f395f463136ef2086aa7d288d44c717c9652f87d9261b62dd18121ea608e61",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2847,8 +2847,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/coupon-photo-v1.jpg",
-        "sha256": "557a3ec936a1ba32628f0066332bf7563af09213e147729a5d5928fe483cbfcd",
+        "path": "assets/covers/cx037-return-cost.editorial-v3.jpg",
+        "sha256": "512ec79331efdafb3a0325c51764bd259d139e40a7884bde9ac2cd027c77ea2a",
         "kind": "ai_staged_editorial"
       }
     },
@@ -2963,8 +2963,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/parking-photo-v2.jpg",
-        "sha256": "b5c776d5f1297df81cf46046902c821ee7179147d4fd2913a3edabca702210af",
+        "path": "assets/covers/cx038-wash-pack.editorial-v3.jpg",
+        "sha256": "82b6385cecf2a79028c5e5cd2013f77eae8078dcf46fbcaf73ae4a26a2f30387",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3079,8 +3079,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/cafe-photo-v2.jpg",
-        "sha256": "2769760d226545e4c554a3c13b7d5e65717abf7b2383433489b2a772e5bc7bf6",
+        "path": "assets/covers/cx039-reusable-use.editorial-v3.jpg",
+        "sha256": "494f7ec051b96763c4b240d0f5ae51fc1a762aca4c40a4d806354603c015c8eb",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3195,8 +3195,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "path": "assets/covers/cx040-energy-premium.editorial-v3.jpg",
+        "sha256": "62484bc68964f3b18259a3f702db4f37f15eed525970b1e8778b23cadad7488a",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3311,8 +3311,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/food-photo-v2.jpg",
-        "sha256": "fe6ea34da1a826b4365c791c97d0147461dd77030d3fab57a928349f969c0063",
+        "path": "assets/covers/cx041-buffet-choice.editorial-v3.jpg",
+        "sha256": "024fefcb59c265e1237177a94ec5218c243d3d3a6bf5c3a1b8a294c56f30d895",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3427,8 +3427,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/bike-photo-v2.jpg",
-        "sha256": "335fb3ae12c550b29dfc98a4c0da5eb64e879305e904e9ddbc1fa6e9a2125ba8",
+        "path": "assets/covers/cx042-bike-rental.editorial-v3.jpg",
+        "sha256": "0f8598e590accbc1feeb08a3a57f584535b1aa1803ce31bb3a72dbd7260bfa45",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3543,8 +3543,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx043-class-attendance.editorial-v3.jpg",
+        "sha256": "12857aa918e3dc376f5d779f7a30b4cdd0d4d36ee9c7ab88bc1718085effcbec",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3659,8 +3659,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx044-monitor-desk.editorial-v3.jpg",
+        "sha256": "ce96334f0e38a98590f941c82022fe4af80d883e619557599f9724f0eeccb394",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3793,8 +3793,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx045-bundle-unused.editorial-v3.jpg",
+        "sha256": "0bf976b2b1a7ffb0dfa1d4d0b77674250b13c1c4c98d62d4ab46a7e20ac673f5",
         "kind": "ai_staged_editorial"
       }
     },
@@ -3928,8 +3928,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/subscription-photo-v2.jpg",
-        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
+        "path": "assets/covers/cx046-pair-plan.editorial-v3.jpg",
+        "sha256": "823f64069efb08f3a368fdcf759a554ead30268c6a65eae29de7e0ea5abb151e",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4044,8 +4044,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx047-recharge-count.editorial-v3.jpg",
+        "sha256": "3e8798341fff01148408ada7cd180fc665dcc980a368b70021479dc2607aa661",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4160,8 +4160,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "path": "assets/covers/cx048-used-install.editorial-v3.jpg",
+        "sha256": "7543e5819365e5a61103f20b310efe04ab78d416fd9f005e3410a68d2c4e423a",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4276,8 +4276,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/food-photo-v2.jpg",
-        "sha256": "fe6ea34da1a826b4365c791c97d0147461dd77030d3fab57a928349f969c0063",
+        "path": "assets/covers/cx049-voucher-use.editorial-v3.jpg",
+        "sha256": "e85873412fa46b74b59467831a41c26c26c82e37d51cf8ed3cc4889cc78d2986",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4392,8 +4392,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/travel-photo-v2.jpg",
-        "sha256": "427f0e099a4ef7af0a318f2d7e6b90839548642a0dc96eb6eda65a87bbdb1f1d",
+        "path": "assets/covers/cx050-hotel-total.editorial-v3.jpg",
+        "sha256": "00a5f63afce5bd54a58783495966343504518b9eeafd499b7fe43c878167c7df",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4508,8 +4508,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx051-study-tool.editorial-v3.jpg",
+        "sha256": "bf750d9832b929b2b45c621563bf7e3bcaabc280ba96de591fc9125c69237584",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4651,8 +4651,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "official_price_comparison",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx052-ports-needed.editorial-v3.jpg",
+        "sha256": "090a25a73e5ca7519533c25383bebc586a66e2a85407fbd75d85815c391e6857",
         "kind": "ai_staged_editorial"
       }
     },
@@ -4767,8 +4767,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "no_unverified_amounts",
       "cover_photo": {
-        "path": "assets/covers/coupon-photo-v1.jpg",
-        "sha256": "557a3ec936a1ba32628f0066332bf7563af09213e147729a5d5928fe483cbfcd",
+        "path": "assets/covers/cx053-point-mission.editorial-v3.jpg",
+        "sha256": "27b9accc4a8f2df8820d0d7365023f711c56e535e8401c46cc6f8cbd1c925207",
         "kind": "ai_staged_editorial"
       }
     },
@@ -5013,7 +5013,12 @@
       "evidence": "가상 연출 상황. 배터리 3%, 보유 충전기 4개, 추가 구매 1개는 설명용 예시이며 실제 사용자 경험·시장 가격·제품 효과 주장이 아님. 계산 검증: 4 + 1 = 5. 기기 규격과 충전 호환성, 빌리기·대여·현장 충전 가능 여부는 실제 조건에서 별도 확인.",
       "music": "none",
       "visual_style": "checkout_pop",
-      "palette": "coral"
+      "palette": "coral",
+      "cover_photo": {
+        "path": "assets/covers/cx112-charger-drawer.editorial-v3.jpg",
+        "sha256": "ad07a7676ece5c156ff8665ad82091786c00101078728a71ce7dad9e657dcdaf",
+        "kind": "ai_staged_editorial"
+      }
     },
     {
       "id": "cx006-vacation-app",
@@ -5122,8 +5127,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/travel-photo-v2.jpg",
-        "sha256": "427f0e099a4ef7af0a318f2d7e6b90839548642a0dc96eb6eda65a87bbdb1f1d",
+        "path": "assets/covers/cx006-vacation-app.editorial-v3.jpg",
+        "sha256": "88ab9e4b1b13b694be32d8bec7b4f470d4fe4d51eb647bee27f96358cc730dfb",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5235,8 +5240,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/desk-photo-v2.jpg",
-        "sha256": "084504133f7de1e1afb2f575c5534e7cd19af83e493e17f4a87e9e606d5df2fd",
+        "path": "assets/covers/cx101-installment-cash.editorial-v3.jpg",
+        "sha256": "5313e104babd70f9261eb100199bf144f7cd6ef04f2c7dce67b187c0bd44d015",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5348,8 +5353,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/taxi-photo-v1.jpg",
-        "sha256": "9de1f4c5bf40302adab1acb18e530938223ad03385c82638d7761efef7da6551",
+        "path": "assets/covers/cx103-taxi-transit.editorial-v3.jpg",
+        "sha256": "217bb6a0f5f4904229696c98074683e210b45603c4b3b859f7cbc2b52798a3b3",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5461,8 +5466,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/parking-photo-v2.jpg",
-        "sha256": "b5c776d5f1297df81cf46046902c821ee7179147d4fd2913a3edabca702210af",
+        "path": "assets/covers/cx104-self-full-gas.editorial-v3.jpg",
+        "sha256": "d65a6079cfe827eb181bfc4e9905e9998997b091caa4c707191f44ba4dfad9a6",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5574,8 +5579,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/hobby-photo-v2.jpg",
-        "sha256": "31868c375aade9fc8a41bb9586b35aa927c73edbcb9c73733798f3e22d60daeb",
+        "path": "assets/covers/cx105-daily-monthly-lens.editorial-v3.jpg",
+        "sha256": "eb366f4d32ac37487c7fe6ee9250d549bbc394602e8fcee3455b797a94d47116",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5687,8 +5692,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/camera-photo-v2.jpg",
-        "sha256": "c690449692167190f902fb9519ed7ab05f864c1f5cb14d0634e4030469063d15",
+        "path": "assets/covers/cx106-refurb-new.editorial-v3.jpg",
+        "sha256": "da43a5a198fe34b40d8ceae85aea8801c6d6f995c5ecb66bbcd595eb69ee662b",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5800,8 +5805,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/refill-photo-v2.jpg",
-        "sha256": "fe940a832a377868afea4dcc3157b0f47062a7500d9ef0e4a961a2eaa31b5235",
+        "path": "assets/covers/cx107-filter-service.editorial-v3.jpg",
+        "sha256": "e2e15fa002ce3f46a4bead3ce9bb39aee238fa4228905fb3ca3da60a6b3447b5",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -5913,8 +5918,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/food-photo-v2.jpg",
-        "sha256": "fe6ea34da1a826b4365c791c97d0147461dd77030d3fab57a928349f969c0063",
+        "path": "assets/covers/cx108-subscribe-ondemand.editorial-v3.jpg",
+        "sha256": "eb9ace78415d6143b2f3e0cae178c943614e4a40067434aeaa93603c346741a6",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -6026,8 +6031,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/appliance-photo-v2.jpg",
-        "sha256": "db862c7cc1f9f2036433bc52c45a9f72a1be3a4e424c6ecf6c9f3da972eedeb4",
+        "path": "assets/covers/cx109-printer-tank.editorial-v3.jpg",
+        "sha256": "c79131077da46eadffcff3a178db7f06d203829a687f78c7384b503ed659148d",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -6139,8 +6144,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/cafe-photo-v2.jpg",
-        "sha256": "2769760d226545e4c554a3c13b7d5e65717abf7b2383433489b2a772e5bc7bf6",
+        "path": "assets/covers/cx110-bulk-small.editorial-v3.jpg",
+        "sha256": "416de4596300f673933513b193eb4b3ca3fce988713a6866f353a140678d68ab",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
@@ -6252,8 +6257,8 @@
       "editorial_revision": "official-comparison-2026-09-12",
       "pricing_status": "assumption_labeled",
       "cover_photo": {
-        "path": "assets/covers/subscription-photo-v2.jpg",
-        "sha256": "a38476aa04958b40e38cc45b41820c40e8eaaa63b66245ee5150e623ae2957aa",
+        "path": "assets/covers/cx111-annual-monthly.editorial-v3.jpg",
+        "sha256": "2de7aa6c67d4aeec9b431db00a4eda9ccb12210ec975aa69a0ba18d9ce6ab69a",
         "kind": "ai_staged_editorial"
       },
       "track": "threshold-v2"
