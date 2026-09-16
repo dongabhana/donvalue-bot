@@ -94,6 +94,53 @@ def configured() -> bool:
     return True
 
 
+# ------------------------------------------------- 정기 발행에서의 보류 스위치
+HOLD_FILE = Path(__file__).resolve().parent.parent / "content" / "youtube_hold.json"
+
+
+def hold_reason() -> str:
+    """정기 발행(post.yml)에서 유튜브 업로드를 보류할 이유. 보류가 아니면 빈 문자열.
+
+    왜 필요한가 —
+      심사(audit) 전에 videos.insert 로 올린 영상은 비공개로 잠기고, 채널 주인이
+      손으로도 공개로 못 바꾼다. 그런데 올라간 순간 content/delivery.json 에
+      'youtube: done' 으로 남기 때문에, 나중에 심사가 풀려 몰아 올릴 때
+      그 편들을 전부 건너뛴다. 즉 '영영 공개 못 하는 편'이 조용히 쌓인다.
+      그래서 심사가 풀릴 때까지 정기 발행에서는 유튜브만 건너뛴다.
+      (인스타·쓰레드 발행은 이 스위치와 무관하게 그대로 나간다.)
+
+    우선순위
+      1. 환경변수 YT_AUTO 가 있으면 그게 이긴다 (1/true/yes/on 이면 올림).
+      2. 없으면 content/youtube_hold.json 의 hold 값을 본다.
+      3. 파일도 없거나 읽을 수 없으면 **보류**가 기본이다.
+         잘못 올려서 잠기는 쪽이, 안 올려서 나중에 몰아 올리는 쪽보다
+         되돌리기가 훨씬 어렵기 때문.
+
+    주의: 이 스위치는 정기 발행(src/run.py)에만 적용된다.
+    손으로 돌리는 백필(src/youtube_run.py · 유튜브 쇼츠 백필 워크플로)은
+    사람이 일부러 누른 것이므로 그대로 올라간다 — 심사 통과 후 몰아 올릴 때
+    쓰는 경로가 바로 그것이다.
+    """
+    env = os.getenv("YT_AUTO", "").strip().lower()
+    if env:
+        return "" if env in ("1", "true", "yes", "on") else "YT_AUTO 가 꺼져 있음"
+    try:
+        data = json.loads(HOLD_FILE.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        return "content/youtube_hold.json 이 없음 (기본값은 보류)"
+    except (OSError, json.JSONDecodeError) as e:
+        # 파일이 깨졌다고 조용히 올려버리면 안 된다. 보류 쪽으로 넘어간다.
+        return f"content/youtube_hold.json 을 읽을 수 없음: {e}"
+    if not data.get("hold", True):
+        return ""
+    return str(data.get("reason") or "보류 중").strip()
+
+
+def auto_enabled() -> bool:
+    """정기 발행에서 유튜브까지 같이 올려도 되는가."""
+    return not hold_reason()
+
+
 def access_token() -> str:
     """리프레시 토큰으로 1시간짜리 액세스 토큰을 받는다.
 
