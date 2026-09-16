@@ -25,6 +25,7 @@ import http.server
 import json
 import socket
 import threading
+from pathlib import Path
 import urllib.parse
 import webbrowser
 
@@ -63,11 +64,57 @@ def free_port() -> int:
     return p
 
 
+def find_client_json() -> Path | None:
+    """구글 콘솔에서 받은 client_secret_*.json 을 알아서 찾는다.
+
+    명령줄에 ID·시크릿을 직접 타이핑하게 하면 따옴표·꺾쇠 때문에 꼭 한 번은
+    틀린다. 파일만 받아두면 되게 만드는 쪽이 훨씬 덜 틀린다.
+    """
+    seen: list[Path] = []
+    for folder in (Path.home() / "Downloads", Path.home() / "다운로드",
+                   Path.cwd(), Path(__file__).resolve().parent.parent):
+        try:
+            seen += sorted(folder.glob("client_secret*.json"),
+                           key=lambda f: f.stat().st_mtime, reverse=True)
+        except OSError:
+            pass
+    return seen[0] if seen else None
+
+
+def read_client_json(path: Path) -> tuple[str, str]:
+    """데스크톱 앱 클라이언트 JSON 에서 (id, secret) 을 꺼낸다."""
+    data = json.loads(Path(path).read_text(encoding="utf-8"))
+    block = data.get("installed") or data.get("web") or data
+    cid = str(block.get("client_id", "")).strip()
+    sec = str(block.get("client_secret", "")).strip()
+    if not cid or not sec:
+        raise SystemExit(f"[stop] {path} 에서 client_id/client_secret 을 찾지 못했습니다.")
+    if "web" in data and "installed" not in data:
+        print("[warn] 이 클라이언트는 '웹 애플리케이션' 유형입니다. "
+              "루프백 방식이 막힐 수 있어요. '데스크톱 앱'으로 새로 만드는 걸 권합니다.\n")
+    return cid, sec
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--id", required=True, help="OAuth 클라이언트 ID")
-    ap.add_argument("--secret", required=True, help="OAuth 클라이언트 보안 비밀")
+    ap.add_argument("--file", help="구글 콘솔에서 받은 client_secret_*.json 경로 "
+                                   "(비우면 다운로드 폴더에서 자동으로 찾습니다)")
+    ap.add_argument("--id", help="OAuth 클라이언트 ID (--file 을 쓰면 불필요)")
+    ap.add_argument("--secret", help="OAuth 클라이언트 보안 비밀 (--file 을 쓰면 불필요)")
     args = ap.parse_args()
+
+    if not (args.id and args.secret):
+        path = Path(args.file) if args.file else find_client_json()
+        if not path or not path.is_file():
+            print("[stop] 클라이언트 JSON 을 찾지 못했습니다.\n")
+            print("  1) console.cloud.google.com/auth/clients 에서")
+            print("     donvalue-uploader 오른쪽 ⬇ (JSON 다운로드) 를 누르세요.")
+            print("  2) 받은 파일을 다운로드 폴더에 두고 이 명령을 다시 실행하세요:")
+            print("       python tools\\get_yt_token.py")
+            return 1
+        args.id, args.secret = read_client_json(path)
+        print(f"[client] {path.name} 에서 클라이언트 정보를 읽었습니다.")
+        print(f"[client] id = {args.id[:18]}…{args.id[-24:]}\n")
 
     port = free_port()
     redirect = f"http://127.0.0.1:{port}"
@@ -138,6 +185,9 @@ def main() -> int:
     print(blob)
     print("=" * 64)
     print("\n둘 중 하나만 등록하면 됩니다. 이미 B 로 등록해뒀다면 그대로 두세요.")
+    print("\n등록하는 곳:")
+    print("  https://github.com/dongabhana/donvalue-bot/settings/secrets/actions")
+    print("  → New repository secret 으로 위 이름·값을 그대로 넣으세요.")
     print("⚠ OAuth 동의 화면이 '테스트' 상태면 이 토큰은 7일 뒤 죽습니다. "
           "'앱 게시'로 바꿔두세요.")
     return 0
