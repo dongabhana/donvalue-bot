@@ -1,0 +1,518 @@
+[
+  {
+    "id": "cx006-vacation-app",
+    "path": "assets/covers/cx006-vacation-app.editorial-v3.jpg",
+    "sha256": "88ab9e4b1b13b694be32d8bec7b4f470d4fe4d51eb647bee27f96358cc730dfb",
+    "subject": "Two airline boarding-pass shaped blank tickets and a model passenger airplane beside travel suitcase, one ticket rigidly held by a clip and another beside a flexible date planner. Travel schedule change comparison, no airline marks."
+  },
+  {
+    "id": "cx101-installment-cash",
+    "path": "assets/covers/cx101-installment-cash.editorial-v3.jpg",
+    "sha256": "5313e104babd70f9261eb100199bf144f7cd6ef04f2c7dce67b187c0bd44d015",
+    "subject": "A bank card and a stack of twelve blank monthly payment slips beside one immediate-payment envelope and coins. Consumer installment versus upfront payment still life, not investment imagery."
+  },
+  {
+    "id": "cx103-taxi-transit",
+    "path": "assets/covers/cx103-taxi-transit.editorial-v3.jpg",
+    "sha256": "217bb6a0f5f4904229696c98074683e210b45603c4b3b859f7cbc2b52798a3b3",
+    "subject": "A yellow taxi and a recognizable city bus side by side at a night street stop, three waiting adult silhouettes together in background. Compare shared taxi ride to public transit; no text or fare numbers."
+  },
+  {
+    "id": "006-car-tco",
+    "path": "assets/covers/006-car-tco.editorial-v3.jpg",
+    "sha256": "bb958a3eff66ea0e5ae374753726749c6221fa36668976c2de7ec0d55d84bc89",
+    "subject": "Real family sedan with car keys in foreground surrounded by a fuel nozzle, tire, parking ticket-shaped paper and service wrench. Physical hidden car-ownership cost objects, no price text."
+  },
+  {
+    "id": "009-certificate",
+    "path": "assets/covers/009-certificate.editorial-v3.jpg",
+    "sha256": "b45522e7149f02f4bf84f7911f727da7d35dd656f6503297af7fc24e43a1f2e1",
+    "subject": "Technical certification study books, a blank certificate with embossed seal, calculator and industrial safety helmet. Practical professional qualification versus cost; no legible text."
+  },
+  {
+    "id": "010-coffee",
+    "path": "assets/covers/010-coffee.editorial-v3.jpg",
+    "sha256": "eab7476e6a77dec3df75a5be1afcc921045d6ebe07e1fdb43cda657332adb513",
+    "subject": "One takeaway iced coffee in sharp foreground with a long row of similar cups receding behind, tiny coins and weekday planner. Daily habit accumulating over a year, appetizing coffee."
+  },
+  {
+    "id": "cx104-self-full-gas",
+    "path": "assets/covers/cx104-self-full-gas.editorial-v3.jpg",
+    "sha256": "d65a6079cfe827eb181bfc4e9905e9998997b091caa4c707191f44ba4dfad9a6",
+    "subject": "Two real fuel pump nozzles at a gas station, on one side a driver's hand operates a nozzle and on the other a uniformed attendant's gloved hand operates one; self-service versus attended fueling. No prices or text."
+  },
+  {
+    "id": "cx106-refurb-new",
+    "path": "assets/covers/cx106-refurb-new.editorial-v3.jpg",
+    "sha256": "da43a5a198fe34b40d8ceae85aea8801c6d6f995c5ecb66bbcd595eb69ee662b",
+    "subject": "Two visually matching unbranded laptops, one in immaculate sealed retail packaging and one in an open refurbished cardboard box with a blank inspection checklist and screwdriver. Equal model design, not broken or dirty."
+  },
+  {
+    "id": "cx108-subscribe-ondemand",
+    "path": "assets/covers/cx108-subscribe-ondemand.editorial-v3.jpg",
+    "sha256": "eb9ace78415d6143b2f3e0cae178c943614e4a40067434aeaa93603c346741a6",
+    "subject": "Recurring delivery parcels stacked beside an already full pantry shelf, compared with one modest household refill packet next to an empty slot. Generic household consumables, emphasize delivery arriving faster than usage."
+  },
+  {
+    "id": "cx109-printer-tank",
+    "path": "assets/covers/cx109-printer-tank.editorial-v3.jpg",
+    "sha256": "c79131077da46eadffcff3a178db7f06d203829a687f78c7384b503ed659148d",
+    "subject": "Two desktop printers side by side, a cheap cartridge printer with small ink cartridges and an ink-tank multifunction printer with visible refill bottles; a neat stack of printed paper. Hardware instantly identifiable."
+  },
+  {
+    "id": "cx005-coupon-minimum",
+    "path": "assets/covers/cx005-coupon-minimum.editorial-v3.jpg",
+    "sha256": "add221c8cf92fe191733ac82a2dfce63708b516a824e08d9f0f2afccf63806d6",
+    "subject": "A small shopping basket with two planned household items contrasted with an extra unnecessary bright red packaged item and a coupon-shaped blank ticket being added; the additional purchase visually dominates."
+  },
+  {
+    "id": "cx008-robot-prep",
+    "path": "assets/covers/cx008-robot-prep.editorial-v3.jpg",
+    "sha256": "ea9ca2ed8a8fb3db532207d7c4042801625e85b13282270a963c08c5b85d41b6",
+    "subject": "A real round robot vacuum halted at a tangled charging cable, single sock and small toy on a living-room floor. Vacuum clearly visible; objects arranged as a mundane obstacle course, not an explosion."
+  },
+  {
+    "id": "cx019-camera-rent",
+    "path": "assets/covers/cx019-camera-rent.editorial-v3.jpg",
+    "sha256": "14f0f9755372a8806fb7d8b8622a3a9b4a688fa001468d7714d5a2b9ac3c9a34",
+    "subject": "Two matching mirrorless camera kits side by side, each with identical body, lens, spare battery and memory card; one beside a rental carrying case and one beside a retail box. Both complete kits unmistakable."
+  },
+  {
+    "id": "cx020-gaming-hours",
+    "path": "assets/covers/cx020-gaming-hours.editorial-v3.jpg",
+    "sha256": "fca4938ab30f85b2c10758ab4acee141b04d47675d787ba057fdcfdfb7479234",
+    "subject": "Open gaming desktop computer with its graphics card dramatically pulled forward beside the original card, computer monitor showing abstract colorful game shapes with no interface text. Emphasize GPU and PC hardware."
+  },
+  {
+    "id": "cx021-coupon-cap",
+    "path": "assets/covers/cx021-coupon-cap.editorial-v3.jpg",
+    "sha256": "285c75db83fc622feda98507e72505bd7dd5d4cf40945c0b17b6a75999094895",
+    "subject": "Two large blank die-cut coupon tickets on a shopping checkout surface, one ornate oversized ticket under a low transparent glass ceiling and the other modest ticket beside a larger pile of coins. Conceptual studio still life for coupon caps; no percent symbols."
+  },
+  {
+    "id": "cx022-cloud-tier",
+    "path": "assets/covers/cx022-cloud-tier.editorial-v3.jpg",
+    "sha256": "1a0882b1a3277e6877deb69807ac34ce47b0f67817329c9596d7884c56567749",
+    "subject": "Smartphone full of small abstract photo thumbnails beside two transparent storage boxes, one small nearly full and one four times larger; glowing white cloud silhouette as a physical translucent prop, no words or capacity numbers."
+  },
+  {
+    "id": "cx023-detergent-dose",
+    "path": "assets/covers/cx023-detergent-dose.editorial-v3.jpg",
+    "sha256": "98724b6fcb6d30bf44581b450a8e16cc7e5d40fb40cf08d0a1e38507d7bb26c1",
+    "subject": "Two unbranded laundry detergent bottles, one small concentrated bottle and one larger bottle, clear graduated measuring caps without numerals and neatly folded laundry. Bright teal liquid highlights emphasize dosing per wash."
+  },
+  {
+    "id": "cx024-rental-total",
+    "path": "assets/covers/cx024-rental-total.editorial-v3.jpg",
+    "sha256": "a85570906be57d96dd8e013b0f00f346b01a42c712e534a944d56ba903ca1f7c",
+    "subject": "A sleek domestic countertop water purifier beside maintenance filters, a service tool pouch, blank contract sheet and house keys. Appliance and care components show rental versus ownership, realistic staged studio photography."
+  },
+  {
+    "id": "cx025-stamp-detour",
+    "path": "assets/covers/cx025-stamp-detour.editorial-v3.jpg",
+    "sha256": "54e76d07eafe4613b53da546522ea23fa82b7d2fd51bfaeec4a9b112f59281be",
+    "subject": "Cafe stamp loyalty card with a row of empty circular stamp spaces, a rubber stamp and a freshly poured coffee; a second unwanted takeaway cup beside the card hints at an extra visit just for a reward. No writing."
+  },
+  {
+    "id": "cx026-fuel-detour",
+    "path": "assets/covers/cx026-fuel-detour.editorial-v3.jpg",
+    "sha256": "03c81976666752f50896e127d24b5a871eb9d96e9dcf305aaf1707957e2cc396",
+    "subject": "Miniature realistic road fork photographed as premium physical diorama, a car and a recognizable fuel station with fuel nozzle at the longer bend; shorter road passes directly ahead. No map labels or prices."
+  },
+  {
+    "id": "cx027-game-season",
+    "path": "assets/covers/cx027-game-season.editorial-v3.jpg",
+    "sha256": "34cf661f8102a7990fdc3c641b9ecba064e4d3dc893310aa7fee0a312cc99a28",
+    "subject": "Unbranded handheld gaming console with detachable red and blue controllers, paired with one calendar card and a thick stack of calendar cards with blank grid squares; online play duration visual, no numbers."
+  },
+  {
+    "id": "cx028-cloud-and-disk",
+    "path": "assets/covers/cx028-cloud-and-disk.editorial-v3.jpg",
+    "sha256": "b7c692e7570fd221119890158ff6b815f4012bab74bf8398500af59aae525cbe",
+    "subject": "Laptop displaying an abstract spreadsheet grid and document shapes next to a phone displaying a photo gallery, with a translucent cloud storage prop connecting them. Show productivity apps plus cloud backup, no text or brand logos."
+  },
+  {
+    "id": "cx029-monthly-price",
+    "path": "assets/covers/cx029-monthly-price.editorial-v3.jpg",
+    "sha256": "513596e8e4853f0701f7f5f69a97a348ea90b7bb2e66cb12962ced8d1835fc13",
+    "subject": "Open laptop with generic spreadsheet cells and document page, beside a single calendar sheet and a bound year planner, bank card and calculator. Office software monthly versus annual payment, no readable numbers."
+  },
+  {
+    "id": "cx030-benefit-net",
+    "path": "assets/covers/cx030-benefit-net.editorial-v3.jpg",
+    "sha256": "40b4651b4fee24b2f9ca1d41a1962bbed8da893897470445675faf36e782d663",
+    "subject": "Dark premium membership card balanced beside a receipt, small delivery parcel and a modest pile of coins; physical visual of membership fee versus actually used benefits. No writing."
+  },
+  {
+    "id": "cx031-bulk-space",
+    "path": "assets/covers/cx031-bulk-space.editorial-v3.jpg",
+    "sha256": "01271020b3836bae5d1fb19d717ef47f7dbec7cb9f62754e3602cdedb70290bd",
+    "subject": "A cramped apartment storage cabinet visibly overfilled with bulk packs of toilet paper and detergent while a smaller pack fits neatly beside it. Real cupboard and realistic objects, clear space contrast."
+  },
+  {
+    "id": "cx032-noise-demo",
+    "path": "assets/covers/cx032-noise-demo.editorial-v3.jpg",
+    "sha256": "3ec1cffb7cd503f9fab69732e47c601513fda23040c70782c52998d00fa5e684",
+    "subject": "Air purifier or fan beside a bedside table at night, soft bedroom lighting and an acoustic measurement microphone in foreground. Calm but visually bold; no sound waves, numbers or performance claims."
+  },
+  {
+    "id": "cx033-portion-weight",
+    "path": "assets/covers/cx033-portion-weight.editorial-v3.jpg",
+    "sha256": "e344823768ae20ab58a6e110b4a082b6003b84dacacf61b6fe7830d384858602",
+    "subject": "Two takeaway meal containers with visibly different portions of the same food, one small individual meal and one family portion, placed beside a kitchen scale with blank display. Food is appetizing and portions identifiable."
+  },
+  {
+    "id": "cx034-transport-pass",
+    "path": "assets/covers/cx034-transport-pass.editorial-v3.jpg",
+    "sha256": "7b2300f7f175b74c3fa9c611ca15c655ce0923de428296bcabf8e406bea504a8",
+    "subject": "Close-up of two blank transit smartcards in foreground with recognizable subway train and city bus behind. Urban transit entrance, green and cyan accents, absolutely no taxi."
+  },
+  {
+    "id": "cx035-display-extra",
+    "path": "assets/covers/cx035-display-extra.editorial-v3.jpg",
+    "sha256": "2550a74ec5120747e35629d60256f4b44afa86d09db529f819ad2f7b0bc0f02f",
+    "subject": "Collectible small designer figures with empty clear acrylic display case and compact shelf lighting, another still packed in a box; focus on physical display space and dimensions, no copyrighted characters."
+  },
+  {
+    "id": "cx036-keyboard-use",
+    "path": "assets/covers/cx036-keyboard-use.editorial-v3.jpg",
+    "sha256": "34f395f463136ef2086aa7d288d44c717c9652f87d9261b62dd18121ea608e61",
+    "subject": "Two tactile mechanical keyboards seen close-up from a low angle, one compact quiet layout and one larger layout, with keycap switch exposed beside them; blank keycaps, real detailed materials."
+  },
+  {
+    "id": "cx037-return-cost",
+    "path": "assets/covers/cx037-return-cost.editorial-v3.jpg",
+    "sha256": "512ec79331efdafb3a0325c51764bd259d139e40a7884bde9ac2cd027c77ea2a",
+    "subject": "A pair of shoes halfway packed in a return parcel, a tape dispenser and blank return label beside another unopened retail box. Emphasize parcel return conditions rather than discounts."
+  },
+  {
+    "id": "cx038-wash-pack",
+    "path": "assets/covers/cx038-wash-pack.editorial-v3.jpg",
+    "sha256": "82b6385cecf2a79028c5e5cd2013f77eae8078dcf46fbcaf73ae4a26a2f30387",
+    "subject": "A clean car seen through rain-covered glass at a self-service car wash entrance with wash wand, foam and blank membership card in foreground. Rainy month and wash subscription clearly suggested."
+  },
+  {
+    "id": "cx039-reusable-use",
+    "path": "assets/covers/cx039-reusable-use.editorial-v3.jpg",
+    "sha256": "494f7ec051b96763c4b240d0f5ae51fc1a762aca4c40a4d806354603c015c8eb",
+    "subject": "A well-used stainless reusable tumbler next to a new unused tumbler still in its box and a cafe coffee machine in background. Hero is the existing cup ready to reuse."
+  },
+  {
+    "id": "cx040-energy-premium",
+    "path": "assets/covers/cx040-energy-premium.editorial-v3.jpg",
+    "sha256": "62484bc68964f3b18259a3f702db4f37f15eed525970b1e8778b23cadad7488a",
+    "subject": "Two similar domestic refrigerators with blank colored energy-label shapes and an electricity plug, one lit cool green and one warm amber. No invented efficiency grades or numbers."
+  },
+  {
+    "id": "cx041-buffet-choice",
+    "path": "assets/covers/cx041-buffet-choice.editorial-v3.jpg",
+    "sha256": "024fefcb59c265e1237177a94ec5218c243d3d3a6bf5c3a1b8a294c56f30d895",
+    "subject": "Restaurant buffet serving trays on one side and a beautifully plated single-course meal on the other, same perspective and appetizing real food; visibly two dining choices."
+  },
+  {
+    "id": "cx042-bike-rental",
+    "path": "assets/covers/cx042-bike-rental.editorial-v3.jpg",
+    "sha256": "0f8598e590accbc1feeb08a3a57f584535b1aa1803ce31bb3a72dbd7260bfa45",
+    "subject": "A personal bicycle with helmet beside a public bicycle docking rack and rental bike, urban riverside cycle path, no logos. Two clear ownership versus rental options."
+  },
+  {
+    "id": "cx043-class-attendance",
+    "path": "assets/covers/cx043-class-attendance.editorial-v3.jpg",
+    "sha256": "12857aa918e3dc376f5d779f7a30b4cdd0d4d36ee9c7ab88bc1718085effcbec",
+    "subject": "Yoga or language-class attendance planning still life: blank weekly timetable with a few colored appointment tabs, class pass, notebook and rolled exercise mat at studio doorway. Focus on planned attendance, no written text."
+  },
+  {
+    "id": "cx044-monitor-desk",
+    "path": "assets/covers/cx044-monitor-desk.editorial-v3.jpg",
+    "sha256": "ce96334f0e38a98590f941c82022fe4af80d883e619557599f9724f0eeccb394",
+    "subject": "Large computer monitor visibly filling a shallow compact desk, measuring tape extended along the desk depth and stand footprint, keyboard cramped in front. No numbers on tape."
+  },
+  {
+    "id": "cx045-bundle-unused",
+    "path": "assets/covers/cx045-bundle-unused.editorial-v3.jpg",
+    "sha256": "0bf976b2b1a7ffb0dfa1d4d0b77674250b13c1c4c98d62d4ab46a7e20ac673f5",
+    "subject": "Handheld gaming console with a physical game case and a separate expansion-content box represented as a small matching add-on package. Two components alongside a bundled sleeve. No franchise artwork, logos or text."
+  },
+  {
+    "id": "cx046-pair-plan",
+    "path": "assets/covers/cx046-pair-plan.editorial-v3.jpg",
+    "sha256": "823f64069efb08f3a368fdcf759a554ead30268c6a65eae29de7e0ea5abb151e",
+    "subject": "Two handheld gaming consoles with red and blue controllers connected visually by a shared circular family-card prop; one spare blank individual card beside them. Focus two people sharing online membership, no people required."
+  },
+  {
+    "id": "cx047-recharge-count",
+    "path": "assets/covers/cx047-recharge-count.editorial-v3.jpg",
+    "sha256": "3e8798341fff01148408ada7cd180fc665dcc980a368b70021479dc2607aa661",
+    "subject": "Rechargeable AA batteries in a charger on the left, matching disposable AA batteries on the right, game controller and remote behind. Sharp realistic metallic cells, no brand or voltage markings."
+  },
+  {
+    "id": "cx048-used-install",
+    "path": "assets/covers/cx048-used-install.editorial-v3.jpg",
+    "sha256": "7543e5819365e5a61103f20b310efe04ab78d416fd9f005e3410a68d2c4e423a",
+    "subject": "A domestic washing machine on a moving dolly with water hoses, wrench and a doorframe nearby; visible installation and transport components, lightly used but clean appliance."
+  },
+  {
+    "id": "cx049-voucher-use",
+    "path": "assets/covers/cx049-voucher-use.editorial-v3.jpg",
+    "sha256": "e85873412fa46b74b59467831a41c26c26c82e37d51cf8ed3cc4889cc78d2986",
+    "subject": "A restaurant meal voucher as blank elegant ticket beside a plated meal and a second extra side dish with a receipt. Show the difference between voucher and what one actually orders; no text."
+  },
+  {
+    "id": "cx050-hotel-total",
+    "path": "assets/covers/cx050-hotel-total.editorial-v3.jpg",
+    "sha256": "00a5f63afce5bd54a58783495966343504518b9eeafd499b7fe43c878167c7df",
+    "subject": "Hotel room key card on a reservation folio, small suitcase and a warmly lit attractive hotel bed behind; a receipt peeks from the folio to suggest final booking total, no text."
+  },
+  {
+    "id": "cx051-study-tool",
+    "path": "assets/covers/cx051-study-tool.editorial-v3.jpg",
+    "sha256": "bf750d9832b929b2b45c621563bf7e3bcaabc280ba96de591fc9125c69237584",
+    "subject": "Open paper notebook and pen beside tablet with handwritten abstract strokes and stylus, well-organized real study desk with one textbook, emphasize practical study workflow."
+  },
+  {
+    "id": "cx052-ports-needed",
+    "path": "assets/covers/cx052-ports-needed.editorial-v3.jpg",
+    "sha256": "090a25a73e5ca7519533c25383bebc586a66e2a85407fbd75d85815c391e6857",
+    "subject": "Two white generic USB-C wall chargers shown at macro scale, clearly one USB-C port on the left adapter and two USB-C ports on the right; smartphone and earbuds charging cables nearby. Not exact branded product replicas; no logos or power ratings."
+  },
+  {
+    "id": "cx053-point-mission",
+    "path": "assets/covers/cx053-point-mission.editorial-v3.jpg",
+    "sha256": "27b9accc4a8f2df8820d0d7365023f711c56e535e8401c46cc6f8cbd1c925207",
+    "subject": "Phone showing abstract checklist circles and a rewards coin icon, small planned shopping basket beside an unnecessary second parcel; focus on spending extra for reward points, no readable text."
+  },
+  {
+    "id": "cx112-charger-drawer",
+    "path": "assets/covers/cx112-charger-drawer.editorial-v3.jpg",
+    "sha256": "ad07a7676ece5c156ff8665ad82091786c00101078728a71ce7dad9e657dcdaf",
+    "subject": "Open household drawer holding four tangled wall chargers and cables, a fifth newly packaged charger prominently placed beside a phone with a nearly empty battery icon. Relatable realistic domestic scene."
+  },
+  {
+    "id": "cx107-filter-service",
+    "path": "assets/covers/cx107-filter-service.editorial-v3.jpg",
+    "sha256": "e2e15fa002ce3f46a4bead3ce9bb39aee238fa4228905fb3ca3da60a6b3447b5",
+    "subject": "Countertop water purifier with a removable cylindrical replacement filter, DIY hand changing filter on one side and professional tool bag on the other; realistic maintenance comparison."
+  },
+  {
+    "id": "cx110-bulk-small",
+    "path": "assets/covers/cx110-bulk-small.editorial-v3.jpg",
+    "sha256": "416de4596300f673933513b193eb4b3ca3fce988713a6866f353a140678d68ab",
+    "subject": "One huge unbranded bulk food-storage container partly unused and three small sealed portions of the same dry food; practical kitchen still life with a small calendar prop, avoid numerical labels."
+  },
+  {
+    "id": "cx111-annual-monthly",
+    "path": "assets/covers/cx111-annual-monthly.editorial-v3.jpg",
+    "sha256": "2de7aa6c67d4aeec9b431db00a4eda9ccb12210ec975aa69a0ba18d9ce6ab69a",
+    "subject": "A single monthly planner page beside a full thick yearly calendar binder and a payment card, a few pages left unused. Recurring subscription term comparison as polished physical still life."
+  },
+  {
+    "id": "003-gym-annual",
+    "path": "assets/covers/003-gym-annual.editorial-v3.jpg",
+    "sha256": "62fd422308d3f56bf3e067b7a293992c23850ad46700939b9a8b058703afd3b6",
+    "subject": "Empty modern gym with a dumbbell, training shoes and untouched membership card in foreground, a sparse attendance calendar nearby. Strong orange lighting, recognizable gym equipment."
+  },
+  {
+    "id": "011-ai-subscription",
+    "path": "assets/covers/011-ai-subscription.editorial-v3.jpg",
+    "sha256": "564e28929c914154a4da4516464a5e9e31bcf227c865f10a8aabe7eedd0dfe7a",
+    "subject": "Laptop with three abstract chat windows represented by simple colored message blocks, one active and two dimmed, bank card beside it. AI subscription overlap, no AI mascots, logos or readable text."
+  },
+  {
+    "id": "012-youtube-premium",
+    "path": "assets/covers/012-youtube-premium.editorial-v3.jpg",
+    "sha256": "518a29bb7eb21153165973074c40e5ed9c565b73aaaffda63052f4ab41d75f1e",
+    "subject": "Smartphone showing a generic video play triangle while a bright red pause-like advertising panel partially blocks the screen, wireless headphones next to it. Paid ad-free video theme, no brand text."
+  },
+  {
+    "id": "013-airpods-vs-cheap",
+    "path": "assets/covers/013-airpods-vs-cheap.editorial-v3.jpg",
+    "sha256": "97c29d97a44bd5e3a9fe12291c143ee77529d4a9de5d7eafc2af03325d0d6ea0",
+    "subject": "Two pairs of true wireless earbuds and open charging cases, one premium white stem style and one simple dark budget pair, subway windows blurred in background; realistic macro shot, no logos."
+  },
+  {
+    "id": "014-delivery-vs-pickup",
+    "path": "assets/covers/014-delivery-vs-pickup.editorial-v3.jpg",
+    "sha256": "c1e69baf8df10b2079112efe59c82798356e16bed984ac95f3283557c8abcb32",
+    "subject": "Two matching crispy fried chicken meals, one in a delivery bag beside a scooter helmet and one in a paper pickup bag held at restaurant counter. Both choices visible, appetizing."
+  },
+  {
+    "id": "015-card-annual-fee",
+    "path": "assets/covers/015-card-annual-fee.editorial-v3.jpg",
+    "sha256": "51ebeda29fc40ceab4b4bfb4f5a827c11e33d2fe077b920b5ae8b0eab0549b6c",
+    "subject": "Premium metallic credit card beside a small monthly benefit receipt and modest coins, coffee cup and airport-lounge boarding-card shape behind. Focus card annual fee and actual benefits, no readable text."
+  },
+  {
+    "id": "016-office-chair",
+    "path": "assets/covers/016-office-chair.editorial-v3.jpg",
+    "sha256": "ad5559945a68b188ca327cfbf4e68306e37677d9016cb2a4c3e80f3ef484cffe",
+    "subject": "A basic padded office chair beside an ergonomic mesh chair under strong side lighting, same scale at a desk. Both chairs fully recognizable, no people or price labels."
+  },
+  {
+    "id": "017-premium-gas",
+    "path": "assets/covers/017-premium-gas.editorial-v3.jpg",
+    "sha256": "f2d48e7fb89ac269ab58c88c9726baeb7bdd162daeb6573cc83ca63e57c344a9",
+    "subject": "Close-up two gas pump nozzles in different colors next to a car fuel filler and open owner manual with illegible pages. Fuel grade choice, no octane or performance claim text."
+  },
+  {
+    "id": "018-mvno-vs-5g",
+    "path": "assets/covers/018-mvno-vs-5g.editorial-v3.jpg",
+    "sha256": "2057442994eb5f5f69eab3e7f3e555815ba7154d742624f94d97cd39b52c8a64",
+    "subject": "Smartphone with simple mobile-data usage bars and two SIM cards in sharp foreground, one large carrier-style package and one plain budget envelope; no logos, numbers or text."
+  },
+  {
+    "id": "019-dryer",
+    "path": "assets/covers/019-dryer.editorial-v3.jpg",
+    "sha256": "35d0b1cd44e2c1afa905c8e99f99b0aa6fb6ad579c7be45c22fcc64ce69a846b",
+    "subject": "A tumble dryer with soft towels visible through round door contrasted with an indoor laundry drying rack full of clothes. Domestic laundry room, warm light."
+  },
+  {
+    "id": "020-starbucks-vs-mega",
+    "path": "assets/covers/020-starbucks-vs-mega.editorial-v3.jpg",
+    "sha256": "4dacf819b600448bd94680e109a4512302c860488a3ef3b1fb9e0cc80a01a039",
+    "subject": "Two unbranded takeaway iced coffees of similar size, one on a cozy cafe table beside a comfortable seat, another ready to carry out at a simple counter. Coffee versus paying for cafe space."
+  },
+  {
+    "id": "021-ott-bundle",
+    "path": "assets/covers/021-ott-bundle.editorial-v3.jpg",
+    "sha256": "2a57843f500f828e2995aa08ee63fb34f009ae557edf749d94262d0dcac66a4a",
+    "subject": "Television and two streaming remotes with generic colorful movie thumbnails on screen, a single subscription card versus two stacked blank cards. No show artwork, brands or prices."
+  },
+  {
+    "id": "022-aircon-90min",
+    "path": "assets/covers/022-aircon-90min.editorial-v3.jpg",
+    "sha256": "000163db897892bd4399709fd84cd95c0b73fb4f8fd535e2d2e4be30c85a6eef",
+    "subject": "Wall-mounted air conditioner with its remote beside a house key and blank clock face suggesting leaving home briefly. Real room, cool blue air-conditioning light, no temperature or time claims."
+  },
+  {
+    "id": "023-card-golden-ratio",
+    "path": "assets/covers/023-card-golden-ratio.editorial-v3.jpg",
+    "sha256": "f0930dd50c98e1bd4fe0e05092f6d55075a3b7ab90657965776fe760cb4f7cc1",
+    "subject": "A metallic credit card and a matte debit card side by side with a year-end tax folder and calculator; simple physical comparison, no rates, card numbers or tax claims."
+  },
+  {
+    "id": "024-choice-discount",
+    "path": "assets/covers/024-choice-discount.editorial-v3.jpg",
+    "sha256": "77bc6e0d6d5a08d5deab71c2767233b9c64dcd914a9bc2ab5d7d13ec2c272132",
+    "subject": "New smartphone in box beside an existing smartphone, a mobile plan contract sheet and SIM card. Device subsidy versus monthly plan discount concept, no prices or readable text."
+  },
+  {
+    "id": "025-mileage-rider",
+    "path": "assets/covers/025-mileage-rider.editorial-v3.jpg",
+    "sha256": "c14110e85b8e72c64e8eec49cfa239b398280743181768dc2995f181a7805068",
+    "subject": "Smartphone photographing a car instrument cluster odometer, steering wheel visible, insurance document blurred beside keys. Odometer recognizable but no readable numeric mileage."
+  },
+  {
+    "id": "026-energy-cashback",
+    "path": "assets/covers/026-energy-cashback.editorial-v3.jpg",
+    "sha256": "7d3ac7e1322791b4b3a2953b8577d440d11eb2fae3a210621065d64d811cd77a",
+    "subject": "Household electricity meter, plug and smartphone with a simple green check mark beside a bill and coins. Energy-saving cashback application concept, no amounts or rates."
+  },
+  {
+    "id": "027-giftcon-expiry",
+    "path": "assets/covers/027-giftcon-expiry.editorial-v3.jpg",
+    "sha256": "e2838b57ee28fc7ba550597bbb205e50e186bbe5ee03575e8c9f980e06a3aa46",
+    "subject": "Smartphone displaying coffee gift-ticket shapes with small calendar icons next to a cafe drink and unused paper gift cards. Expiring coffee gift voucher theme, no readable text or dates."
+  },
+  {
+    "id": "028-point-expiry",
+    "path": "assets/covers/028-point-expiry.editorial-v3.jpg",
+    "sha256": "0867657f823e194f5d5a5fcca4129ae817028e73cca891030354fa73e5e572f3",
+    "subject": "Rewards coins spilling slowly from a loyalty wallet next to a phone with abstract progress bar and small hourglass. Unused reward points expiring; realistic physical coins no currency values."
+  },
+  {
+    "id": "029-retention-discount",
+    "path": "assets/covers/029-retention-discount.editorial-v3.jpg",
+    "sha256": "9f23800a800a4c61b89c721f6e725d26eca386625a213d8e9ad647e71606b6c3",
+    "subject": "Laptop showing an abstract subscription settings dialog with two blank buttons, a payment card and a hand hovering above trackpad. Cancellation versus stay offer concept, no discount numbers or text."
+  },
+  {
+    "id": "030-card-annual-audit",
+    "path": "assets/covers/030-card-annual-audit.editorial-v3.jpg",
+    "sha256": "24714982be9911daf6330efce7e3e197d93a84ccb7230f24f34f8afc0b1e13b1",
+    "subject": "Premium bank card resting on an open annual ledger with receipts and calculator, a few unused lounge and coffee voucher shapes placed aside. Annual fee audit distinct from a signup advertisement."
+  },
+  {
+    "id": "031-fx-spread",
+    "path": "assets/covers/031-fx-spread.editorial-v3.jpg",
+    "sha256": "48b6a67c1c505a3e7be53c90f874da5b5b3b363df4cfaa5d00a78959103acb91",
+    "subject": "Two stacks of clearly different generic international banknotes, exchange calculator and small separate pile of coins. Exchange commission rather than whole-currency discount, no readable denominations or rates."
+  },
+  {
+    "id": "032-dcc-trap",
+    "path": "assets/covers/032-dcc-trap.editorial-v3.jpg",
+    "sha256": "9cf7dc10ce6c497557245948117664c6ddd583f367bba6a812c3ee5d813997ab",
+    "subject": "Close-up hand holding bank card at overseas payment terminal with two abstract currency-choice buttons, passport corner nearby. Foreign currency payment choice, no numbers, no readable text."
+  },
+  {
+    "id": "033-prepaid-membership",
+    "path": "assets/covers/033-prepaid-membership.editorial-v3.jpg",
+    "sha256": "21a8016a9d3ffd3ea2fc2afe68742bfdaff9c0df72ac0f2617583d15941e2dba",
+    "subject": "Unused multi-visit pass with empty punch circles resting against a closed salon storefront roller shutter, no business name. Unused prepaid membership risk, atmospheric but not sensational."
+  },
+  {
+    "id": "034-dashcam-battery",
+    "path": "assets/covers/034-dashcam-battery.editorial-v3.jpg",
+    "sha256": "9dd7ca17dff85cdc08f497275ca17a8b22073e4a0e0c299a04d05fcabe754bdf",
+    "subject": "Car dashcam mounted near rearview mirror in parked car at night, a real automotive battery and low-battery icon reflection as secondary foreground elements. No fire or damage imagery."
+  },
+  {
+    "id": "035-fast-charge-resale",
+    "path": "assets/covers/035-fast-charge-resale.editorial-v3.jpg",
+    "sha256": "9f8e60a788f568864a71c54f03cdb1161da6cc7079729f07887ad3995d7342c8",
+    "subject": "Electric car plugged into a clearly recognizable fast-charging station, charging connector prominent, battery health diagnostic tablet with abstract bars nearby. Do not depict damage or assert degradation; no numerical claims."
+  },
+  {
+    "id": "036-auto-wash-paint",
+    "path": "assets/covers/036-auto-wash-paint.editorial-v3.jpg",
+    "sha256": "73e58039e7cc7b5296e152c34f332cbd909d6673d9400a59d607ab076efc0761",
+    "subject": "Dark glossy car entering rotating soft-brush automatic car wash, macro reflected brush texture on paint under inspection light. Subtle fine swirl reflections, not exaggerated damage."
+  },
+  {
+    "id": "037-trunk-weight",
+    "path": "assets/covers/037-trunk-weight.editorial-v3.jpg",
+    "sha256": "400d5d372c9df83d5b84c7e8bd0f6b31fde720e14efec4dbc350c7c1fd352307",
+    "subject": "Open sedan trunk crowded with heavy water bottles, folded camping chairs and a sports bag. Vehicle and load visibly real, focus unnecessary everyday cargo."
+  },
+  {
+    "id": "038-tire-pressure",
+    "path": "assets/covers/038-tire-pressure.editorial-v3.jpg",
+    "sha256": "f99e91a000aaf2ac35cbc2757e65762e8187dd84c57648a5757352fd1eb57a1d",
+    "subject": "Close-up car tire with pressure gauge attached to valve, visible tread and mechanic hand. No readable pressure value, crisp detailed practical maintenance photography."
+  },
+  {
+    "id": "039-aircon-filter",
+    "path": "assets/covers/039-aircon-filter.editorial-v3.jpg",
+    "sha256": "35c81cb3134600c018a44d9bdb05135dc0340cf0f308e7a92e4a3092b6c55701",
+    "subject": "Removable air-conditioner mesh filter half dusty and half freshly cleaned, hand holding it below open wall air-conditioner. Realistic moderate household dust, no toxic imagery."
+  },
+  {
+    "id": "040-power-tier",
+    "path": "assets/covers/040-power-tier.editorial-v3.jpg",
+    "sha256": "19b7ca28bee8eb24d503a83f19277de0da2cf1533f0c6a730e68c97d2fd1ea5b",
+    "subject": "Electricity meter and bill beside three ascending physical blocks illuminated amber, plug in foreground. Concept of progressive usage tiers without numbers, charts or rates."
+  },
+  {
+    "id": "041-cloud-storage",
+    "path": "assets/covers/041-cloud-storage.editorial-v3.jpg",
+    "sha256": "e224534bf5bc8ea03df552f4aaea7b4049cd77ac6ecea6de155b80dfa05c5797",
+    "subject": "Phone showing a nearly full storage bar and a crowded photo thumbnail gallery beside a small translucent cloud object and external drive. Automatic photo backup filling storage, no text."
+  },
+  {
+    "id": "042-free-return-time",
+    "path": "assets/covers/042-free-return-time.editorial-v3.jpg",
+    "sha256": "8b9ba073a5cb9b3fa3f44592ace0f786e114ab03363252682757918519742783",
+    "subject": "Open return parcel with clothing, tape and blank shipping label beside an analog clock without numerals; hands repacking carefully. Focus real time spent packing returns, not money loss claim."
+  },
+  {
+    "id": "002-water-purifier",
+    "path": "assets/covers/002-water-purifier.editorial-v3.jpg",
+    "sha256": "050f08b41ad904a1f6f4990d6740028b9c7ecfd2e8f3043a49239b278d1ad209",
+    "subject": "Countertop household water purifier with a clear glass on the left, multiple large transparent bottled-water bottles on the right. Both choices equally prominent, domestic kitchen context. No brand or price text."
+  },
+  {
+    "id": "cx105-daily-monthly-lens",
+    "path": "assets/covers/cx105-daily-monthly-lens.editorial-v3.jpg",
+    "sha256": "eb366f4d32ac37487c7fe6ee9250d549bbc394602e8fcee3455b797a94d47116",
+    "subject": "Daily disposable lenses versus monthly reusable lens case and solution."
+  }
+]

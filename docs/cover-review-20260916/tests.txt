@@ -1,0 +1,71 @@
+BURST_THREADS_REVIEW: 004-ott-stack
+BURST_THREADS_RECOVERED: 004-ott-stack
+  · TH child child ← one
+  · TH child child ← two
+  · TH child 1 ← one
+  · TH child 2 ← two
+[format] 오늘 수요일 → reel
+[render] test-reel · Test → 2장
+[reel] test-reel.mp4 · test (0.00MB)
+[urls] https://raw.githubusercontent.com/test/repo/test-sha/images/test-reel/01.png
+[reel] 발행 완료 media_id=reel-id
+[youtube] 토큰 없음 → 건너뜀
+[threads] SKIP_THREADS 설정 → 건너뜀
+[threads] 토큰 없음 → 건너뜀
+[format] 오늘 수요일 → reel
+[approval] 전날 승인분 재사용 → 2장 + test-reel.mp4
+[reel] 전날 승인분 재사용 test-reel.mp4 (0.00MB)
+[approval] ⚠ 승인 이후 내용이 바뀌었습니다 → 지금 다시 확인합니다
+[urls] https://raw.githubusercontent.com/test/repo/test-sha/images/test-reel/01.png
+[reel] 발행 완료 media_id=reel-id
+[youtube] 토큰 없음 → 건너뜀
+[threads] SKIP_THREADS 설정 → 건너뜀
+[threads] 토큰 없음 → 건너뜀
+[format] 오늘 수요일 → reel
+[render] test-reel · Test → 2장
+[reel] test-reel.mp4 · test (0.00MB)
+[urls] https://raw.githubusercontent.com/test/repo/test-sha/images/test-reel/01.png
+[reel] 발행 완료 media_id=reel-id
+[youtube] 토큰 없음 → 건너뜀
+[threads] SKIP_THREADS 설정 → 건너뜀
+[threads] 토큰 없음 → 건너뜀
+[format] 오늘 수요일 → reel
+[approval] 전날 승인분 재사용 → 2장 + test-reel.mp4
+[reel] 전날 승인분 재사용 test-reel.mp4 (0.00MB)
+[approval] 전날 승인() 확인 → 바로 발행합니다
+[urls] https://raw.githubusercontent.com/test/repo/test-sha/images/test-reel/01.png
+[reel] 발행 완료 media_id=reel-id
+[youtube] 토큰 없음 → 건너뜀
+[threads] SKIP_THREADS 설정 → 건너뜀
+[threads] 토큰 없음 → 건너뜀
+[format] 오늘 수요일 → reel
+[render] test-reel · Test → 2장
+[reel] test-reel.mp4 · test (0.00MB)
+[stop] 반려됨 → 발행하지 않고 종료합니다(큐 유지).
+[format] 오늘 수요일 → reel
+[render] test-reel · Test → 2장
+[reel] test-reel.mp4 · test (0.00MB)
+[stop] 전날 검토에서 '수정'을 선택한 편입니다 → 발행하지 않습니다. 메모: 금액 키워줘
+[format] 오늘 수요일 → reel
+[approval] 전날 승인분 재사용 → 2장 + test-reel.mp4
+[reel] 전날 승인분 재사용 test-reel.mp4 (0.00MB)
+[approval] 전날 승인() 확인 → 바로 발행합니다
+[urls] https://raw.githubusercontent.com/test/repo/test-sha/images/test-reel/01.png
+[reel] 발행 완료 media_id=reel-id
+[youtube] 토큰 없음 → 건너뜀
+[threads] SKIP_THREADS 설정 → 건너뜀
+[threads] 토큰 없음 → 건너뜀
+[format] 오늘 수요일 → reel
+[render] test-reel · Test → 2장
+[reel] test-reel.mp4 · test (0.00MB)
+[urls] https://raw.githubusercontent.com/test/repo/test-sha/images/test-reel/01.png
+[reel] 발행 완료 media_id=reel-id
+[youtube] 토큰 없음 → 건너뜀
+[threads] SKIP_THREADS 설정 → 건너뜀
+[threads] 토큰 없음 → 건너뜀
+CODEX_REVIEW_COUNTS: {}
+
+----------------------------------------------------------------------
+Ran 50 tests in 40.089s
+
+OK

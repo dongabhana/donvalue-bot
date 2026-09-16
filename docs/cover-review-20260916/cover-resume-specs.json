@@ -1,0 +1,349 @@
+{
+  "base_prompt": "ONE photographic background asset, portrait 4:5, for a Korean consumer decision cover. NO text, letters, numerals, watermarks, prices or logos. Communicate the SPECIFIC CHOICE OR PROBLEM below, not just a generic category product. Use a simple staged physical scene with relevant competing choices or cause-and-effect situation visible together. No unrelated props. High contrast, large recognizable objects, premium credible photography. Dark charcoal top 38% clear for headline; subjects between 42-80% height, centrally framed, bottom 15% quiet. Vary color and setting to suit topic. ",
+  "items": [
+    {
+      "id": "cx006-vacation-app",
+      "subject": "Two airline boarding-pass shaped blank tickets and a model passenger airplane beside travel suitcase, one ticket rigidly held by a clip and another beside a flexible date planner. Travel schedule change comparison, no airline marks."
+    },
+    {
+      "id": "cx101-installment-cash",
+      "subject": "A bank card and a stack of twelve blank monthly payment slips beside one immediate-payment envelope and coins. Consumer installment versus upfront payment still life, not investment imagery."
+    },
+    {
+      "id": "cx103-taxi-transit",
+      "subject": "A yellow taxi and a recognizable city bus side by side at a night street stop, three waiting adult silhouettes together in background. Compare shared taxi ride to public transit; no text or fare numbers."
+    },
+    {
+      "id": "006-car-tco",
+      "subject": "Real family sedan with car keys in foreground surrounded by a fuel nozzle, tire, parking ticket-shaped paper and service wrench. Physical hidden car-ownership cost objects, no price text."
+    },
+    {
+      "id": "009-certificate",
+      "subject": "Technical certification study books, a blank certificate with embossed seal, calculator and industrial safety helmet. Practical professional qualification versus cost; no legible text."
+    },
+    {
+      "id": "010-coffee",
+      "subject": "One takeaway iced coffee in sharp foreground with a long row of similar cups receding behind, tiny coins and weekday planner. Daily habit accumulating over a year, appetizing coffee."
+    },
+    {
+      "id": "cx104-self-full-gas",
+      "subject": "Two real fuel pump nozzles at a gas station, on one side a driver's hand operates a nozzle and on the other a uniformed attendant's gloved hand operates one; self-service versus attended fueling. No prices or text."
+    },
+    {
+      "id": "cx106-refurb-new",
+      "subject": "Two visually matching unbranded laptops, one in immaculate sealed retail packaging and one in an open refurbished cardboard box with a blank inspection checklist and screwdriver. Equal model design, not broken or dirty."
+    },
+    {
+      "id": "cx108-subscribe-ondemand",
+      "subject": "Recurring delivery parcels stacked beside an already full pantry shelf, compared with one modest household refill packet next to an empty slot. Generic household consumables, emphasize delivery arriving faster than usage."
+    },
+    {
+      "id": "cx109-printer-tank",
+      "subject": "Two desktop printers side by side, a cheap cartridge printer with small ink cartridges and an ink-tank multifunction printer with visible refill bottles; a neat stack of printed paper. Hardware instantly identifiable."
+    },
+    {
+      "id": "cx005-coupon-minimum",
+      "subject": "A small shopping basket with two planned household items contrasted with an extra unnecessary bright red packaged item and a coupon-shaped blank ticket being added; the additional purchase visually dominates."
+    },
+    {
+      "id": "cx008-robot-prep",
+      "subject": "A real round robot vacuum halted at a tangled charging cable, single sock and small toy on a living-room floor. Vacuum clearly visible; objects arranged as a mundane obstacle course, not an explosion."
+    },
+    {
+      "id": "cx019-camera-rent",
+      "subject": "Two matching mirrorless camera kits side by side, each with identical body, lens, spare battery and memory card; one beside a rental carrying case and one beside a retail box. Both complete kits unmistakable."
+    },
+    {
+      "id": "cx020-gaming-hours",
+      "subject": "Open gaming desktop computer with its graphics card dramatically pulled forward beside the original card, computer monitor showing abstract colorful game shapes with no interface text. Emphasize GPU and PC hardware."
+    },
+    {
+      "id": "cx021-coupon-cap",
+      "subject": "Two large blank die-cut coupon tickets on a shopping checkout surface, one ornate oversized ticket under a low transparent glass ceiling and the other modest ticket beside a larger pile of coins. Conceptual studio still life for coupon caps; no percent symbols."
+    },
+    {
+      "id": "cx022-cloud-tier",
+      "subject": "Smartphone full of small abstract photo thumbnails beside two transparent storage boxes, one small nearly full and one four times larger; glowing white cloud silhouette as a physical translucent prop, no words or capacity numbers."
+    },
+    {
+      "id": "cx023-detergent-dose",
+      "subject": "Two unbranded laundry detergent bottles, one small concentrated bottle and one larger bottle, clear graduated measuring caps without numerals and neatly folded laundry. Bright teal liquid highlights emphasize dosing per wash."
+    },
+    {
+      "id": "cx024-rental-total",
+      "subject": "A sleek domestic countertop water purifier beside maintenance filters, a service tool pouch, blank contract sheet and house keys. Appliance and care components show rental versus ownership, realistic staged studio photography."
+    },
+    {
+      "id": "cx025-stamp-detour",
+      "subject": "Cafe stamp loyalty card with a row of empty circular stamp spaces, a rubber stamp and a freshly poured coffee; a second unwanted takeaway cup beside the card hints at an extra visit just for a reward. No writing."
+    },
+    {
+      "id": "cx026-fuel-detour",
+      "subject": "Miniature realistic road fork photographed as premium physical diorama, a car and a recognizable fuel station with fuel nozzle at the longer bend; shorter road passes directly ahead. No map labels or prices."
+    },
+    {
+      "id": "cx027-game-season",
+      "subject": "Unbranded handheld gaming console with detachable red and blue controllers, paired with one calendar card and a thick stack of calendar cards with blank grid squares; online play duration visual, no numbers."
+    },
+    {
+      "id": "cx028-cloud-and-disk",
+      "subject": "Laptop displaying an abstract spreadsheet grid and document shapes next to a phone displaying a photo gallery, with a translucent cloud storage prop connecting them. Show productivity apps plus cloud backup, no text or brand logos."
+    },
+    {
+      "id": "cx029-monthly-price",
+      "subject": "Open laptop with generic spreadsheet cells and document page, beside a single calendar sheet and a bound year planner, bank card and calculator. Office software monthly versus annual payment, no readable numbers."
+    },
+    {
+      "id": "cx030-benefit-net",
+      "subject": "Dark premium membership card balanced beside a receipt, small delivery parcel and a modest pile of coins; physical visual of membership fee versus actually used benefits. No writing."
+    },
+    {
+      "id": "cx031-bulk-space",
+      "subject": "A cramped apartment storage cabinet visibly overfilled with bulk packs of toilet paper and detergent while a smaller pack fits neatly beside it. Real cupboard and realistic objects, clear space contrast."
+    },
+    {
+      "id": "cx032-noise-demo",
+      "subject": "Air purifier or fan beside a bedside table at night, soft bedroom lighting and an acoustic measurement microphone in foreground. Calm but visually bold; no sound waves, numbers or performance claims."
+    },
+    {
+      "id": "cx033-portion-weight",
+      "subject": "Two takeaway meal containers with visibly different portions of the same food, one small individual meal and one family portion, placed beside a kitchen scale with blank display. Food is appetizing and portions identifiable."
+    },
+    {
+      "id": "cx034-transport-pass",
+      "subject": "Close-up of two blank transit smartcards in foreground with recognizable subway train and city bus behind. Urban transit entrance, green and cyan accents, absolutely no taxi."
+    },
+    {
+      "id": "cx035-display-extra",
+      "subject": "Collectible small designer figures with empty clear acrylic display case and compact shelf lighting, another still packed in a box; focus on physical display space and dimensions, no copyrighted characters."
+    },
+    {
+      "id": "cx036-keyboard-use",
+      "subject": "Two tactile mechanical keyboards seen close-up from a low angle, one compact quiet layout and one larger layout, with keycap switch exposed beside them; blank keycaps, real detailed materials."
+    },
+    {
+      "id": "cx037-return-cost",
+      "subject": "A pair of shoes halfway packed in a return parcel, a tape dispenser and blank return label beside another unopened retail box. Emphasize parcel return conditions rather than discounts."
+    },
+    {
+      "id": "cx038-wash-pack",
+      "subject": "A clean car seen through rain-covered glass at a self-service car wash entrance with wash wand, foam and blank membership card in foreground. Rainy month and wash subscription clearly suggested."
+    },
+    {
+      "id": "cx039-reusable-use",
+      "subject": "A well-used stainless reusable tumbler next to a new unused tumbler still in its box and a cafe coffee machine in background. Hero is the existing cup ready to reuse."
+    },
+    {
+      "id": "cx040-energy-premium",
+      "subject": "Two similar domestic refrigerators with blank colored energy-label shapes and an electricity plug, one lit cool green and one warm amber. No invented efficiency grades or numbers."
+    },
+    {
+      "id": "cx041-buffet-choice",
+      "subject": "Restaurant buffet serving trays on one side and a beautifully plated single-course meal on the other, same perspective and appetizing real food; visibly two dining choices."
+    },
+    {
+      "id": "cx042-bike-rental",
+      "subject": "A personal bicycle with helmet beside a public bicycle docking rack and rental bike, urban riverside cycle path, no logos. Two clear ownership versus rental options."
+    },
+    {
+      "id": "cx043-class-attendance",
+      "subject": "Yoga or language-class attendance planning still life: blank weekly timetable with a few colored appointment tabs, class pass, notebook and rolled exercise mat at studio doorway. Focus on planned attendance, no written text."
+    },
+    {
+      "id": "cx044-monitor-desk",
+      "subject": "Large computer monitor visibly filling a shallow compact desk, measuring tape extended along the desk depth and stand footprint, keyboard cramped in front. No numbers on tape."
+    },
+    {
+      "id": "cx045-bundle-unused",
+      "subject": "Handheld gaming console with a physical game case and a separate expansion-content box represented as a small matching add-on package. Two components alongside a bundled sleeve. No franchise artwork, logos or text."
+    },
+    {
+      "id": "cx046-pair-plan",
+      "subject": "Two handheld gaming consoles with red and blue controllers connected visually by a shared circular family-card prop; one spare blank individual card beside them. Focus two people sharing online membership, no people required."
+    },
+    {
+      "id": "cx047-recharge-count",
+      "subject": "Rechargeable AA batteries in a charger on the left, matching disposable AA batteries on the right, game controller and remote behind. Sharp realistic metallic cells, no brand or voltage markings."
+    },
+    {
+      "id": "cx048-used-install",
+      "subject": "A domestic washing machine on a moving dolly with water hoses, wrench and a doorframe nearby; visible installation and transport components, lightly used but clean appliance."
+    },
+    {
+      "id": "cx049-voucher-use",
+      "subject": "A restaurant meal voucher as blank elegant ticket beside a plated meal and a second extra side dish with a receipt. Show the difference between voucher and what one actually orders; no text."
+    },
+    {
+      "id": "cx050-hotel-total",
+      "subject": "Hotel room key card on a reservation folio, small suitcase and a warmly lit attractive hotel bed behind; a receipt peeks from the folio to suggest final booking total, no text."
+    },
+    {
+      "id": "cx051-study-tool",
+      "subject": "Open paper notebook and pen beside tablet with handwritten abstract strokes and stylus, well-organized real study desk with one textbook, emphasize practical study workflow."
+    },
+    {
+      "id": "cx052-ports-needed",
+      "subject": "Two white generic USB-C wall chargers shown at macro scale, clearly one USB-C port on the left adapter and two USB-C ports on the right; smartphone and earbuds charging cables nearby. Not exact branded product replicas; no logos or power ratings."
+    },
+    {
+      "id": "cx053-point-mission",
+      "subject": "Phone showing abstract checklist circles and a rewards coin icon, small planned shopping basket beside an unnecessary second parcel; focus on spending extra for reward points, no readable text."
+    },
+    {
+      "id": "cx112-charger-drawer",
+      "subject": "Open household drawer holding four tangled wall chargers and cables, a fifth newly packaged charger prominently placed beside a phone with a nearly empty battery icon. Relatable realistic domestic scene."
+    },
+    {
+      "id": "cx107-filter-service",
+      "subject": "Countertop water purifier with a removable cylindrical replacement filter, DIY hand changing filter on one side and professional tool bag on the other; realistic maintenance comparison."
+    },
+    {
+      "id": "cx110-bulk-small",
+      "subject": "One huge unbranded bulk food-storage container partly unused and three small sealed portions of the same dry food; practical kitchen still life with a small calendar prop, avoid numerical labels."
+    },
+    {
+      "id": "cx111-annual-monthly",
+      "subject": "A single monthly planner page beside a full thick yearly calendar binder and a payment card, a few pages left unused. Recurring subscription term comparison as polished physical still life."
+    },
+    {
+      "id": "003-gym-annual",
+      "subject": "Empty modern gym with a dumbbell, training shoes and untouched membership card in foreground, a sparse attendance calendar nearby. Strong orange lighting, recognizable gym equipment."
+    },
+    {
+      "id": "011-ai-subscription",
+      "subject": "Laptop with three abstract chat windows represented by simple colored message blocks, one active and two dimmed, bank card beside it. AI subscription overlap, no AI mascots, logos or readable text."
+    },
+    {
+      "id": "012-youtube-premium",
+      "subject": "Smartphone showing a generic video play triangle while a bright red pause-like advertising panel partially blocks the screen, wireless headphones next to it. Paid ad-free video theme, no brand text."
+    },
+    {
+      "id": "013-airpods-vs-cheap",
+      "subject": "Two pairs of true wireless earbuds and open charging cases, one premium white stem style and one simple dark budget pair, subway windows blurred in background; realistic macro shot, no logos."
+    },
+    {
+      "id": "014-delivery-vs-pickup",
+      "subject": "Two matching crispy fried chicken meals, one in a delivery bag beside a scooter helmet and one in a paper pickup bag held at restaurant counter. Both choices visible, appetizing."
+    },
+    {
+      "id": "015-card-annual-fee",
+      "subject": "Premium metallic credit card beside a small monthly benefit receipt and modest coins, coffee cup and airport-lounge boarding-card shape behind. Focus card annual fee and actual benefits, no readable text."
+    },
+    {
+      "id": "016-office-chair",
+      "subject": "A basic padded office chair beside an ergonomic mesh chair under strong side lighting, same scale at a desk. Both chairs fully recognizable, no people or price labels."
+    },
+    {
+      "id": "017-premium-gas",
+      "subject": "Close-up two gas pump nozzles in different colors next to a car fuel filler and open owner manual with illegible pages. Fuel grade choice, no octane or performance claim text."
+    },
+    {
+      "id": "018-mvno-vs-5g",
+      "subject": "Smartphone with simple mobile-data usage bars and two SIM cards in sharp foreground, one large carrier-style package and one plain budget envelope; no logos, numbers or text."
+    },
+    {
+      "id": "019-dryer",
+      "subject": "A tumble dryer with soft towels visible through round door contrasted with an indoor laundry drying rack full of clothes. Domestic laundry room, warm light."
+    },
+    {
+      "id": "020-starbucks-vs-mega",
+      "subject": "Two unbranded takeaway iced coffees of similar size, one on a cozy cafe table beside a comfortable seat, another ready to carry out at a simple counter. Coffee versus paying for cafe space."
+    },
+    {
+      "id": "021-ott-bundle",
+      "subject": "Television and two streaming remotes with generic colorful movie thumbnails on screen, a single subscription card versus two stacked blank cards. No show artwork, brands or prices."
+    },
+    {
+      "id": "022-aircon-90min",
+      "subject": "Wall-mounted air conditioner with its remote beside a house key and blank clock face suggesting leaving home briefly. Real room, cool blue air-conditioning light, no temperature or time claims."
+    },
+    {
+      "id": "023-card-golden-ratio",
+      "subject": "A metallic credit card and a matte debit card side by side with a year-end tax folder and calculator; simple physical comparison, no rates, card numbers or tax claims."
+    },
+    {
+      "id": "024-choice-discount",
+      "subject": "New smartphone in box beside an existing smartphone, a mobile plan contract sheet and SIM card. Device subsidy versus monthly plan discount concept, no prices or readable text."
+    },
+    {
+      "id": "025-mileage-rider",
+      "subject": "Smartphone photographing a car instrument cluster odometer, steering wheel visible, insurance document blurred beside keys. Odometer recognizable but no readable numeric mileage."
+    },
+    {
+      "id": "026-energy-cashback",
+      "subject": "Household electricity meter, plug and smartphone with a simple green check mark beside a bill and coins. Energy-saving cashback application concept, no amounts or rates."
+    },
+    {
+      "id": "027-giftcon-expiry",
+      "subject": "Smartphone displaying coffee gift-ticket shapes with small calendar icons next to a cafe drink and unused paper gift cards. Expiring coffee gift voucher theme, no readable text or dates."
+    },
+    {
+      "id": "028-point-expiry",
+      "subject": "Rewards coins spilling slowly from a loyalty wallet next to a phone with abstract progress bar and small hourglass. Unused reward points expiring; realistic physical coins no currency values."
+    },
+    {
+      "id": "029-retention-discount",
+      "subject": "Laptop showing an abstract subscription settings dialog with two blank buttons, a payment card and a hand hovering above trackpad. Cancellation versus stay offer concept, no discount numbers or text."
+    },
+    {
+      "id": "030-card-annual-audit",
+      "subject": "Premium bank card resting on an open annual ledger with receipts and calculator, a few unused lounge and coffee voucher shapes placed aside. Annual fee audit distinct from a signup advertisement."
+    },
+    {
+      "id": "031-fx-spread",
+      "subject": "Two stacks of clearly different generic international banknotes, exchange calculator and small separate pile of coins. Exchange commission rather than whole-currency discount, no readable denominations or rates."
+    },
+    {
+      "id": "032-dcc-trap",
+      "subject": "Close-up hand holding bank card at overseas payment terminal with two abstract currency-choice buttons, passport corner nearby. Foreign currency payment choice, no numbers, no readable text."
+    },
+    {
+      "id": "033-prepaid-membership",
+      "subject": "Unused multi-visit pass with empty punch circles resting against a closed salon storefront roller shutter, no business name. Unused prepaid membership risk, atmospheric but not sensational."
+    },
+    {
+      "id": "034-dashcam-battery",
+      "subject": "Car dashcam mounted near rearview mirror in parked car at night, a real automotive battery and low-battery icon reflection as secondary foreground elements. No fire or damage imagery."
+    },
+    {
+      "id": "035-fast-charge-resale",
+      "subject": "Electric car plugged into a clearly recognizable fast-charging station, charging connector prominent, battery health diagnostic tablet with abstract bars nearby. Do not depict damage or assert degradation; no numerical claims."
+    },
+    {
+      "id": "036-auto-wash-paint",
+      "subject": "Dark glossy car entering rotating soft-brush automatic car wash, macro reflected brush texture on paint under inspection light. Subtle fine swirl reflections, not exaggerated damage."
+    },
+    {
+      "id": "037-trunk-weight",
+      "subject": "Open sedan trunk crowded with heavy water bottles, folded camping chairs and a sports bag. Vehicle and load visibly real, focus unnecessary everyday cargo."
+    },
+    {
+      "id": "038-tire-pressure",
+      "subject": "Close-up car tire with pressure gauge attached to valve, visible tread and mechanic hand. No readable pressure value, crisp detailed practical maintenance photography."
+    },
+    {
+      "id": "039-aircon-filter",
+      "subject": "Removable air-conditioner mesh filter half dusty and half freshly cleaned, hand holding it below open wall air-conditioner. Realistic moderate household dust, no toxic imagery."
+    },
+    {
+      "id": "040-power-tier",
+      "subject": "Electricity meter and bill beside three ascending physical blocks illuminated amber, plug in foreground. Concept of progressive usage tiers without numbers, charts or rates."
+    },
+    {
+      "id": "041-cloud-storage",
+      "subject": "Phone showing a nearly full storage bar and a crowded photo thumbnail gallery beside a small translucent cloud object and external drive. Automatic photo backup filling storage, no text."
+    },
+    {
+      "id": "042-free-return-time",
+      "subject": "Open return parcel with clothing, tape and blank shipping label beside an analog clock without numerals; hands repacking carefully. Focus real time spent packing returns, not money loss claim."
+    },
+    {
+      "id": "002-water-purifier",
+      "subject": "Countertop household water purifier with a clear glass on the left, multiple large transparent bottled-water bottles on the right. Both choices equally prominent, domestic kitchen context. No brand or price text."
+    },
+    {
+      "id": "cx105-daily-monthly-lens",
+      "subject": "Daily disposable lenses versus monthly reusable lens case and solution."
+    }
+  ]
+}

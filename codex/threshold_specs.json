@@ -22,7 +22,7 @@
       "a": "얼리버드",
       "b": "변경가능",
       "format": "reel",
-      "cover": "travel-photo-v2.jpg",
+      "cover": "cx006-vacation-app.editorial-v3.jpg",
       "cards": [
         [
           "환불불가 12만원 / 변경가능 15만원",
@@ -56,7 +56,7 @@
       "a": "무이자 할부",
       "b": "일시불 할인",
       "format": "carousel",
-      "cover": "desk-photo-v2.jpg",
+      "cover": "cx101-installment-cash.editorial-v3.jpg",
       "cards": [
         [
           "일시불 3% = 바로 3만원",
@@ -90,7 +90,7 @@
       "a": "택시",
       "b": "대중교통",
       "format": "carousel",
-      "cover": "taxi-photo-v1.jpg",
+      "cover": "cx103-taxi-transit.editorial-v3.jpg",
       "cards": [
         [
           "택시 1.8만원 ÷ 3명 = 6천원",
@@ -124,7 +124,7 @@
       "a": "셀프주유",
       "b": "일반주유",
       "format": "reel",
-      "cover": "parking-photo-v2.jpg",
+      "cover": "cx104-self-full-gas.editorial-v3.jpg",
       "cards": [
         [
           "40L × 리터당 30원 = 1,200원",
@@ -158,7 +158,7 @@
       "a": "원데이",
       "b": "한달용",
       "format": "carousel",
-      "cover": "hobby-photo-v2.jpg",
+      "cover": "cx105-daily-monthly-lens.editorial-v3.jpg",
       "cards": [
         [
           "원데이 2천원 × 12일 = 2.4만원",
@@ -192,7 +192,7 @@
       "a": "리퍼",
       "b": "신품",
       "format": "reel",
-      "cover": "camera-photo-v2.jpg",
+      "cover": "cx106-refurb-new.editorial-v3.jpg",
       "cards": [
         [
           "신품 100만원 / 리퍼 80만원",
@@ -226,7 +226,7 @@
       "a": "자가교체",
       "b": "방문관리",
       "format": "carousel",
-      "cover": "refill-photo-v2.jpg",
+      "cover": "cx107-filter-service.editorial-v3.jpg",
       "cards": [
         [
           "방문관리 추가비 4.8만원/년",
@@ -260,7 +260,7 @@
       "a": "정기배송",
       "b": "필요할 때",
       "format": "reel",
-      "cover": "food-photo-v2.jpg",
+      "cover": "cx108-subscribe-ondemand.editorial-v3.jpg",
       "cards": [
         [
           "배송 30일 / 실제 소비 40일",
@@ -294,7 +294,7 @@
       "a": "저가 본체",
       "b": "무한잉크",
       "format": "carousel",
-      "cover": "appliance-photo-v2.jpg",
+      "cover": "cx109-printer-tank.editorial-v3.jpg",
       "cards": [
         [
           "본체 가격차 10만원",
@@ -328,7 +328,7 @@
       "a": "1년 대용량",
       "b": "3개월 소용량",
       "format": "reel",
-      "cover": "cafe-photo-v2.jpg",
+      "cover": "cx110-bulk-small.editorial-v3.jpg",
       "cards": [
         [
           "소용량 합계 100 / 대용량 가격 70",
@@ -362,7 +362,7 @@
       "a": "연간결제",
       "b": "월결제",
       "format": "carousel",
-      "cover": "subscription-photo-v2.jpg",
+      "cover": "cx111-annual-monthly.editorial-v3.jpg",
       "cards": [
         [
           "월 1만원 × 10개월 = 10만원",

@@ -11,7 +11,7 @@ from functools import lru_cache
 from pathlib import Path
 
 import numpy as np
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL import Image, ImageColor, ImageDraw, ImageFont, ImageOps
 
 
 @lru_cache(maxsize=32)
@@ -162,13 +162,17 @@ def photographic_cover(item, slide, reel=False):
         img = ImageOps.fit(photo.convert('RGB'), (1080, 1350))
     d = ImageDraw.Draw(img)
     accent = item.get('accent', '#E6F34A')
+    rgb = ImageColor.getrgb(accent)
+    if sum(c*w for c,w in zip(rgb, (0.2126, 0.7152, 0.0722))) < 145:
+        accent = tuple(round(c * .55 + 255 * .45) for c in rgb)
     d.text((62, 46), '돈값하나?', font=font(32), fill=accent)
-    d.text((62, 98), item['series'], font=font(23), fill='#D5D9D5')
-    size = 100
-    while size > 64 and any(d.textlength(t, font=font(size)) > 950 for t in slide['title'].split('\n')):
-        size -= 2
-    title_lines = lines(d, slide['title'], size, 950)
-    if len(title_lines) > 3:
+    topic = item.get('topic') or item.get('series', '')
+    d.text((62, 98), topic, font=fitted_font(d, topic, 28, 950), fill='#D5D9D5')
+    for size in range(96, 59, -2):
+        title_lines = lines(d, slide['title'], size, 950)
+        if len(title_lines) <= 3:
+            break
+    else:
         raise ValueError('Photo cover headline exceeds three lines')
     y = 150
     for index, line in enumerate(title_lines):
@@ -181,14 +185,18 @@ def photographic_cover(item, slide, reel=False):
     d.rounded_rectangle((62, 1137, 1018, 1240), radius=20, fill='#111614')
     d.text((88, 1158), value, font=fitted_font(d, value, 49, 880), fill=accent)
     d.text((64, 1272), '@dongabhana', font=font(23), fill='white', stroke_width=1, stroke_fill='#111614')
-    d.text((670, 1272), '가상 연출 이미지 · 01/06', font=font(23), fill='white', stroke_width=1, stroke_fill='#111614')
+    d.text((650, 1272), f'AI 연출 이미지 · 01/{len(item["slides"]):02}', font=font(23), fill='white', stroke_width=1, stroke_fill='#111614')
     d.rectangle((0, 1339, 180, 1349), fill=accent)
     if not reel:
         return img
     canvas = Image.new('RGB', (1080, 1920), '#111614')
     canvas.paste(img, (0, 180))
     rd = ImageDraw.Draw(canvas)
-    rd.text((66, 1630), slide['body'], font=fitted_font(rd, slide['body'], 30, 940), fill='white')
+    body_lines = lines(rd, slide['body'], 30, 940)
+    if len(body_lines) > 2:
+        raise ValueError('Photo reel introduction exceeds two lines')
+    for index, line in enumerate(body_lines):
+        rd.text((66, 1590 + index * 40), line, font=font(30), fill='white')
     rd.text((66, 1700), '계산·조건은 다음 화면에서 확인해요', font=font(25), fill='#D5D9D5')
     return canvas
 
@@ -339,6 +347,8 @@ def render_editorial(item, root):
 
 def pop_card(item,slide,index):
     """Original illustrated shopping scenes, not a screenshot of an actual store."""
+    if index == 0 and item.get('cover_photo'):
+        return photographic_cover(item, slide)
     bg='#FFF5E8'; ink='#172025'; coral='#F45B45'; blue='#3449D8'
     accent=blue if item.get('palette')=='blue' else coral
     img=Image.new('RGB',(1080,1350),bg); d=ImageDraw.Draw(img)

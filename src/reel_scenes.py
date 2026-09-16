@@ -117,6 +117,10 @@ def _paper(brand: str, handle: str, ratio: float, th):
 def scene_hook(h: dict, brand: str, handle: str, reveal: int,
                item: dict | None = None, root: str = ".") -> Image.Image:
     """훅 화면. reveal = 띄울 줄 수(3단 리빌)."""
+    from src import photo_covers
+    if item and photo_covers.available(root, item):
+        return photo_covers.render(item, brand, handle, root, reel=True,
+                                   reveal=reveal).resize((RW, RH), Image.Resampling.LANCZOS)
     th = T.get_theme((item or {}).get("theme"))
     item = item or {}
     motif = T.motif_from(item, h)
