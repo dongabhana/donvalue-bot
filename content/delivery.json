@@ -14,6 +14,12 @@
       "status": "done",
       "id": "18380067301236903",
       "at": "2026-09-12T15:57:14+09:00"
+    },
+    "youtube": {
+      "status": "done",
+      "id": "KpK-pr0KMPs",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
     }
   },
   "005-mvno": {
@@ -31,6 +37,12 @@
       "status": "done",
       "id": "18142113556596391",
       "at": "2026-09-12T16:30:28+09:00"
+    },
+    "youtube": {
+      "status": "done",
+      "id": "UFaIoyZCRzk",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
     }
   },
   "007-dishwasher": {
@@ -48,6 +60,12 @@
       "status": "done",
       "id": "18352977415220139",
       "at": "2026-09-12T17:11:37+09:00"
+    },
+    "youtube": {
+      "status": "done",
+      "id": "pThcxlN3qEc",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
     }
   },
   "008-commute-vs-rent": {
@@ -65,6 +83,12 @@
       "status": "done",
       "id": "17959208537998413",
       "at": "2026-09-12T17:52:40+09:00"
+    },
+    "youtube": {
+      "status": "done",
+      "id": "pEBPqWGmCaw",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
     }
   },
   "002-water-purifier": {
@@ -90,6 +114,52 @@
         "17871171699638134"
       ],
       "at": "2026-09-13T20:25:45+09:00"
+    },
+    "youtube": {
+      "status": "done",
+      "id": "rKwih7K-Y_g",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
+    }
+  },
+  "001-coupang-wow": {
+    "youtube": {
+      "status": "done",
+      "id": "Usdbpj3B74Q",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
+    }
+  },
+  "cx001-free-shipping": {
+    "youtube": {
+      "status": "done",
+      "id": "NhVlO3ce02k",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
+    }
+  },
+  "cx004-laptop-total": {
+    "youtube": {
+      "status": "done",
+      "id": "IyZQ_CVFUSE",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
+    }
+  },
+  "cx005-coupon-minimum": {
+    "youtube": {
+      "status": "done",
+      "id": "6Fv9cKO9DI0",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
+    }
+  },
+  "cx008-robot-prep": {
+    "youtube": {
+      "status": "done",
+      "id": "3RFfx5lD9RA",
+      "at": "2026-09-14T00:00:00+09:00",
+      "source": "manual-upload"
     }
   }
 }
