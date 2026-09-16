@@ -161,5 +161,10 @@
       "at": "2026-09-14T00:00:00+09:00",
       "source": "manual-upload"
     }
+  },
+  "cx054-taxi-vs-driver": {
+    "youtube": {
+      "status": "in_flight"
+    }
   }
 }
