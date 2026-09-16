@@ -498,7 +498,10 @@ def run_once(args) -> int:
     # 같은 mp4 를 그대로 올린다. 추가 제작비가 없고, 유튜브는 릴스와 달리
     # 반년 뒤에도 검색·추천으로 조회가 붙어 '재고'로 남는다.
     # ⚠ 구글 심사(audit) 전에는 올라간 영상이 비공개로 잠긴다 → YT_PRIVACY=private 기본
-    if mp4 is not None and youtube.configured():
+    # ⚠ 더 중요한 것: 잠긴 채로 원장에 'done' 이 박히면 심사 통과 후 몰아 올릴 때
+    #    그 편을 건너뛴다. 그래서 심사 전에는 아예 올리지 않는다(youtube.hold_reason).
+    yt_hold = youtube.hold_reason()
+    if mp4 is not None and youtube.configured() and not yt_hold:
         try:
             h_yt = hooks.resolve(item)
             vid = deliver_once(item["id"], "youtube", lambda: youtube.publish_short(
@@ -511,6 +514,9 @@ def run_once(args) -> int:
         except Exception as e:                                    # noqa: BLE001
             errors.append(f"youtube: {e}")
             print(f"[youtube] 실패: {e}")
+    elif mp4 is not None and youtube.configured():
+        print(f"[youtube] 보류 중이라 올리지 않습니다 — {yt_hold}")
+        print("[youtube] 심사 통과 후 '유튜브 쇼츠 백필' 워크플로로 몰아서 올립니다.")
     elif mp4 is not None:
         print("[youtube] 토큰 없음 → 건너뜀")
 
