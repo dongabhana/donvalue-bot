@@ -1,0 +1,24 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/01.jpg",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/02.jpg",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/03.jpg",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/04.jpg",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/05.jpg",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "video": "codex/assets/cx006-vacation-app/b68aed32141dd20b/reel.mp4",
+  "duration_seconds": 18.4,
+  "opening_seconds": 1.8,
+  "sha256": {
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/01.jpg": "4d754cc76cdd1997c7008eb0862beac18aad0dabae44fb9c111ba606791244fe",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/02.jpg": "e2cd5da6e82babdb71df08effc4484f62ff012e087c7fa2e225d81b3fc11bf35",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/03.jpg": "9894b1c5969841b63cd9585c5f6694d25debc58a63f6baae4993cc6178cd2e6f",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/04.jpg": "64e2128cfa8e8bbce767f7bacddcb8f4a69f96517d7f545f6d4f088edf3d822f",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/05.jpg": "f9a2c31bb361b3800ed6896b7d48cd720d6a6690642712ce2f57ea8f2ad1b2a4",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/06.jpg": "e82d8d82f3fb902c55236ab6bf1b635b7280f40e637665b24fab095eb99b06f8",
+    "codex/assets/cx006-vacation-app/b68aed32141dd20b/reel.mp4": "97a08b2ab4078e97e1da871800fb52bac2e0fcadbd3704c4c9a0f5b3dad3de67"
+  }
+}
