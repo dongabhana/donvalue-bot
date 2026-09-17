@@ -184,6 +184,9 @@
       "status": "done",
       "id": "17909675415496816",
       "at": "2026-09-17T20:24:32+09:00"
+    },
+    "threads_chain": {
+      "status": "in_flight"
     }
   }
 }
