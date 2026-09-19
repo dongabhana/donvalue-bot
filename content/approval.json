@@ -1,1 +1,9 @@
-{}
+{
+  "006-car-tco": {
+    "decision": "pending",
+    "ig_format": "reel",
+    "publish_date": "2026-09-20",
+    "fingerprint": "e407ab47f537c8245023c9a42611e6e0e51f6c5fa2018527ede9bd5e0e8af448",
+    "asked_at": "2026-09-19T20:08:13+09:00"
+  }
+}
