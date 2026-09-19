@@ -10,9 +10,8 @@ name: 돈값하나 전날 승인 요청
 # 무응답이면 아무것도 확정하지 않습니다(pending). 그 경우 다음 날 20:00 에
 # 기존 방식대로 그 자리에서 한 번 더 물어봅니다.
 #
-# ⚠ post.yml 과 잠금(concurrency)을 일부러 분리했습니다. 승인 대기가 최대 3시간이라
-#   발행용 잠금을 같이 쓰면 그동안 GPT 트랙(codex-approval)의 15분 틱이 전부 줄을 서서
-#   같은 날 GPT 발행이 통째로 밀립니다.
+# 승인창을 저장하고 즉시 종료합니다. 공용 수신기가 버튼을 처리하므로
+# 다른 발행과 같은 잠금을 사용해도 장시간 승인 대기가 발생하지 않습니다.
 
 on:
   schedule:
@@ -42,14 +41,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: donvalue-eve-approval
+  group: donvalue-publish
   cancel-in-progress: false
 
 jobs:
   ask:
     runs-on: ubuntu-latest
-    # 승인 대기 180분 + 렌더 시간 여유. GitHub 한도는 6시간.
-    timeout-minutes: 240
+    # 렌더·승인창 저장 시간만 필요합니다. 버튼 응답은 공용 수신기가 처리합니다.
+    timeout-minutes: 40
     steps:
       - uses: actions/checkout@v4
         with:

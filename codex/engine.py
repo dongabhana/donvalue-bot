@@ -69,6 +69,11 @@ def eligible(item, record, now):
     if record.get('review_kind')=='owner_chat_once':
         from codex.today_once import authorized_now
         return authorized_now(item,record,now)
+    if record.get('approval_policy') == 'unified-v2':
+        return (record.get('decision') == 'approved'
+                and record.get('review_kind') == 'real'
+                and bool(record.get('approved_at'))
+                and datetime.fromisoformat(record['scheduled_at']) <= now)
     due = datetime.fromisoformat(item['publish_at'])
     return (record.get('decision') == 'approved' and record.get('review_kind') == 'real'
             and due <= now < due + timedelta(hours=2)
@@ -219,13 +224,13 @@ class Engine:
             self.upload(manifest['video'],True)
         for label, body in [('Instagram 캡션',item['caption']),('Instagram 첫 댓글',item['first_comment']),('Threads 본문',item['threads_text']), *[(f'Threads 후속 답글 {i+1}',t) for i,t in enumerate(item['threads_chain'])], ('계산 근거',item['evidence'])]:
             self.tell(label+'\n\n'+body)
-        buttons=[{'text':'예약 승인' if real else '미리보기 테스트 확인','callback_data':f'a|{key}|{digest[:12]}'},
-                 {'text':'수정 요청','callback_data':f'e|{key}|{digest[:12]}'},
-                 {'text':'보류','callback_data':f'h|{key}|{digest[:12]}'}]
-        msg=self.tell('위 이미지·음원·본문·댓글 전체에 대한 선택입니다.\n버튼은 약 15분 간격으로 처리되며 GitHub 실행 지연이 있을 수 있어요.\n수정 요청을 누르고 이 방에 변경 내용을 보내주세요.',reply_markup={'inline_keyboard':[[b] for b in buttons]})
+        buttons=[{'text':'승인','callback_data':f'a|{key}|{digest[:12]}'},
+                 {'text':'미루기','callback_data':f'h|{key}|{digest[:12]}'}]
+        msg=self.tell('위 이미지·음원·본문·댓글 전체에 대한 선택입니다.\n승인 저장 후 확인 메시지를 보내요. 버튼은 약 5분 간격으로 처리되며 실행 지연이 있을 수 있어요.\n미루면 다시 승인하기 전에는 게시되지 않아요.',reply_markup={'inline_keyboard':[[b] for b in buttons]})
         rec['message_id']=msg['message_id']; self.save()
 
     def callbacks(self):
+        from codex.approvals import callback, schedule, decision_message, flush_notices
         updates=self.tg('getUpdates',offset=self.state['offset'],timeout=0,limit=100,allowed_updates=['message','callback_query'])
         for update in updates:
             cb=update.get('callback_query')
@@ -233,42 +238,44 @@ class Engine:
                 msg=cb.get('message',{})
                 if cb.get('from',{}).get('id')==self.owner['user_id'] and msg.get('chat',{}).get('id')==self.owner['chat_id']:
                     parts=cb.get('data','').split('|')
-                    if len(parts)==3:
+                    now=datetime.now(KST)
+                    handled=callback(self,cb,parts,now)
+                    if not handled and len(parts)==3:
                         action,key,short=parts
                         rec=self.state['records'].get(key,{})
                         item=next((i for i in self.items if i['id']==key),None)
                         valid=(item and rec.get('message_id')==msg.get('message_id') and rec.get('hash','')[:12]==short
                                and fingerprint(item,rec['manifest'])==rec['hash'] and not rec.get('operations'))
-                        if valid and rec.get('review_kind') == 'real' and action in ('a','e','h'):
-                            now=datetime.now(KST); due=datetime.fromisoformat(item['publish_at'])
-                            if action=='a' and rec['review_kind']=='real' and now.date()!=(due-timedelta(days=1)).date():
-                                self.tell('승인은 게시 전날만 가능해요. 이 예약은 승인되지 않았습니다.')
-                            else:
-                                rec['decision']={'a':'approved' if rec['review_kind']=='real' else 'test_confirmed','e':'edit_requested','h':'held'}[action]
-                                if action=='a': rec['approved_at']=now.isoformat()
-                                self.state['offset']=update['update_id']+1; self.save()
-                                text={'a':'예약 승인 저장 완료' if rec['review_kind']=='real' else '테스트 확인 완료. SNS 게시 승인은 아닙니다.', 'e':'수정 요청을 저장했어. 변경할 내용을 이 대화방에 보내줘. 수정본은 다시 승인받을게.', 'h':'보류했어. 이 상태에서는 게시하지 않아.'}[action]
-                                self.tell(text)
-                        elif parts[0] in ('r','x'):
+                        if valid and rec.get('review_kind')=='real' and action in ('a','e','h'):
+                            rec.update(decision='approved' if action=='a' else 'deferred', approval_policy='unified-v2')
+                            if action=='a':
+                                rec['approved_at']=now.isoformat()
+                                rec['scheduled_at']=schedule(item['publish_at'],now)
+                            rec['notice_pending']=decision_message(item['topic'],rec)
+                            self.save()
+                        elif action in ('r','x'):
                             self.reply_callback(parts,msg)
-                        elif action in ('a','e','h') and rec.get('review_kind') == 'real':
-                            self.tell('이 미리보기는 수정되었거나 더 이상 유효하지 않아. 가장 최근에 받은 콘텐츠 아래 버튼을 사용해줘.')
+                        elif action in ('a','e','h'):
+                            self.tell('이 미리보기는 변경됐거나 이미 처리됐어요. 최신 콘텐츠 아래의 승인 / 미루기를 사용해주세요.')
+                    elif not handled:
+                        self.tell('이전 방식의 승인창입니다. 새 승인 / 미루기 버튼을 사용해주세요. 밀린 발행분은 별도 복구 목록으로 확인합니다.')
+                    self.state['offset']=update['update_id']+1
+                    self.save()
+                    flush_notices(self)
                     try: self.tg('answerCallbackQuery',callback_query_id=cb['id'])
-                    except RuntimeError: pass  # Old callbacks can no longer be acknowledged.
+                    except RuntimeError: pass
             message=update.get('message',{})
             if (message.get('chat',{}).get('id')==self.owner['chat_id'] and message.get('from',{}).get('id')==self.owner['user_id'] and message.get('text')):
                 text=message['text']
                 if text=='/status':
-                    self.tell('Codex 상태\n'+'\n'.join(k+': '+r['decision'] for k,r in self.state['records'].items()))
+                    self.tell('승인 상태\n'+'\n'.join(k+': '+r['decision'] for k,r in self.state['records'].items()))
                 elif not text.startswith('/') and not text.startswith('돈값하나 연결'):
                     self.state.setdefault('feedback',[]).append({'at':message['date'],'text':text[:4000]})
                     self.state['feedback']=self.state['feedback'][-30:]
-                    # Feedback pauses all unposted content until a revised preview is approved.
-                    for rec in self.state['records'].values():
-                        if not rec.get('operations'): rec['decision']='edit_requested'
-                    self.tell('수정 의견을 기록했어. 미게시 콘텐츠는 보류했으며 수정본을 다시 승인받아야 게시돼요.')
+                    self.tell('의견을 기록했어요. 특정 콘텐츠를 미루려면 해당 메시지의 미루기 버튼을 눌러주세요.')
             self.state['offset']=update['update_id']+1
         if updates: self.save()
+        flush_notices(self)
 
     def meta(self, platform, method, endpoint, **params):
         token=os.environ.get('IG_ACCESS_TOKEN' if platform=='ig' else 'TH_ACCESS_TOKEN')
@@ -483,7 +490,10 @@ class Engine:
             if key not in current_ids and not record.get('operations') and record.get('decision')!='superseded':
                 record['decision']='superseded'; retired=True
         if retired: self.save()
+        from codex.approvals import publish_due, migrate_buttons
+        migrate_buttons(self)
         self.callbacks()
+        if mode == 'tick': publish_due(self, datetime.now(KST))
         print('CODEX_REVIEW_COUNTS: '+json.dumps(dict(Counter(r.get('decision','pending') for r in self.state['records'].values())),sort_keys=True))
         now=datetime.now(KST)
         if mode=='preview':

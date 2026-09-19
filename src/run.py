@@ -214,7 +214,7 @@ def _commit(paths: list, message: str) -> bool:
 
 
 def ask_for_tomorrow(item: dict, ig_format: str, paths: list, mp4, body: str,
-                     digest: str) -> int:
+                     digest: str, context: dict | None = None) -> int:
     """발행 전날 20:00 — 내일 나갈 것을 통째로 보여주고 승인을 받아 둔다.
 
     승인 결과를 저장소(content/approval.json)에 남기는 이유는, 내일 20:00 의
@@ -233,13 +233,13 @@ def ask_for_tomorrow(item: dict, ig_format: str, paths: list, mp4, body: str,
     wait = int(os.getenv("EVE_APPROVAL_TIMEOUT_MIN", "180"))
     answer = notify.ask(
         item["id"], f"{item['product']} ({ig_format})", body,
-        video=mp4, photos=[paths[0], paths[-1]] if not mp4 else None,
+        video=mp4, photos=list(paths),
         timeout_min=wait,
         prompt=(f"{notify.LABEL} · 내일 {publish_date} 20:00 에 이대로 나갑니다.\n"
                 f"[승인] 을 누르면 내일 자동으로 발행되고, "
-                f"[수정] 을 누르면 발행하지 않습니다.\n"
-                f"({wait}분 안에 응답이 없으면 내일 20:00 에 한 번 더 물어봅니다)"),
-        approve_label="✅ 승인", reject_label="✏️ 수정", collect_note=True)
+                f"[미루기]를 누르면 다시 승인할 때까지 발행하지 않습니다.\n"
+                "승인이 저장되면 게시 예정 시간을 답장합니다."),
+        approve_label="승인", reject_label="미루기", approval_context=context)
 
     decision = {True: approval.APPROVED,
                 False: approval.REVISE}.get(answer, approval.PENDING)
@@ -264,7 +264,7 @@ def run_once(args) -> int:
         if item is None:
             print(f"[stop] id '{args.id}' 를 큐에서 찾을 수 없습니다.")
             return 1
-        if item['id'] in posted_ids:
+        if item['id'] in posted_ids and not getattr(args, 'review_key', None):
             print(f"[stop] {item['id']}는 이미 발행됐습니다")
             return 0
         if not item.get('verified'):
@@ -274,6 +274,17 @@ def run_once(args) -> int:
         item = pick_next(queue, posted_ids, (args.pick or "").lower())
         if item is None:
             return 0
+
+    # An outstanding immutable review belongs to the single receiver. Do not
+    # rerender it or create a second approval window from the scheduled publisher.
+    if not args.dry_run and not getattr(args, 'review_key', None) and os.getenv('TELEGRAM_BOT_TOKEN'):
+        from codex.approvals import load_requests, claude_source, validate_request
+        for request in load_requests().values():
+            if (request['item_id'] == item['id'] and
+                    request['context']['source_hash'] == claude_source(item, queue.get('cta') or {})):
+                validate_request(request)
+                print('[approval] 기존 승인 / 미루기 버튼을 유지합니다. 공용 수신기가 발행합니다.')
+                return 0
 
     # 편에 brand 가 있으면 그 편만 다른 시리즈 이름으로 나간다
     brand = item.get("brand") or queue.get("brand", "돈값하나?")
@@ -308,6 +319,10 @@ def run_once(args) -> int:
     # 나갈 수 있다. 승인의 의미를 지키려면 결과물을 재사용해야 한다.
     prior = (None if (args.dry_run or ask_tomorrow or args.id)
              else approval.lookup(item["id"]))
+    if getattr(args, 'review_key', None):
+        from codex.approvals import approved_context
+        prior = approved_context(args.review_key, item, cta, datetime.now(KST))
+        ig_format = prior['ig_format']
     cached_mp4 = outdir / f"{item['id']}.mp4"
     reused = False
     if prior and prior.get("decision") == approval.APPROVED \
@@ -317,6 +332,8 @@ def run_once(args) -> int:
             paths, reused = cached, True
             print(f"[approval] 전날 승인분 재사용 → {len(paths)}장"
                   + (f" + {cached_mp4.name}" if cached_mp4.exists() else ""))
+    if getattr(args, 'review_key', None) and not reused:
+        raise RuntimeError('Approved media is missing; refusing to render a replacement')
     if not reused:
         paths = render_item(item, outdir, brand, handle, cta)
         print(f"[render] {item['id']} · {item['product']} → {len(paths)}장")
@@ -385,8 +402,16 @@ def run_once(args) -> int:
     body = ("--- 인스타 캡션 ---\n" + caption_text
             + "\n\n--- 쓰레드 ---\n" + threads_preview)
 
+    from codex.approvals import claude_source
+    import hashlib
+    intended = (datetime.now(KST) + timedelta(days=1 if ask_tomorrow else 0)).replace(
+        hour=20, minute=0, second=0, microsecond=0)
+    context = {'ig_format': ig_format, 'fingerprint': digest,
+               'source_hash': claude_source(item, cta), 'scheduled_at': intended.isoformat(),
+               'files': {str(p.relative_to(IMAGES.parent)): hashlib.sha256(p.read_bytes()).hexdigest()
+                         for p in list(paths) + ([mp4] if mp4 else [])}}
     if ask_tomorrow:
-        return ask_for_tomorrow(item, ig_format, paths, mp4, body, digest)
+        return ask_for_tomorrow(item, ig_format, paths, mp4, body, digest, context)
 
     approved_earlier = False
     if prior and prior.get("decision") == approval.REVISE:
@@ -409,15 +434,17 @@ def run_once(args) -> int:
                   f"→ 바로 발행합니다")
         else:
             # 승인한 것과 지금 나갈 것이 다르다. 조용히 넘기면 승인이 무의미해진다.
+            if getattr(args, 'review_key', None):
+                raise RuntimeError('Approved content fingerprint changed; no publication')
             print("[approval] ⚠ 승인 이후 내용이 바뀌었습니다 → 지금 다시 확인합니다")
 
     if (not approved_earlier) and notify.enabled() \
             and os.getenv("APPROVAL_REQUIRED", "1") == "1":
         answer = notify.ask(item["id"], f"{item['product']} ({ig_format})", body,
                             video=mp4,
-                            photos=[paths[0], paths[-1]] if not mp4 else None)
+                            photos=list(paths), approval_context=context)
         if answer is not True:
-            print("[stop] " + ("반려됨" if answer is False else "승인 응답 없음")
+            print("[stop] " + ("미뤄짐" if answer is False else "공용 승인 요청 저장 — 버튼 응답 대기")
                   + " → 발행하지 않고 종료합니다(큐 유지).")
             return 0
 
