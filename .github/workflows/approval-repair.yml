@@ -10,7 +10,7 @@ concurrency:
   group: donvalue-publish
   cancel-in-progress: false
 jobs:
-  audit:
+  recover:
     runs-on: ubuntu-latest
     timeout-minutes: 35
     steps:
