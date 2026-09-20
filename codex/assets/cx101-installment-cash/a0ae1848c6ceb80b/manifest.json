@@ -1,0 +1,20 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/01.jpg",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/02.jpg",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/03.jpg",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/04.jpg",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/05.jpg",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "sha256": {
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/01.jpg": "b935a6a2069306063729f41bf1e20f7b58f2c59e11ef259228a2b7b8ad5e74c7",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/02.jpg": "b921c189245b58b16443da093785d929e6c52f70cc7fbd9d0cee9c7dfc25d19e",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/03.jpg": "64c8bfbaf27e8fcb32edffc8eef02a3589282391dcd43052eccfb8f7e3ffac8d",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/04.jpg": "ad5378bf345cc63d3fbd4849a6c0c12c7e1eaadfff9e7fe47ba8ae8c77cbc39d",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/05.jpg": "574d3834a367e36f96a0c7a2f9a9f1db10e4c9d726e38e6dbc363b89bd6ec568",
+    "codex/assets/cx101-installment-cash/a0ae1848c6ceb80b/06.jpg": "ece692305ddf37a30f7b576232479be2a0db5ae9b96c6c443aa14b141191215b"
+  }
+}
