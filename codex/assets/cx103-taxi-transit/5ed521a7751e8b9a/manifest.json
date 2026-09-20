@@ -1,0 +1,20 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/01.jpg",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/02.jpg",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/03.jpg",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/04.jpg",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/05.jpg",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "sha256": {
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/01.jpg": "ced93827d239dd930ceb177a5ec8c98e9857bcb0b7155804201e328f7460b5c5",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/02.jpg": "d9486c4266a02ed547319ebff9e0ddd7b1861e61ecb1dd45e8c66bd50876f1b1",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/03.jpg": "7a66e5daf7a16a49624fe4f59308e98d654202f7ba1a06b9f7ed34a752a32bd2",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/04.jpg": "25cd81dd6cb85c82c5aab424cdff2b2612ab2e98cd9a44c2dc084643c651f1b6",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/05.jpg": "2e322bf6d9810e8012b5ecbbf52b3ae227fc27b4d6fd03659aeb747c4c0c0ff5",
+    "codex/assets/cx103-taxi-transit/5ed521a7751e8b9a/06.jpg": "463fac09f9a5cdbecb5dab20361880f00a0a85b9f1f6da7364b7d0a32d73a2a2"
+  }
+}
