@@ -1,0 +1,16 @@
+{
+  "authorization": "owner_chat_2026-09-19_publish_missing",
+  "continued_by_owner_at": "2026-09-20",
+  "cutoff": "2026-09-20T09:00:00+09:00",
+  "expires_at": "2026-09-21T00:00:00+09:00",
+  "items": [
+    {
+      "id": "cx006-vacation-app",
+      "source_hash": "fb598baf07fba1435e97b787e3bcd34e65d08315626ecf64347226e490616e30"
+    },
+    {
+      "id": "cx101-installment-cash",
+      "source_hash": "29845aee07f612a970a10977a8055e74b5a5d29e53ca0fb6cb13bea9b487cd08"
+    }
+  ]
+}

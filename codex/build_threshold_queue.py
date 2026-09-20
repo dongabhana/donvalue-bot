@@ -39,9 +39,9 @@ def item(row,due,ident_override=None):
       'topic_key':ident[2:],'topic':topic,'hook':hook,
       'hook_candidates':[hook,f'{thr}에서 답이 갈린다',f'{a} vs {b}, 어디서 뒤집힐까'],
       'hook_reason':'변수명이 아니라 숫자 분기점을 첫 화면에 제시하고 각 카드가 다른 계산·조건을 설명한다.',
-      'slides':slides,'caption':caption,
+      'slides':slides,'caption':row.get('caption',caption),
       'first_comment':'계산 기준: '+cards[0][1]+' '+note,
-      'threads_text':f'{a} vs {b}.\n\n핵심 분기점은 {thr}. 그 숫자 위와 아래에서 승자가 바뀐다.',
+      'threads_text':row.get('threads_text',f'{a} vs {b}.\n\n핵심 분기점은 {thr}. 그 숫자 위와 아래에서 승자가 바뀐다.'),
       'threads_chain':[],'faq':[],'evidence':evidence,
       'verification':{
         'kind':'threshold_decision_model','checked_at':'2026-09-14',
