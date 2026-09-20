@@ -9,7 +9,7 @@
 python -m unittest discover -s codex/tests -q
 ```
 
-**OK 가 아니면 푸시하지 않는다.** 이 테스트는 `codex-approval` 워크플로가 15분마다 돌리는
+**OK 가 아니면 푸시하지 않는다.** 이 테스트는 `codex-approval` 워크플로가 약 5분 간격으로 돌리는
 것과 같다. 실패한 채로 푸시하면 워크플로가 계속 실패하면서 **미리보기와 발행이 통째로 멈춘다.**
 실제로 두 번 멈췄다.
 
@@ -25,7 +25,9 @@ python -m unittest discover -s codex/tests -q
 | GPT / Codex | `codex/` | `codex/content.json` | 월·수·금·토 |
 | Claude | `src/` | `content/queue.yaml` | 화·목·일 |
 
-공용은 `.github/workflows/`, `content/telegram_owner.enc`, 텔레그램 봇 하나뿐이다.
+공용은 `.github/workflows/`, `content/telegram_owner.enc`, 텔레그램 봇,
+`codex/approvals.py` 및 승인 수신기 `codex/engine.py`다.
+2026-09-19 소유자 요청으로 두 트랙의 승인 처리를 통합했다.
 상대 트랙 파일을 고쳐야 하면 먼저 사람에게 묻는다.
 
 ## 2. 큐에 편을 넣거나 뺄 때
@@ -37,16 +39,22 @@ python -m unittest discover -s codex/tests -q
 4. 가격 출처가 없는 편(`verification.real_world_price_claim: false`)이 캡션에 금액을 쓰려면
    ① 캡션에 가정임을 명시 ② 쓰레드 본문에도 명시 ③ 조건이 뒤집히는 지점(손익분기)을 함께 적는다.
 
-## 3. 발행은 전날 20:00 승인을 받는다
+## 3. 두 트랙 모두 같은 승인 / 미루기 흐름을 쓴다
 
-두 트랙 모두 **발행 전날 20:00 에 텔레그램으로 미리보기와 [승인]/[수정] 버튼**을 보내고,
-승인받은 것만 다음 날 20:00 에 나간다.
+발행 전날 20:00에 미리보기와 **[승인] / [미루기]** 버튼을 보낸다.
+승인은 콘텐츠·미디어 버전에 묶어 저장하고, 저장 성공 뒤 **승인됐어요**와 게시 예정 시간을 보낸다.
+미루기를 누르면 다시 승인하기 전에는 게시하지 않는다. 원래 예정 시간이 지난 뒤 승인하면
+다음 실행에서 게시할 수 있도록 새 예정 시간을 저장한다. 실행 지연이 있을 수 있다.
 
-- GPT: `codex-approval.yml` (15분 틱) → `codex/state.enc` 에 승인 기록
-- Claude: `eve-approval.yml` (월·수·토) → `content/approval.json` 에 승인 기록
-
-**승인한 결과물은 다음 날 다시 렌더하지 않고 그대로 쓴다.** 재렌더하면 그레인·음원·나레이션
-때문에 승인한 것과 다른 게 나간다. 이 규칙을 우회하는 변경은 하지 않는다.
+- 텔레그램 `getUpdates` 수신은 **`codex.engine.Engine.callbacks` 한 곳만** 담당한다.
+  다른 작업에서 조회하거나 offset을 비우면 상대 트랙의 승인이 사라진다. 추가하지 않는다.
+- GPT: `codex/state.enc`의 `records`에 승인과 게시 상태를 저장한다.
+- Claude: `eve-approval.yml`은 미리보기와 `content/reviews/*.enc` 요청만 등록하고 종료한다.
+  공용 수신기가 `codex/state.enc`의 `shared_reviews`에 결정을 저장하고 기존 발행기를 호출한다.
+- `codex-approval.yml`은 약 5분 간격으로 수신·확인 메시지·예정된 게시를 처리한다.
+- 승인한 결과물은 다시 렌더하지 않고 그대로 쓴다. 내용이나 파일이 달라지면 새 승인이 필요하다.
+- 일반 게시에는 승인이 필요하다. 과거 누락분의 별도 복구는 소유자가 명시적으로 허락한
+  대상·콘텐츠 버전·기간에 한하며, 실제 피드와 게시 기록을 먼저 확인해 중복을 막는다.
 
 ## 4. 이미 발행된 편은 건드리지 않는다
 
