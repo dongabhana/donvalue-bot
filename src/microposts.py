@@ -35,6 +35,22 @@ MAX_LEN = 500          # Threads 본문 한도
 LOW_WATER = 6          # 남은 글이 이보다 적으면 채우라고 알린다
 
 
+def render(post: dict) -> str:
+    """실제로 쓰레드에 나갈 최종 본문.
+
+    태그를 topic_tag 파라미터로만 넘기면 글에 보이지 않는다. 공식 문서 기준
+    한 게시물에 태그는 하나만 유효하고("Only one topic tag is allowed per
+    post"), 본문에 쓴 첫 태그가 그 게시물의 태그로 잡힐다. 그래서 파라미터
+    대신 본문 끝에 한 개만 눈에 보이게 붙인다.
+
+    여러 개를 붙이지 않는 이유: 두 번째부터는 태그로 등록되지 않고 그냥
+    글자로 남아 광고처럼 읽힌다.
+    """
+    text = post["text"].rstrip()
+    tag = post.get("topic_tag")
+    return f"{text}\n\n#{tag}" if tag else text
+
+
 def load_pool() -> dict:
     if not POOL.exists():
         raise RuntimeError("content/microposts.yaml 이 없습니다")
@@ -50,9 +66,10 @@ def load_pool() -> dict:
         if p["id"] in seen:
             raise RuntimeError(f"id 중복: {p['id']}")
         seen.add(p["id"])
-        if len(p["text"]) > MAX_LEN:
-            raise RuntimeError(f"{p['id']}: 본문이 {MAX_LEN}자를 넘습니다 ({len(p['text'])}자)")
         tag = p.get("topic_tag")
+        if len(render(p)) > MAX_LEN:
+            raise RuntimeError(f"{p['id']}: 본문이 {MAX_LEN}자를 넘습니다 "
+                               f"(태그 포함 {len(render(p))}자)")
         if tag is not None:
             # 주제 태그는 글당 하나만 달 수 있고, 마침표·앰퍼샌드가 들어가면 API 가 거절한다.
             if not 1 <= len(tag) <= 50 or any(c in tag for c in ".&"):
@@ -134,7 +151,7 @@ def run(count: int, dry_run: bool) -> int:
 
     if dry_run:
         for p in picks:
-            print(f"--- {p['id']} [{p.get('topic_tag') or '태그없음'}]\n{p['text']}\n")
+            print(f"--- {p['id']}\n{render(p)}\n")
         print(f"[micro] dry-run — 발행하지 않았습니다. 남은 글 {remaining}개")
         return 0
 
@@ -147,8 +164,9 @@ def run(count: int, dry_run: bool) -> int:
     sent, failed = [], []
     for p in picks:
         try:
-            post_id = publish.publish_threads(th_id, th_tok, [], p["text"],
-                                              topic_tag=p.get("topic_tag"))
+            # 태그는 render() 가 본문 안에 넣는다. 파라미터로 또 넘기면
+            # 한 글에 태그가 둘이 되어 어느 쪽이 잡힐지 문서에 정의돼 있지 않다.
+            post_id = publish.publish_threads(th_id, th_tok, [], render(p))
         except Exception as e:                                    # noqa: BLE001
             failed.append((p["id"], str(e)))
             print(f"[micro] {p['id']} 실패: {e}")
