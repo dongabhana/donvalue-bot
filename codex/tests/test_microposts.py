@@ -50,7 +50,7 @@ class PoolValidationTests(unittest.TestCase):
             self._load(pool([{"id": "mp001-a", "text": "가" * (microposts.MAX_LEN + 1)}]))
 
     def test_topic_tag_with_forbidden_char_is_rejected(self):
-        # 마침표·앵퍼샌드가 들어가면 Threads API 가 거절한다. 발행 전에 잡는다.
+        # 마침표·앰퍼샌드가 들어가면 Threads API 가 거절한다. 발행 전에 잡는다.
         for bad in ("가전.", "가전&생활"):
             with self.assertRaises(RuntimeError):
                 self._load(pool([{"id": "mp001-a", "text": "x", "topic_tag": bad}]))
