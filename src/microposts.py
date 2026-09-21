@@ -54,7 +54,7 @@ def load_pool() -> dict:
             raise RuntimeError(f"{p['id']}: 본문이 {MAX_LEN}자를 넘습니다 ({len(p['text'])}자)")
         tag = p.get("topic_tag")
         if tag is not None:
-            # 주제 태그는 글당 하나만 달 수 있고, 마침표·앵퍼샌드가 들어가면 API 가 거절한다.
+            # 주제 태그는 글당 하나만 달 수 있고, 마침표·앰퍼샌드가 들어가면 API 가 거절한다.
             if not 1 <= len(tag) <= 50 or any(c in tag for c in ".&"):
                 raise RuntimeError(f"{p['id']}: 주제 태그 형식이 잘못됐습니다 ({tag!r})")
     return data
@@ -172,7 +172,7 @@ def run(count: int, dry_run: bool) -> int:
         left = remaining - len(sent)
         lines.append(f"남은 글 {left}개")
         if left <= LOW_WATER:
-            lines.append("※ 곳 바닥납니다. microposts.yaml 을 채워주세요.")
+            lines.append("※ 곧 바닥납니다. microposts.yaml 을 채워주세요.")
         try:
             notify.send_message("\n".join(lines))
         except Exception as e:                                    # noqa: BLE001
