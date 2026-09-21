@@ -328,12 +328,38 @@ def video_status(video_id: str) -> dict:
                      params={"part": "status", "id": video_id},
                      headers={"Authorization": f"Bearer {access_token()}"},
                      timeout=30)
+    if r.status_code == 403 and "insufficient" in r.text.lower():
+        # 채널 토큰이 업로드(youtube.upload) 권한만 있으면 조회가 막힌다.
+        # 그럴 땐 로그인 없이 누구나 보는 경로(oEmbed)로 '비공개로 잠겼는지'만 본다.
+        return public_probe(video_id)
     if r.status_code != 200:
         raise YouTubeError(f"영상 상태 조회 실패 {r.status_code}: {r.text[:300]}")
     items = r.json().get("items") or []
     if not items:
         raise YouTubeError(f"영상 {video_id} 를 채널에서 찾지 못했습니다")
     return items[0].get("status", {})
+
+
+def public_probe(video_id: str, tries: int = 6, wait: float = 20.0) -> dict:
+    """로그인 없이 영상이 보이는지 확인한다(oEmbed).
+
+    공개·일부공개 영상은 200, 비공개(심사 미통과 잠금 포함)는 401/403 이 온다.
+    업로드 직후 처리 중이면 잠깐 404 가 날 수 있어 몇 번 다시 본다.
+    일부공개와 공개는 구분하지 못하므로, 요청이 public 일 때 200 이면 public 으로 본다.
+    """
+    import time
+    last = "unknown"
+    for n in range(tries):
+        r = requests.get("https://www.youtube.com/oembed",
+                         params={"url": f"https://www.youtube.com/shorts/{video_id}",
+                                 "format": "json"}, timeout=30)
+        if r.status_code == 200:
+            return {"privacyStatus": "public", "uploadStatus": "visible(oembed)"}
+        if r.status_code in (401, 403):
+            last = "private"
+        if n < tries - 1:
+            time.sleep(wait)
+    return {"privacyStatus": last, "uploadStatus": "not-visible(oembed)"}
 
 
 def publish_short(item: dict, mp4: Path, caption: str = "",
