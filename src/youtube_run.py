@@ -18,6 +18,13 @@
   python -m src.youtube_run --dry-run          # 영상만 만들어 텔레그램으로 확인
   python -m src.youtube_run --count 3          # 3편 백필
   python -m src.youtube_run --id 004-ott-stack # 특정 편
+  python -m src.youtube_run --auto --count 3   # 정기 따라올리기(보류 스위치 적용)
+
+승인 (2026-09-20 변경)
+  유튜브에 올리는 편은 **이미 전날 승인을 거쳐 인스타에 나간 편**뿐이다.
+  그래서 여기서 텔레그램 승인을 다시 묻지 않는다. (예전 notify.ask 호출은
+  09-19 승인 통합 이후 approval_context 없이는 예외가 나서 업로드가 전부 막혔다.)
+  대신 목소리 없는 영상은 올리지 않고, 올린 뒤 실제 공개상태를 다시 조회한다.
 """
 from __future__ import annotations
 
@@ -62,11 +69,15 @@ def posted_ids() -> list[str]:
     return out
 
 
-def candidates(queue: dict, source: str = "all") -> list[dict]:
+def candidates(queue: dict, source: str = "all", strict: bool = False) -> list[dict]:
     """유튜브에 올릴 수 있는 편들을 '인스타에 나간 순서'로.
 
     콘텐츠가 두 군데(queue.yaml, codex/content.json)라 둘 다 훑는다.
     한쪽만 보면 GPT 트랙 편들이 통째로 빠져 채널에 구멍이 생긴다.
+
+    strict=True(실제 업로드)면 GPT 트랙은 **실제 게시 기록**으로만 고른다.
+    기록을 못 읽으면 GPT 편은 올리지 않는다 — 예정 시각이 지났다고
+    나간 걸로 치면, 누락된 편(승인 안 된 편)이 유튜브에만 올라갈 수 있다.
     """
     done = uploaded_ids()
     q_rows: list[dict] = []
@@ -79,9 +90,13 @@ def candidates(queue: dict, source: str = "all") -> list[dict]:
                 q_rows.append(by_id[pid])
 
     if source in ("all", "codex"):
-        for it in codex_bridge.load_items(only_published=True):
-            if it["id"] not in done:
-                c_rows.append(it)
+        records = codex_bridge.published_records()
+        if strict and records is None:
+            print("[codex] 게시 기록을 읽을 수 없어 GPT 트랙 편은 이번에 올리지 않습니다")
+        else:
+            for it in codex_bridge.load_items(only_published=True, records=records):
+                if it["id"] not in done:
+                    c_rows.append(it)
 
     # 두 트랙을 번갈아 낸다. 한쪽을 다 소진하고 넘어가면, 3편만 뽑을 때
     # 한쪽 트랙만 나와서 '다른 쪽은 왜 빠졌냐'는 오해가 생긴다.
@@ -95,15 +110,25 @@ def candidates(queue: dict, source: str = "all") -> list[dict]:
 
 
 def pick(queue: dict, want: str = "", count: int = 1,
-         source: str = "all") -> list[dict]:
+         source: str = "all", strict: bool = False) -> list[dict]:
     if want:
         pool = {i["id"]: i for i in queue["items"]}
         pool.update({i["id"]: i for i in codex_bridge.load_items(only_published=False)})
         if want not in pool:
             print(f"[stop] '{want}' 를 두 콘텐츠 목록 어디서도 찾을 수 없습니다")
             return []
+        if strict:
+            # 실제로 올릴 때는 인스타에 나간(=승인된) 편만. 아직 안 나간 편을
+            # --id 로 찍어 올리면 승인 없이 유튜브에만 먼저 나간다.
+            published = {i["id"] for i in candidates(queue, source, strict=True)}
+            if want in uploaded_ids():
+                print(f"[stop] {want} 는 이미 유튜브 기록이 있습니다(중복 업로드 방지)")
+                return []
+            if want not in published:
+                print(f"[stop] {want} 는 아직 인스타 게시 기록이 없어 올리지 않습니다")
+                return []
         return [pool[want]]
-    return candidates(queue, source)[:count]
+    return candidates(queue, source, strict=strict)[:count]
 
 
 # 윈도우에서 파일명에 못 쓰는 문자. 유튜브 제목엔 써도 되지만 파일명에선 빼야 한다.
@@ -192,20 +217,43 @@ def upload_one(item: dict, queue: dict, dry_run: bool) -> bool:
                 print(f"[telegram] 전송 실패: {e}")
         return True
 
-    if notify.enabled() and os.getenv("APPROVAL_REQUIRED", "1") == "1":
-        answer = notify.ask(item["id"], f"유튜브 쇼츠 · {title}", desc, video=mp4)
-        if answer is not True:
-            print("[stop] " + ("반려됨" if answer is False else "승인 응답 없음")
-                  + " → 올리지 않습니다")
-            return False
+    # 나레이션 합성이 실패하면 음원만 깔린 영상이 조용히 나간다. 올리지 않는다.
+    if "목소리 없음" in note:
+        _tell(f"⚠ 유튜브 업로드 중단 · {title}\n나레이션이 비어 있어 올리지 않았어요. 로그의 [tts] 줄을 확인해주세요.")
+        print("[stop] 나레이션 없음 → 올리지 않습니다")
+        return False
 
+    privacy = youtube.resolve_privacy()
     vid = deliver_once(item["id"], "youtube", lambda: youtube.upload_short(
         mp4, title, desc, youtube.build_tags(item)))
-    privacy = youtube.resolve_privacy()
-    print(f"[youtube] {youtube.watch_url(vid)} (공개상태 {privacy})")
-    if privacy != "public":
-        print("[youtube] ※ 심사 통과 전이라 비공개입니다. 통과 후 공개로 바꾸세요.")
+    url = youtube.watch_url(vid)
+    print(f"[youtube] {url} (요청한 공개상태 {privacy})")
+
+    # 업로드 응답만 믿지 않는다. 채널에서 다시 읽어 실제 공개상태를 본다.
+    try:
+        status = youtube.video_status(vid)
+    except Exception as e:                                        # noqa: BLE001
+        _tell(f"⚠ 유튜브 업로드 후 확인 실패 · {title}\n{url}\n{e}")
+        print(f"[verify] 상태 조회 실패: {e}")
+        return False
+    actual = status.get("privacyStatus")
+    print(f"[verify] 실제 공개상태={actual} 업로드상태={status.get('uploadStatus')}")
+    if actual != privacy:
+        # 공개로 올렸는데 비공개로 잠겼다 = 심사 미통과. 더 올리면 잠긴 영상만 쌓인다.
+        _tell(f"⚠ 유튜브 공개상태 불일치 · {title}\n요청 {privacy} → 실제 {actual}\n{url}\n"
+              "추가 업로드를 멈췄어요. 심사 상태를 확인해주세요.")
+        return False
+    _tell(f"🔴 유튜브 게시 완료 ({actual}) · {title}\n{url}")
     return True
+
+
+def _tell(text: str) -> None:
+    if not notify.enabled():
+        return
+    try:
+        notify.send_message(text)
+    except Exception as e:                                        # noqa: BLE001
+        print(f"[telegram] 전송 실패: {e}")
 
 
 def main() -> int:
@@ -218,7 +266,15 @@ def main() -> int:
                     help="올릴 수 있는 편 목록만 보여주고 끝낸다")
     ap.add_argument("--dry-run", action="store_true",
                     help="올리지 않고 영상만 만들어 텔레그램으로 확인")
+    ap.add_argument("--auto", action="store_true",
+                    help="정기 따라올리기 — content/youtube_hold.json 보류 중이면 아무것도 안 함")
     args = ap.parse_args()
+
+    if args.auto and not args.dry_run:
+        reason = youtube.hold_reason()
+        if reason:
+            print(f"[stop] 유튜브 보류 중 — {reason}")
+            return 0
 
     queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
 
@@ -236,7 +292,8 @@ def main() -> int:
         print("[stop] 유튜브 인증정보가 없습니다 (YT_* 또는 YOUTUBE_TOKEN_JSON)")
         return 0
 
-    items = pick(queue, args.id, max(1, args.count), args.source)
+    items = pick(queue, args.id, max(1, args.count), args.source,
+                 strict=not args.dry_run)
     if not items:
         print("[stop] 유튜브에 올릴 편이 없습니다 (이미 다 올렸거나 발행 이력이 없음)")
         return 0
@@ -247,7 +304,8 @@ def main() -> int:
             print(f"[backfill] {GAP_MIN}분 대기")
             time.sleep(GAP_MIN * 60)
         if not upload_one(item, queue, args.dry_run):
-            return 0
+            # 실패를 '성공(초록불)'으로 숨기지 않는다. Actions 에 빨간불로 남긴다.
+            return 1
     return 0
 
 

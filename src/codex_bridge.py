@@ -155,14 +155,42 @@ def to_queue_item(cx: dict) -> dict:
     }
 
 
-def already_on_instagram(cx: dict, now: datetime | None = None) -> bool:
+CODEX_STATE = ROOT / "codex" / "state.enc"
+
+
+def published_records() -> dict | None:
+    """GPT 트랙의 실제 게시 기록(codex/state.enc 의 records)을 읽는다.
+
+    암호 키는 TELEGRAM_BOT_TOKEN 에서 나온다(Actions 에만 있음). 읽지 못하면
+    None — 호출한 쪽이 '모름'을 '게시됨'으로 취급하지 않게 하려는 것.
+    """
+    import os
+    token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    if not token or not CODEX_STATE.exists():
+        return None
+    try:
+        from tools.pair_telegram import cipher
+        data = json.loads(cipher(token).decrypt(CODEX_STATE.read_bytes()))
+    except Exception as e:                                   # noqa: BLE001
+        print(f"[codex] 게시 기록을 읽지 못했습니다: {e}")
+        return None
+    return data.get("records", {})
+
+
+def already_on_instagram(cx: dict, now: datetime | None = None,
+                         records: dict | None = None) -> bool:
     """인스타에 이미 나갔다고 볼 수 있는가.
 
-    codex 발행 상태는 암호화돼 있어 읽지 않는다. 예정 시각이 지났거나
-    조기 발행 기록이 있으면 나간 것으로 본다(보수적으로 판단).
+    records(실제 게시 기록)를 주면 그것만 믿는다 — 예정 시각이 지났어도
+    게시 기록이 없으면 나가지 않은 편이다(2026-09-18·19 누락분이 그랬다).
+    records 가 없으면(키 없음·로컬 확인용) 예전처럼 예정 시각으로 추정한다.
+    실제 업로드는 youtube_run 이 records 없이는 codex 편을 올리지 않는다.
     """
     if cx.get("posted_early_on"):
         return True
+    if records is not None:
+        ops = (records.get(cx.get("id"), {}) or {}).get("operations", {}) or {}
+        return ops.get("instagram", {}).get("status") == "done"
     at = cx.get("publish_at")
     if not at:
         return False
@@ -173,7 +201,8 @@ def already_on_instagram(cx: dict, now: datetime | None = None) -> bool:
     return due <= (now or datetime.now(KST))
 
 
-def load_items(only_published: bool = True) -> list[dict]:
+def load_items(only_published: bool = True,
+               records: dict | None = None) -> list[dict]:
     """codex 편들을 queue 스키마로. 예정 시각 순서로 돌려준다."""
     if not CODEX.exists():
         return []
@@ -184,7 +213,7 @@ def load_items(only_published: bool = True) -> list[dict]:
     for cx in items:
         if not cx.get("verified"):
             continue
-        if only_published and not already_on_instagram(cx):
+        if only_published and not already_on_instagram(cx, records=records):
             continue
         out.append((str(cx.get("publish_at") or ""), to_queue_item(cx)))
     out.sort(key=lambda p: p[0])

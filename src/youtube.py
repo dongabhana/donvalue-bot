@@ -318,6 +318,24 @@ def watch_url(video_id: str) -> str:
     return f"https://youtube.com/shorts/{video_id}"
 
 
+def video_status(video_id: str) -> dict:
+    """올라간 영상의 실제 상태를 유튜브에서 다시 읽는다.
+
+    업로드 응답의 video_id 만 믿지 않는다. 공개로 올렸는데 비공개로 잠겼는지
+    (심사 미통과), 처리에 실패했는지는 이 조회로만 알 수 있다.
+    """
+    r = requests.get("https://www.googleapis.com/youtube/v3/videos",
+                     params={"part": "status", "id": video_id},
+                     headers={"Authorization": f"Bearer {access_token()}"},
+                     timeout=30)
+    if r.status_code != 200:
+        raise YouTubeError(f"영상 상태 조회 실패 {r.status_code}: {r.text[:300]}")
+    items = r.json().get("items") or []
+    if not items:
+        raise YouTubeError(f"영상 {video_id} 를 채널에서 찾지 못했습니다")
+    return items[0].get("status", {})
+
+
 def publish_short(item: dict, mp4: Path, caption: str = "",
                   handle: str = "@dongabhana", h: dict | None = None) -> str:
     """run.py 가 부르는 진입점. 제목·설명·태그까지 만들어서 올린다."""
