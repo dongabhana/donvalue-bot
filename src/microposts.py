@@ -33,6 +33,14 @@ LEDGER = ROOT / "content" / "microposts_posted.json"
 KST = timezone(timedelta(hours=9))
 MAX_LEN = 500          # Threads 본문 한도
 LOW_WATER = 6          # 남은 글이 이보다 적으면 채우라고 알린다
+# 글의 성격. content = 계산·비교 본편, soft = 맞팔(스하리)용 인사글.
+# track 이 없으면 content 로 본다 — 기존 글을 전부 고치지 않기 위해서다.
+TRACKS = ("content", "soft")
+DEFAULT_TRACK = "content"
+
+
+def track_of(post: dict) -> str:
+    return post.get("track") or DEFAULT_TRACK
 
 
 def render(post: dict) -> str:
@@ -74,6 +82,8 @@ def load_pool() -> dict:
             # 주제 태그는 글당 하나만 달 수 있고, 마침표·앰퍼샌드가 들어가면 API 가 거절한다.
             if not 1 <= len(tag) <= 50 or any(c in tag for c in ".&"):
                 raise RuntimeError(f"{p['id']}: 주제 태그 형식이 잘못됐습니다 ({tag!r})")
+        if track_of(p) not in TRACKS:
+            raise RuntimeError(f"{p['id']}: 모르는 track 입니다 ({p.get('track')!r})")
     return data
 
 
@@ -94,9 +104,16 @@ def save_ledger(rows: list[dict]) -> None:
                       encoding="utf-8")
 
 
-def pick(pool: dict, posted_ids: set[str], count: int) -> list[dict]:
-    """아직 안 올린 글을 파일에 적힌 순서대로 꺼낸다."""
+def pick(pool: dict, posted_ids: set[str], count: int,
+         track: str | None = None) -> list[dict]:
+    """아직 안 올린 글을 파일에 적힌 순서대로 꺼낸다.
+
+    track 을 주면 그 성격의 글만 꺼낸다. 밤 슬롯은 맞팔용(soft), 낮 슬롯은
+    본편(content) 으로 나누기 위한 것이다.
+    """
     remaining = [p for p in (pool.get("posts") or []) if p["id"] not in posted_ids]
+    if track:
+        remaining = [p for p in remaining if track_of(p) == track]
     return remaining[:max(0, count)]
 
 
@@ -126,9 +143,11 @@ def commit_ledger(message: str) -> bool:
     raise RuntimeError("원장 푸시 실패 — 중복 발행을 막기 위해 중단합니다")
 
 
-def run(count: int, dry_run: bool) -> int:
+def run(count: int, dry_run: bool, track: str | None = None) -> int:
     from src import notify
 
+    if track and track not in TRACKS:
+        raise RuntimeError(f"모르는 track 입니다: {track!r}")
     pool = load_pool()
     if not pool.get("enabled"):
         print("[micro] enabled 가 false 입니다 → 올리지 않습니다.")
@@ -136,8 +155,16 @@ def run(count: int, dry_run: bool) -> int:
 
     ledger = load_ledger()
     posted_ids = {r["id"] for r in ledger}
-    picks = pick(pool, posted_ids, count)
+    picks = pick(pool, posted_ids, count, track)
+    fellback = False
+    if track and not picks:
+        # 요청한 성격의 글이 떨어졌다고 슬롯을 비우지는 않는다.
+        # 대신 비었다는 사실을 알리고 남은 글로 채운다.
+        picks = pick(pool, posted_ids, count)
+        fellback = bool(picks)
+        print(f"[micro] {track} 풀이 비었습니다 → 남은 글로 대체합니다.")
     remaining = len([p for p in pool["posts"] if p["id"] not in posted_ids])
+    left_in_track = len(pick(pool, posted_ids, 10 ** 6, track)) if track else None
 
     if not picks:
         print("[micro] 올릴 글이 없습니다 — 풀이 비었습니다.")
@@ -183,8 +210,13 @@ def run(count: int, dry_run: bool) -> int:
         commit_ledger("microposts: " + ", ".join(p["id"] for p in sent))
 
     if notify.enabled():
-        lines = [f"{notify.LABEL} · 쓰레드 단문 {len(sent)}건 발행"]
+        label = f"[{track}]" if track else ""
+        lines = [f"{notify.LABEL} · 쓰레드 단문 {label} {len(sent)}건 발행".replace("  ", " ")]
         lines += [f"· {p['id']} [{p.get('topic_tag') or '태그없음'}]" for p in sent]
+        if fellback:
+            lines.append(f"※ {track} 풀이 비어 다른 글로 대체했습니다.")
+        elif left_in_track is not None:
+            lines.append(f"{track} 남은 글 {left_in_track - len(sent)}개")
         if failed:
             lines += [f"⚠ 실패 {i}: {m}" for i, m in failed]
         left = remaining - len(sent)
@@ -203,8 +235,10 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--count", type=int, default=1, help="이번 실행에서 낼 글 수")
     ap.add_argument("--dry-run", action="store_true", help="렌더만 하고 올리지 않음")
+    ap.add_argument("--track", choices=TRACKS, default=None,
+                    help="content = 계산·비교 본편 / soft = 맞팔(스하리)용")
     args = ap.parse_args()
-    return run(args.count, args.dry_run)
+    return run(args.count, args.dry_run, args.track)
 
 
 if __name__ == "__main__":
