@@ -59,6 +59,19 @@ class PoolValidationTests(unittest.TestCase):
         self._load(pool([{"id": "mp001-a", "text": "x"}]))
 
 
+class RenderTests(unittest.TestCase):
+    def test_tag_is_appended_to_the_body(self):
+        self.assertEqual(microposts.render({"text": "본문", "topic_tag": "절약"}),
+                         "본문\n\n#절약")
+
+    def test_no_tag_leaves_text_alone(self):
+        self.assertEqual(microposts.render({"text": "본문"}), "본문")
+
+    def test_trailing_blank_lines_do_not_stack(self):
+        self.assertEqual(microposts.render({"text": "본문\n\n", "topic_tag": "절약"}),
+                         "본문\n\n#절약")
+
+
 class PickTests(unittest.TestCase):
     def test_already_posted_is_skipped(self):
         got = microposts.pick(pool(OK), {"mp001-a"}, 5)
@@ -100,10 +113,18 @@ class ShippedPoolTests(unittest.TestCase):
         data = microposts.load_pool()
         self.assertGreaterEqual(len(data["posts"]), 10)
 
-    def test_repo_pool_has_no_hashtags(self):
-        # 쓰레드에서 해시태그 나열은 광고처럼 읽힌다. 주제 태그로만 분류한다.
+    def test_source_text_has_no_hashtag(self):
+        # 태그는 render() 가 붙인다. 원문에도 쓰면 한 글에 태그가 둘이 된다.
         for p in microposts.load_pool()["posts"]:
-            self.assertNotIn("#", p["text"], f"{p['id']} 에 해시태그가 있습니다")
+            self.assertNotIn("#", p["text"], f"{p['id']} 원문에 해시태그가 있습니다")
+
+    def test_every_post_renders_exactly_one_hashtag(self):
+        # 쓰레드는 글당 태그 하나만 유효하다. 두 개 이상이면 뒤엣것은 글자로만 남는다.
+        for p in microposts.load_pool()["posts"]:
+            out = microposts.render(p)
+            self.assertEqual(out.count("#"), 1, f"{p['id']} 의 태그 수가 1개가 아닙니다")
+            self.assertTrue(out.rstrip().endswith("#" + p["topic_tag"]),
+                            f"{p['id']} 의 태그가 본문 끝에 붙지 않았습니다")
 
     def test_repo_pool_ids_match_ledger_shape(self):
         rows = microposts.load_ledger()
