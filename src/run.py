@@ -444,8 +444,19 @@ def run_once(args) -> int:
                             video=mp4,
                             photos=list(paths), approval_context=context)
         if answer is not True:
-            print("[stop] " + ("미뤄짐" if answer is False else "공용 승인 요청 저장 — 버튼 응답 대기")
-                  + " → 발행하지 않고 종료합니다(큐 유지).")
+            reason = "미뤄짐(버튼에서 '미루기' 선택)" if answer is False \
+                else "승인 버튼에 응답이 없었습니다"
+            print("[stop] " + reason + " → 발행하지 않고 종료합니다(큐 유지).")
+            # 조용한 실패 금지: 안 나갔다는 사실을 반드시 알린다.
+            # 이걸 빼면 승인 버튼을 한 번 놓쳤을 때 그 뒤로 계속 멈춘 줄 모르게 된다.
+            try:
+                notify.send_message(
+                    f"{notify.LABEL} · ⛔ 오늘 발행을 건너뛰었습니다\n"
+                    f"{item['product']} <{item['id']}> ({ig_format})\n"
+                    f"사유: {reason}\n"
+                    f"큐는 그대로 유지됩니다. 승인 버튼을 누르면 다음 실행에서 나갑니다.")
+            except Exception as e:                                # noqa: BLE001
+                print(f"[telegram] 미발행 통보 실패: {e}")
             return 0
 
     # ---------------- 이미지를 커밋/푸시해서 공개 URL 확보
