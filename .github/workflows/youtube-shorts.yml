@@ -4,7 +4,15 @@ name: 돈값하나 유튜브 쇼츠 백필
 # 이 워크플로는 **이미 인스타에만 나간 편**을 유튜브에 따라 올리는 용도입니다.
 # 채널이 비어 있으면 들어온 사람이 그냥 나가므로, 초반에 과거 편을 깔아둡니다.
 
+# 2026-09-20 심사 통과 → 매일 21:30 KST 에 '인스타에 이미 나간 편'을 자동으로 따라 올린다.
+#   · 정기 실행은 --auto: content/youtube_hold.json 이 hold=true 면 아무것도 안 올린다.
+#   · 정기 실행은 공개(public)로 올리고, 올린 뒤 실제 공개상태를 다시 조회한다.
+#   · 두 트랙 발행(20:00) 뒤 여유를 두려고 21:30. 늦게 승인된 편은 다음 날 올라간다.
+#   · 유튜브 업로드는 이 워크플로 한 곳에서만 한다(중복 업로드 방지).
+
 on:
+  schedule:
+    - cron: "30 12 * * *"
   workflow_dispatch:
     inputs:
       item_id:
@@ -71,12 +79,10 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
-          YT_PRIVACY: ${{ github.event.inputs.privacy || 'private' }}
+          YT_PRIVACY: ${{ github.event_name == 'schedule' && 'public' || github.event.inputs.privacy || 'private' }}
           YT_CATEGORY_ID: "22"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          APPROVAL_REQUIRED: "1"
-          APPROVAL_TIMEOUT_MIN: "45"
           NOTIFY_LABEL: "🔴 YouTube"
           YT_BACKFILL_GAP_MIN: "5"
           REEL_TTS: "1"
@@ -85,12 +91,21 @@ jobs:
           TTS_RATE: "+22%"
           REEL_MUSIC_VOICE_DB: "-13"
           GITHUB_REPOSITORY: ${{ github.repository }}
+          EVENT_NAME: ${{ github.event_name }}
+          IN_COUNT: ${{ github.event.inputs.count }}
+          IN_ITEM: ${{ github.event.inputs.item_id }}
+          IN_DRY: ${{ github.event.inputs.dry_run }}
         run: |
-          ARGS="--count ${{ github.event.inputs.count || '1' }}"
-          if [ -n "${{ github.event.inputs.item_id }}" ]; then
-            ARGS="$ARGS --id ${{ github.event.inputs.item_id }}"
+          if [ "$EVENT_NAME" = "schedule" ]; then
+            # 정기: 보류 스위치를 따르고, 하루 최대 3편(유튜브 일일 할당량 안쪽)
+            python -m src.youtube_run --auto --count 3
+            exit $?
           fi
-          if [ "${{ github.event.inputs.dry_run }}" != "false" ]; then
+          ARGS="--count ${IN_COUNT:-1}"
+          if [ -n "$IN_ITEM" ]; then
+            ARGS="$ARGS --id $IN_ITEM"
+          fi
+          if [ "$IN_DRY" != "false" ]; then
             ARGS="$ARGS --dry-run"
           fi
           python -m src.youtube_run $ARGS
