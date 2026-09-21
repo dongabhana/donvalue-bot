@@ -41,7 +41,22 @@ def register(item_id, title, body, video, photos, context):
         if request['item_id'] == item_id and request['context'] == context:
             decision = state().get('shared_reviews', {}).get(key, {})
             if not decision.get('done'):
+                # 예전에는 여기서 아무 말 없이 끝냈다. 그 결과 승인 버튼을 한 번
+                # 놓치면 다음 발행 실행이 38초 만에 조용히 종료되고, 그 뒤로도
+                # 계속 같은 자리에서 멈춘 줄 모르는 상태가 이어졌다(2026-09-20).
+                # 버튼 자체는 재발송하지 않는다 — message_id 가 바뀌면 기존
+                # 버튼이 '이전 승인창'으로 무효 처리되기 때문이다. 대신 대기
+                # 중이라는 사실과 그 결과를 매번 알린다.
                 print('APPROVAL_REQUEST_EXISTS: ' + item_id)
+                try:
+                    notify.send_message(
+                        '⏳ 승인 대기 중입니다\n'
+                        + title + '\n'
+                        + '게시 예정: ' + context['scheduled_at'] + '\n'
+                        + '먼저 보낸 메시지의 [승인] 버튼을 눌러주세요. '
+                        + '누르지 않으면 이 편도, 뒤에 오는 편도 계속 나가지 않습니다.')
+                except Exception as e:                            # noqa: BLE001
+                    print('APPROVAL_REMINDER_FAILED: ' + str(e))
                 return None
     key = secrets.token_hex(8)
     request = {'item_id': item_id, 'title': title, 'context': context,
