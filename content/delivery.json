@@ -208,7 +208,9 @@
   },
   "cx101-installment-cash": {
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "pT7CPKXCDp0",
+      "at": "2026-09-21T12:30:51+09:00"
     }
   }
 }
