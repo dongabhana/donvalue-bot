@@ -1,0 +1,71 @@
+name: 쓰레드 단문 발행
+
+# 카드뉴스·릴스와 별개로 짧은 텍스트 글만 올린다. 렌더링이 없어 실행이 짧다.
+#
+# 시각은 인사이트 실측(조회 피크: 토 15~18시, 목 21~24시, 금 15~18시)과
+# 일반적인 출퇴근·점심 시간대를 섞어 잡았다. GitHub cron 은 UTC 기준이고
+# 러너 혼잡도에 따라 수 분~수십 분 늦을 수 있다.
+#
+#   평일(월~금 KST)  08:10 / 12:40 / 21:40
+#   주말(토·일 KST)  10:10 / 15:40 / 21:40
+#
+# content/microposts.yaml 의 enabled 가 false 면 아무것도 올리지 않는다.
+on:
+  schedule:
+    - cron: "10 23 * * 0-4"   # 월~금 08:10 KST
+    - cron: "40 3 * * 1-5"    # 월~금 12:40 KST
+    - cron: "10 1 * * 6,0"    # 토·일 10:10 KST
+    - cron: "40 6 * * 6,0"    # 토·일 15:40 KST
+    - cron: "40 12 * * *"     # 매일 21:40 KST
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "이번 실행에서 낼 글 수"
+        required: false
+        default: "1"
+      dry_run:
+        description: "true 면 올리지 않고 내용만 출력"
+        required: false
+        default: "false"
+
+permissions:
+  contents: write
+
+# 카드뉴스 발행(donvalue-publish)은 승인 대기로 수 시간 붙잡힐 수 있다.
+# 같은 잠금을 쓰면 단문이 그 뒤에 줄을 서게 되므로 따로 둔다.
+concurrency:
+  group: donvalue-micro
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: 의존성 설치
+        run: pip install -r requirements.txt
+
+      - name: 풀 검사 (형식이 깨졌으면 여기서 멈춘다)
+        run: python -c "from src.microposts import load_pool; d=load_pool(); print('posts', len(d['posts']), 'enabled', d.get('enabled'))"
+
+      - name: 발행
+        env:
+          TH_USER_ID: ${{ secrets.TH_USER_ID }}
+          TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          ARGS="--count ${{ github.event.inputs.count || '1' }}"
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            ARGS="$ARGS --dry-run"
+          fi
+          python -m src.microposts $ARGS
