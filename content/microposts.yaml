@@ -7,8 +7,9 @@
 #  4. 해시태그는 넣지 않는다. 쓰레드에서는 태그 나열이 광고처럼 읽힌다.
 #  5. 본문 500자 이하. 3~6줄이 기본.
 #
-# enabled 가 true 가 되기 전까지는 아무것도 올리지 않는다.
-enabled: false
+# enabled 가 false 면 아무것도 올리지 않는다.
+# 태그는 render() 가 본문 끝에 "#태그" 한 개로 붙인다 — 쓰레드는 글당 태그 1개만 유효하다.
+enabled: true
 
 posts:
   - id: mp001-taxi-four
