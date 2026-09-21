@@ -9,6 +9,9 @@ name: 쓰레드 단문 발행
 #   평일(월~금 KST)  08:10 / 12:40 / 21:40
 #   주말(토·일 KST)  10:10 / 15:40 / 21:40
 #
+# 밤 21:40 슬롯만 맞팔용(soft) 글을 낸다. 쓰레드는 글당 태그가 하나뿐이라
+# 콘텐츠 글에 스하리를 걸면 주제 노출을 통째로 버리게 되기 때문이다.
+#
 # content/microposts.yaml 의 enabled 가 false 면 아무것도 올리지 않는다.
 on:
   schedule:
@@ -27,6 +30,10 @@ on:
         description: "true 면 올리지 않고 내용만 출력"
         required: false
         default: "false"
+      track:
+        description: "content = 계산·비교 본편 / soft = 맞팔(스하리)용 (비우면 스케줄 기준)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -63,9 +70,16 @@ jobs:
           TH_ACCESS_TOKEN: ${{ secrets.TH_ACCESS_TOKEN }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SCHEDULE: ${{ github.event.schedule }}
+          TRACK_INPUT: ${{ github.event.inputs.track }}
         run: |
-          ARGS="--count ${{ github.event.inputs.count || '1' }}"
+          # 밤 21:40 KST(= 12:40 UTC) 슬롯만 맞팔용. 나머지는 본편.
+          TRACK=content
+          if [ "$SCHEDULE" = "40 12 * * *" ]; then TRACK=soft; fi
+          if [ -n "$TRACK_INPUT" ]; then TRACK="$TRACK_INPUT"; fi
+          ARGS="--count ${{ github.event.inputs.count || '1' }} --track $TRACK"
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             ARGS="$ARGS --dry-run"
           fi
+          echo "track=$TRACK (schedule=$SCHEDULE)"
           python -m src.microposts $ARGS
