@@ -16,21 +16,26 @@ def item(row,due,ident_override=None):
     ident=ident_override or ident
     slides=[slide(hook,f'{a} vs {b}. 이번 편은 {thr}에서 답이 갈린다.',note,thr,1.8)]
     slides += [slide(t,b,note,thr,3.4 if i<4 else 3.0) for i,(t,b) in enumerate(cards)]
-    real=False
-    sources=[]
-    if real:
-        sources=[{
-          'name':'관세청 해외직구물품 예상세액 조회',
-          'url':CUSTOMS,
-          'scope_start':'자가사용물품 면세기준(금액)',
-          'scope_end':'자가사용물품 면세기준(물품가격 미화150달러) 국가별 환산금액',
-          'required_tokens':['물품가격미화150달러이하','미국은200달러이하','미화150달러초과','공제없이총과세가격'],
-          'offers':['자가사용물품 면세기준']
-        }]
+    # 예전에는 real=False 가 상수로 박혀 있어, specs 에 실제 가격을 넣어도
+    # 전부 '가격 미검증'으로 떨어지고 생성 캡션에서 금액이 지워졌다.
+    # 이제는 specs 행이 출처를 들고 있을 때만 실제 가격 주장으로 승격한다.
+    sources=row.get('sources') or []
+    real=bool(sources)
+    for src in sources:
+        assert src.get('name') and src.get('url'), '출처에는 name 과 url 이 필요하다'
+        assert src.get('checked_at'), '출처에는 확인 기준일(checked_at)이 필요하다'
     asset=ROOT/'assets/covers'/photo
     sha=hashlib.sha256(asset.read_bytes()).hexdigest()
-    caption=f'{hook}\n\n{cards[2][1]}\n\n{note}\n#돈값하나 #비교분석 #분기점'
-    if not real:
+    body_lines=[c[0] for c in cards[:3]]
+    caption=f'{hook}\n\n' + '\n'.join(body_lines) + f'\n\n{note}\n#돈값하나 #비교분석 #분기점'
+    if real:
+        stamp=sources[0]['checked_at']
+        caption=(f'{hook}\n\n' + '\n'.join(body_lines)
+                 + f'\n\n기준일 {stamp} · 출처 ' + ' / '.join(x['name'] for x in sources)
+                 + '\n#돈값하나 #비교분석 #분기점')
+    else:
+        # 확인하지 않은 숫자를 실제 가격처럼 내보내지 않기 위한 안전장치.
+        # 이 치환은 유지한다. 없애면 AI 가 지어낸 금액이 그대로 나간다.
         caption=re.sub(r'\d[\d,.]*\s*만?원','해당 금액',caption)
     evidence=' / '.join(c[1] for c in cards)+(' / 관세청: '+CUSTOMS if real else '')
     return {
@@ -44,7 +49,7 @@ def item(row,due,ident_override=None):
       'threads_text':row.get('threads_text',f'{a} vs {b}.\n\n핵심 분기점은 {thr}. 그 숫자 위와 아래에서 승자가 바뀐다.'),
       'threads_chain':[],'faq':[],'evidence':evidence,
       'verification':{
-        'kind':'threshold_decision_model','checked_at':'2026-09-14',
+        'kind':'threshold_decision_model','checked_at':(sources[0]['checked_at'] if real else row.get('checked_at','2026-09-14')),
         'real_world_price_claim':real,'sources':sources,
         'assumptions':note,'calculation':' / '.join(c[1] for c in cards[:3])
       },
@@ -59,7 +64,10 @@ def item(row,due,ident_override=None):
 def validate(x):
     assert re.fullmatch(r'cx[0-9]{3}-[a-z0-9-]+',x['id']) and x['verified'] is True
     d=datetime.fromisoformat(x['publish_at'])
-    assert d.utcoffset()==timedelta(hours=9) and d.weekday() in (0,2,4,5) and d.hour==20
+    # 발행 시각은 인사이트 실측 피크에 맞춘 두 슬롯만 허용한다.
+    #   월·수 21:20 KST / 금·토 15:30 KST
+    assert d.utcoffset()==timedelta(hours=9) and d.weekday() in (0,2,4,5)
+    assert (d.hour,d.minute) in ((21,20),(15,30),(20,0)), f'허용되지 않은 발행 시각: {d}'
     assert len(x['slides'])==6 and len({s['title'] for s in x['slides'][1:]})==5
     assert x['slides'][0]['title']==x['hook'] and x['threads_chain']==[]
     assert re.search(r'\d',x['slides'][0]['visual']['value'])
