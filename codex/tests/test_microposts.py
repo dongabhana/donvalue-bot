@@ -84,6 +84,65 @@ class PickTests(unittest.TestCase):
         self.assertEqual(microposts.pick(pool(OK), {"mp001-a", "mp002-b"}, 3), [])
 
 
+class TrackTests(unittest.TestCase):
+    """밤 슬롯은 맞팔용, 낮 슬롯은 본편 — 섞이면 주제 노출을 버리게 된다."""
+
+    POOL = {"enabled": True, "posts": [
+        {"id": "c1", "text": "본편1", "topic_tag": "절약"},
+        {"id": "s1", "text": "인사1", "topic_tag": "스하리", "track": "soft"},
+        {"id": "c2", "text": "본편2", "topic_tag": "절약", "track": "content"},
+    ]}
+
+    def test_track_defaults_to_content(self):
+        self.assertEqual(microposts.track_of({"id": "c1"}), "content")
+
+    def test_soft_pick_returns_only_soft(self):
+        got = microposts.pick(self.POOL, set(), 5, "soft")
+        self.assertEqual([p["id"] for p in got], ["s1"])
+
+    def test_content_pick_excludes_soft(self):
+        got = microposts.pick(self.POOL, set(), 5, "content")
+        self.assertEqual([p["id"] for p in got], ["c1", "c2"])
+
+    def test_no_track_returns_everything(self):
+        self.assertEqual(len(microposts.pick(self.POOL, set(), 5)), 3)
+
+    def test_unknown_track_in_pool_is_rejected(self):
+        bad = {"enabled": True, "posts": [{"id": "x", "text": "y", "track": "hype"}]}
+        with patch.object(microposts, "POOL") as p:
+            p.exists.return_value = True
+            p.read_text.return_value = yaml.safe_dump(bad, allow_unicode=True)
+            with self.assertRaises(RuntimeError):
+                microposts.load_pool()
+
+    def test_unknown_track_argument_is_rejected(self):
+        with self.assertRaises(RuntimeError):
+            microposts.run(1, dry_run=True, track="hype")
+
+    def test_exhausted_track_falls_back_instead_of_posting_nothing(self):
+        posted = {"s1"}
+        with (patch.object(microposts, "load_pool", return_value=self.POOL),
+              patch.object(microposts, "load_ledger", return_value=[{"id": "s1"}]),
+              patch("src.publish.publish_threads") as pub):
+            microposts.run(1, dry_run=True, track="soft")
+        pub.assert_not_called()
+        self.assertEqual(microposts.pick(self.POOL, posted, 1, "soft"), [])
+        self.assertTrue(microposts.pick(self.POOL, posted, 1))
+
+
+class ShippedTrackTests(unittest.TestCase):
+    def test_repo_has_both_tracks(self):
+        posts = microposts.load_pool()["posts"]
+        tracks = {microposts.track_of(p) for p in posts}
+        self.assertEqual(tracks, {"content", "soft"})
+
+    def test_soft_posts_use_a_mutual_follow_tag(self):
+        for p in microposts.load_pool()["posts"]:
+            if microposts.track_of(p) == "soft":
+                self.assertIn("스하리", p["topic_tag"],
+                              f"{p['id']} 의 태그가 맞팔 태그가 아닙니다")
+
+
 class RunGuardTests(unittest.TestCase):
     def test_disabled_pool_never_publishes(self):
         with patch.object(microposts, "load_pool", return_value=pool(OK, enabled=False)), \
