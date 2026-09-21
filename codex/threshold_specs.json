@@ -121,14 +121,27 @@
       "threads_text": "택시가 지하철보다 싼 경우, 딱 하나 있음.\n\n서울 중형택시 기본요금 4,800원. 지하철은 1,550원.\n둘이 타면 3,100원 — 택시 문 닫는 순간 이미 짐.\n셋이 타도 4,650원. 여전히 기본요금을 못 넘음.\n\n넷이 타면 6,200원. 여기서 처음으로 택시가 이김.\n대신 3.4km까지만. 그 뒤로는 다시 뒤집힘.\n\n시간요금(30초당 100원)은 뺀 값이라 실제론 더 짧음.\n넷이 꽉 채워서 3km 안쪽으로 타본 적 있음?",
       "sources": [
         {
-          "name": "서울시 물가정보 — 택시 요금",
+          "name": "서울시 물가정보 — 중형택시 요금",
           "url": "https://sftc.seoul.go.kr/seoul/mulga/main/contents.do?menuNo=200023",
-          "checked_at": "2026-09-21"
+          "checked_at": "2026-09-21",
+          "scope_start": "중형택시 요금 상세정보",
+          "scope_end": "심야",
+          "required_tokens": [
+            "4,800",
+            "131m당 100원",
+            "1.6km"
+          ]
         },
         {
           "name": "서울시 물가정보 — 지하철 운임",
           "url": "https://sftc.seoul.go.kr/seoul/mulga/main/contents.do?menuNo=200021",
-          "checked_at": "2026-09-21"
+          "checked_at": "2026-09-21",
+          "scope_start": "지하철 운임 상세정보",
+          "scope_end": "청소년",
+          "required_tokens": [
+            "1,550",
+            "기본요금(10km 이내)"
+          ]
         }
       ]
     },
