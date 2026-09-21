@@ -22,6 +22,7 @@ from tools.pair_telegram import cipher
 ROOT = Path(__file__).resolve().parent.parent
 KST = ZoneInfo('Asia/Seoul')
 STATE = ROOT / 'codex/state.enc'
+ALLOWED_SLOTS = ((20, 0), (21, 20), (15, 30))
 
 
 def canonical(value):
@@ -40,7 +41,9 @@ def validate(item):
     assert due.utcoffset() == timedelta(hours=9)
     # 2026-09-14 월·수·토 → 월·수·금·토. 남은 편을 연내에 다 내려면
     # 주 3회로는 슬롯이 모자라 금요일을 열었다(Claude 트랙은 화·목·일).
-    assert due.weekday() in (0, 2, 4, 5) and due.hour == 20 and due.minute == 0
+    # 2026-09-21 발행 시각을 조회 피크로 옮김(월·수 21:20 / 금·토 15:30).
+    # 허용 시각은 codex/build_threshold_queue.py 의 validate 와 반드시 같아야 한다.
+    assert due.weekday() in (0, 2, 4, 5) and (due.hour, due.minute) in ALLOWED_SLOTS
     assert 2 <= len(item['slides']) <= 10
     assert len(item['caption']) <= 2200
     assert all(0 < len(t) <= 500 for t in [item['threads_text'], *item['threads_chain']])
@@ -58,7 +61,11 @@ def validate(item):
         assert item['slides'][0]['title'] == item['hook']
         assert verification['checked_at']
         if verification['real_world_price_claim']:
-            assert all(s['url'].startswith('https://') and s['offers'] and s['required_tokens'] for s in verification['sources'])
+            # 실제 대조에 쓰이는 건 url·scope_start·scope_end·required_tokens(official_prices.py).
+            # offers(상품별 금액표)는 참고용이라 선택 — 2026-09-21 신규 출처에 없어 엔진이 멈췄다.
+            assert all(s['url'].startswith('https://') and s.get('required_tokens')
+                       and s.get('scope_start') and s.get('scope_end') and s.get('offers', True)
+                       for s in verification['sources'])
 
 
 def eligible(item, record, now):
@@ -216,7 +223,8 @@ class Engine:
         rec={'hash':digest,'manifest':manifest,'asset_commit':git('rev-parse','HEAD'),'review_kind':kind,'decision':'pending','operations':{}}
         self.state['records'][key]=rec; self.save()
         music=('직접 합성한 '+('112' if item.get('music')=='original-playful-112bpm' else '88')+' BPM 리듬, 외부 샘플 없음') if 'video' in manifest else '정지 이미지 캐러셀 · 음원 없음'
-        self.tell(('내일 게시 최종 승인 요청' if real else '사전 미리보기 · 테스트 버튼은 SNS에 게시하지 않습니다')+
+        today=datetime.fromisoformat(item['publish_at']).date()==datetime.now(KST).date()
+        self.tell((('오늘 게시 최종 승인 요청' if today else '내일 게시 최종 승인 요청') if real else '사전 미리보기 · 테스트 버튼은 SNS에 게시하지 않습니다')+
                   '\n주제: '+item['topic']+'\n예정: '+item['publish_at']+'\nInstagram '+item['format']+' / Threads 별도 글\n음원: '+music)
         for path in manifest['cards']:
             self.upload(path)
@@ -393,7 +401,13 @@ class Engine:
         if not eligible(item,rec,now): return
         if not self.price_check(item): return
         manifest=rec['manifest']
-        if fingerprint(item,manifest)!=rec['hash']: raise RuntimeError('Content changed after approval')
+        if fingerprint(item,manifest)!=rec['hash']:
+            # 승인 뒤 원고가 바뀐 편은 이 편만 멈추고 알린다. 예전처럼 예외를 던지면
+            # 엔진 전체가 매 실행 멈춰 다른 편까지 발행이 막힌다.
+            if rec.get('stale_notice')!=rec['hash']:
+                rec['stale_notice']=rec['hash']; self.save()
+                self.tell(item['topic']+'\n승인 뒤 원고가 바뀌어 이 편은 발행하지 않았어요. 새 승인 요청을 확인해주세요.')
+            return
         for path,sha in manifest['sha256'].items():
             if hashlib.sha256((ROOT/path).read_bytes()).hexdigest()!=sha: raise RuntimeError('Media changed after approval')
         repo=os.environ['GITHUB_REPOSITORY']; commit_sha=rec['asset_commit']
@@ -510,7 +524,14 @@ class Engine:
         for item in self.items:
             if not regular_item(item,now): continue
             due=datetime.fromisoformat(item['publish_at'])
-            if now.date()==(due-timedelta(days=1)).date() and now.hour>=20 and not self.state['records'].get(item['id'],{}).get('operations'):
+            rec=self.state['records'].get(item['id'],{})
+            eve=now.date()==(due-timedelta(days=1)).date() and now.hour>=20
+            # 당일에도 유효한 승인이 없으면(승인 전 원고 수정 등) 다시 묻는다.
+            # 승인 즉시 발행 대상이 되며, 무응답이면 발행하지 않는 원칙은 그대로다.
+            valid=(rec.get('decision')=='approved' and rec.get('manifest') is not None
+                   and fingerprint(item,rec['manifest'])==rec.get('hash'))
+            same_day=now.date()==due.date() and not valid
+            if (eve or same_day) and not rec.get('operations'):
                 self.preview(item,real=True)
             rec=self.state['records'].get(item['id'])
             if rec: self.publish(item,rec,now)
