@@ -23,6 +23,9 @@ ROOT = Path(__file__).resolve().parent.parent
 KST = ZoneInfo('Asia/Seoul')
 STATE = ROOT / 'codex/state.enc'
 ALLOWED_SLOTS = ((20, 0), (21, 20), (15, 30))
+# 2026-09-22 소유자 결정: 승인 없이 순번대로 매 슬롯 자동 발행. GPT 트랙 요일·시각(KST).
+AUTO_SLOTS = {0: (21, 20), 2: (21, 20), 4: (15, 30), 5: (15, 30)}
+AUTO_SOURCE = 'owner_auto_daily_2026_09_22'
 
 
 def canonical(value):
@@ -79,6 +82,10 @@ def eligible(item, record, now):
     if record.get('review_kind')=='owner_now':
         from codex.owner_now import authorized_now
         return authorized_now(item,record,now)
+    if record.get('review_kind')=='auto':
+        # 자동 발행 권한은 그 편을 고른 당일에만 유효하다(다음 날 뜬금없이 나가지 않게).
+        return (record.get('decision')=='approved' and record.get('approval_source')==AUTO_SOURCE
+                and record.get('auto_date')==now.date().isoformat())
     if record.get('approval_policy') == 'unified-v2':
         return (record.get('decision') == 'approved'
                 and record.get('review_kind') == 'real'
@@ -88,6 +95,14 @@ def eligible(item, record, now):
     return (record.get('decision') == 'approved' and record.get('review_kind') == 'real'
             and due <= now < due + timedelta(hours=2)
             and datetime.fromisoformat(record['approved_at']).date() == (due-timedelta(days=1)).date())
+
+
+def next_in_line(items, records):
+    """아직 안 나간 편을 원래 순서(publish_at)대로. publish_at 은 이제 '순번'으로만 쓴다."""
+    pool=[i for i in items if not i.get('posted_early_on')
+          and not records.get(i['id'],{}).get('closed')
+          and not records.get(i['id'],{}).get('operations')]
+    return sorted(pool,key=lambda i:i['publish_at'])
 
 
 def regular_item(item, now):
@@ -524,21 +539,40 @@ class Engine:
                 self.preview(item,real=real)
             self.observations()
             return
+        # 2026-09-22부터 텔레그램 승인 없이 순번제 자동 발행. 전날 미리보기는 보내지 않는다.
         for item in self.items:
             if not regular_item(item,now): continue
-            due=datetime.fromisoformat(item['publish_at'])
-            rec=self.state['records'].get(item['id'],{})
-            eve=now.date()==(due-timedelta(days=1)).date() and now.hour>=20
-            # 당일에도 유효한 승인이 없으면(승인 전 원고 수정 등) 다시 묻는다.
-            # 승인 즉시 발행 대상이 되며, 무응답이면 발행하지 않는 원칙은 그대로다.
-            valid=(rec.get('decision')=='approved' and rec.get('manifest') is not None
-                   and fingerprint(item,rec['manifest'])==rec.get('hash'))
-            same_day=now.date()==due.date() and not valid
-            if (eve or same_day) and not rec.get('operations'):
-                self.preview(item,real=True)
             rec=self.state['records'].get(item['id'])
             if rec: self.publish(item,rec,now)
+        self.auto_publish(now)
         self.observations()
+
+    def auto_publish(self, now):
+        """GPT 트랙 슬롯(월·수 21:20 / 금·토 15:30)마다 안 나간 편 중 맨 앞 한 편을 올린다."""
+        slot=AUTO_SLOTS.get(now.weekday())
+        if not slot: return
+        if now < now.replace(hour=slot[0],minute=slot[1],second=0,microsecond=0): return
+        today=now.date().isoformat()
+        records=self.state['records']
+        # 하루 한 편: 오늘 이미 나갔거나 오늘 고른 편이 있으면(재시도는 위 루프가 한다) 끝.
+        if any(r.get('auto_date')==today for r in records.values()): return
+        if any(k=='instagram' and op.get('status')=='done' and str(op.get('at','')).startswith(today)
+               for r in records.values() for k,op in (r.get('operations') or {}).items()):
+            return
+        for item in next_in_line(self.items,records):
+            if not regular_item(item,now): continue
+            if not self.price_check(item): continue   # 공식 가격 불일치 편은 알리고 다음 편으로
+            manifest=render(item,ROOT)
+            commit([ROOT/'codex/assets'/item['id']],'Render Codex media '+item['id'])
+            rec={'hash':fingerprint(item,manifest),'manifest':manifest,'asset_commit':git('rev-parse','HEAD'),
+                 'review_kind':'auto','decision':'approved','approval_source':AUTO_SOURCE,
+                 'auto_date':today,'approved_at':now.isoformat(),'operations':{}}
+            records[item['id']]=rec; self.save()
+            self.publish(item,rec,now)
+            return
+        if self.state.get('queue_empty_notice')!=today:
+            self.state['queue_empty_notice']=today; self.save()
+            self.tell('GPT 트랙에 발행할 편이 남아 있지 않아 오늘 슬롯을 건너뛰었어요. 새 편을 채워야 합니다.')
 
 
 def main():
