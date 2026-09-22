@@ -18,7 +18,13 @@
   python -m src.youtube_run --dry-run          # 영상만 만들어 텔레그램으로 확인
   python -m src.youtube_run --count 3          # 3편 백필
   python -m src.youtube_run --id 004-ott-stack # 특정 편
-  python -m src.youtube_run --auto --count 3   # 정기 따라올리기(보류 스위치 적용)
+  python -m src.youtube_run --auto --count 3   # 정기 따라올리기(보류 스위치 + 하루 상한 적용)
+
+하루 상한 (2026-09-22 추가)
+  정기 실행(--auto)은 20분 간격으로 하루 종일 돈다. 밀린 편이 많을 때 매 실행마다
+  3편씩 올라가면 유튜브 일일 할당량을 오전에 다 태우고 그날 남은 업로드가 전부
+  실패한다. 그래서 --auto 는 오늘 올린 편 수를 delivery.json 에서 세어
+  YT_DAILY_MAX(기본 3)편까지만 올린다. 손으로 돌리는 백필에는 적용하지 않는다.
 
 승인 (2026-09-20 변경)
   유튜브에 올리는 편은 **이미 전날 승인을 거쳐 인스타에 나간 편**뿐이다.
@@ -47,6 +53,9 @@ from src.run import (DELIVERY, KST, POSTED, PREVIEW, QUEUE,  # noqa: E402
                      ROOT, build_caption, deliver_once)
 
 GAP_MIN = int(os.getenv("YT_BACKFILL_GAP_MIN", "5"))
+# 정기 따라올리기(--auto)가 하루에 올릴 수 있는 최대 편수. 유튜브 일일 할당량
+# (기본 10,000 units / 업로드 1건 1,600 units)을 넘지 않게 여유를 둔 값.
+DAILY_MAX = int(os.getenv("YT_DAILY_MAX", "3"))
 
 
 def uploaded_ids() -> set[str]:
@@ -55,6 +64,38 @@ def uploaded_ids() -> set[str]:
     ledger = json.loads(DELIVERY.read_text(encoding="utf-8"))
     return {k for k, ops in ledger.items()
             if ops.get("youtube", {}).get("status") in ("done", "in_flight")}
+
+
+def uploaded_today() -> tuple[int, list[str]]:
+    """오늘(KST) API 로 유튜브에 올린 편 수와 그 id 들.
+
+    왜 필요한가 —
+      따라올리기를 하루 종일 20분 간격으로 돌린다(인스타·쓰레드에 나간 편을
+      같은 날 유튜브에도 올리려는 것). 밀린 편이 많으면 매 실행마다 3편씩
+      계속 올라가, 유튜브 일일 할당량(videos.insert 1건 1,600 units,
+      프로젝트 기본 10,000/일 = 하루 6편 남짓)을 그날 오전에 다 태운다.
+      할당량을 넘기면 그날 남은 업로드가 전부 실패하므로, '하루 몇 편'을
+      크론이 아니라 코드에서 막는다.
+
+      손으로 올린 편(source: manual-upload)은 API 할당량과 무관하므로 세지 않는다.
+    """
+    if not DELIVERY.exists():
+        return 0, []
+    today = datetime.now(KST).strftime("%Y-%m-%d")
+    ids: list[str] = []
+    for key, ops in json.loads(DELIVERY.read_text(encoding="utf-8")).items():
+        y = ops.get("youtube") or {}
+        if y.get("source") == "manual-upload":
+            continue
+        if y.get("status") == "in_flight":
+            # 올리다 끊긴 편. 할당량은 이미 썼을 수 있으니 오늘 몫으로 센다.
+            # 조용히 넘기지 않고 이름을 찍어 둔다(계속 남아 있으면 상한을 깎는다).
+            print(f"[cap] ⚠ {key} 가 in_flight 로 남아 있습니다 — 오늘 몫 1편으로 셉니다")
+            ids.append(key)
+            continue
+        if str(y.get("at", ""))[:10] == today:
+            ids.append(key)
+    return len(ids), ids
 
 
 def posted_ids() -> list[str]:
@@ -275,6 +316,18 @@ def main() -> int:
         if reason:
             print(f"[stop] 유튜브 보류 중 — {reason}")
             return 0
+        # 하루 상한. 20분 간격으로 하루 종일 도는 정기 실행에만 적용한다.
+        # 손으로 돌리는 백필(--id / --count)은 사람이 일부러 누른 것이므로 막지 않는다.
+        used, used_ids = uploaded_today()
+        room = max(0, DAILY_MAX - used)
+        if room <= 0:
+            print(f"[stop] 오늘 이미 {used}편 올렸습니다 (하루 상한 {DAILY_MAX}편) "
+                  f"— {', '.join(used_ids)}. 남은 편은 내일 이어서 올립니다")
+            return 0
+        if args.count > room:
+            print(f"[cap] 이번 실행 {args.count}편 → {room}편으로 줄입니다 "
+                  f"(오늘 {used}편 올림 / 상한 {DAILY_MAX}편)")
+            args.count = room
 
     queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
 
