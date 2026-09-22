@@ -35,6 +35,10 @@ on:
         description: "true 면 영상만 만들어 텔레그램으로 보냄 (업로드 안 함)"
         required: false
         default: "true"
+      redo:
+        description: "true 면 item_id 의 이전 유튜브 기록을 지난 기록으로 옮기고 다시 올림 (심사 전 비공개로 잠긴 편 복구)"
+        required: false
+        default: "false"
       privacy:
         description: "private | unlisted | public — 심사 통과 전에는 private 만 의미 있음"
         required: false
@@ -103,6 +107,7 @@ jobs:
           IN_COUNT: ${{ github.event.inputs.count }}
           IN_ITEM: ${{ github.event.inputs.item_id }}
           IN_DRY: ${{ github.event.inputs.dry_run }}
+          IN_REDO: ${{ github.event.inputs.redo }}
         run: |
           if [ "$EVENT_NAME" = "schedule" ]; then
             # 정기: 보류 스위치 + 하루 상한(YT_DAILY_MAX, 기본 3편)을 코드에서 적용.
@@ -117,6 +122,13 @@ jobs:
           if [ "$IN_DRY" != "false" ]; then
             ARGS="$ARGS --dry-run"
           fi
+          # 잠긴 편 복구: 이전 기록을 지우지 않고 youtube_superseded 로 옮긴 뒤 다시 올린다.
+          if [ "$IN_REDO" = "true" ]; then
+            ARGS="$ARGS --redo"
+          fi
+          # 다시 올리려면 원장을 고쳐 커밋해야 하므로 신원이 필요하다.
+          git config user.name donvalue-bot
+          git config user.email bot@users.noreply.github.com
           python -m src.youtube_run $ARGS
 
       # 영상 + 제목·설명 텍스트를 한 폴더로 받는다. 유튜브에 손으로 올릴 때
