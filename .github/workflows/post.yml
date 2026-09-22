@@ -50,9 +50,9 @@ on:
         required: false
         default: ""
       yt_privacy:
-        description: "유튜브 공개상태 private | unlisted | public (심사 전엔 private 고정)"
+        description: "유튜브 공개상태 private | unlisted | public (2026-09-20 심사 통과 → public 기본)"
         required: false
-        default: "private"
+        default: "public"
 
 permissions:
   contents: write
@@ -112,12 +112,16 @@ jobs:
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}
           YT_REFRESH_TOKEN: ${{ secrets.YT_REFRESH_TOKEN }}
           YOUTUBE_TOKEN_JSON: ${{ secrets.YOUTUBE_TOKEN_JSON }}
-          YT_PRIVACY: ${{ github.event.inputs.yt_privacy || 'private' }}
+          YT_PRIVACY: ${{ github.event.inputs.yt_privacy || 'public' }}
           YT_CATEGORY_ID: "22"
-          # 유튜브 업로드는 youtube-shorts.yml(20분 간격 따라올리기, 공개) 한 곳에서만 한다.
-          # 여기서도 올리면 기본값 private 로 올라가 원장에 done 이 박히고,
-          # 정기 따라올리기가 그 편을 건너뛴다(= 공개 못 하는 편이 생김).
-          YT_AUTO: "0"
+          # 2026-09-22 변경: 인스타·쓰레드와 **같은 자리에서** 유튜브까지 올린다.
+          #   예전에 0 이었던 이유는 여기서 올리면 기본값 private 로 올라가고,
+          #   원장에 done 이 박혀 따라올리기가 그 편을 건너뛰기 때문(= 영영 공개
+          #   못 하는 편이 생김). 9/20 심사 통과 + 위 YT_PRIVACY 기본값 public
+          #   으로 그 조건이 사라졌다. 올린 뒤 실제 공개상태를 다시 조회해
+          #   private 로 잠기면 텔레그램으로 알린다(src/run.py).
+          #   카드뉴스 편(mp4 없음)과 GPT 트랙은 여전히 youtube-shorts.yml 이 따라 올린다.
+          YT_AUTO: "1"
           THEME: ${{ github.event.inputs.theme }}
           SKIP_THREADS: ${{ github.event.inputs.skip_threads }}
         run: |
