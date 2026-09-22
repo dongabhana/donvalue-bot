@@ -80,6 +80,18 @@ def push(tries: int = 5) -> None:
     raise RuntimeError(f"git push 실패(재시도 {tries}회): {last[:400]}")
 
 
+# 2026-09-21 발행 시각을 조회 피크로 옮김 — 월~목 21:20 / 금~일 15:30 (KST).
+# Claude 트랙은 화·목 21:20, 일 15:30 에 나간다. post.yml 크론과 반드시 같아야 한다.
+SLOTS = {0: (21, 20), 1: (21, 20), 2: (21, 20), 3: (21, 20),
+         4: (15, 30), 5: (15, 30), 6: (15, 30)}
+
+
+def slot_for(day: datetime) -> datetime:
+    """그 날의 발행 시각. 예전에는 20:00 이 박혀 있어 승인 예정 시각이 실제 슬롯과 달랐다."""
+    h, m = SLOTS[day.weekday()]
+    return day.replace(hour=h, minute=m, second=0, microsecond=0)
+
+
 def load_posted() -> list[dict]:
     if POSTED.exists():
         return json.loads(POSTED.read_text(encoding="utf-8"))
@@ -235,7 +247,8 @@ def ask_for_tomorrow(item: dict, ig_format: str, paths: list, mp4, body: str,
         item["id"], f"{item['product']} ({ig_format})", body,
         video=mp4, photos=list(paths),
         timeout_min=wait,
-        prompt=(f"{notify.LABEL} · 내일 {publish_date} 20:00 에 이대로 나갑니다.\n"
+        prompt=(f"{notify.LABEL} · 내일 {publish_date} "
+                f"{(context or {}).get('scheduled_at', '')[11:16] or '20:00'} 에 이대로 나갑니다.\n"
                 f"[승인] 을 누르면 내일 자동으로 발행되고, "
                 f"[미루기]를 누르면 다시 승인할 때까지 발행하지 않습니다.\n"
                 "승인이 저장되면 게시 예정 시간을 답장합니다."),
@@ -271,6 +284,13 @@ def run_once(args) -> int:
             print(f"[stop] {item['id']}는 사실 검수가 필요합니다")
             return 1
     else:
+        # 슬롯 발행(post.yml)은 하루 한 편. 공용 수신기가 승인분을 먼저 올렸는데
+        # 슬롯 실행이 다음 편 승인을 '오늘 게시'로 또 요청하던 문제를 막는다.
+        today = datetime.now(KST).date().isoformat()
+        if (not ask_tomorrow and not args.pick and not args.dry_run
+                and any(str(p.get('posted_at', '')).startswith(today) for p in posted)):
+            print('[skip] 오늘은 이미 한 편이 발행됐습니다 → 다음 편은 다음 슬롯에 승인받습니다.')
+            return 0
         item = pick_next(queue, posted_ids, (args.pick or "").lower())
         if item is None:
             return 0
@@ -278,12 +298,18 @@ def run_once(args) -> int:
     # An outstanding immutable review belongs to the single receiver. Do not
     # rerender it or create a second approval window from the scheduled publisher.
     if not args.dry_run and not getattr(args, 'review_key', None) and os.getenv('TELEGRAM_BOT_TOKEN'):
-        from codex.approvals import load_requests, claude_source, validate_request
-        for request in load_requests().values():
+        from codex.approvals import load_requests, claude_source, validate_request, remind
+        for key, request in load_requests().items():
             if (request['item_id'] == item['id'] and
                     request['context']['source_hash'] == claude_source(item, queue.get('cta') or {})):
                 validate_request(request)
-                print('[approval] 기존 승인 / 미루기 버튼을 유지합니다. 공용 수신기가 발행합니다.')
+                # 예전에는 여기서 아무 말 없이 끝나, 승인 버튼을 한 번 놓치면 그 편과
+                # 뒤의 편들이 알림 없이 멈췄다(9/20 미발행 원인). 이제 결정이 안 된
+                # 요청은 이번 슬롯 시각으로 버튼을 다시 보낸다.
+                now = datetime.now(KST)
+                slot = slot_for(now + timedelta(days=1 if ask_tomorrow else 0))
+                result = remind(key, request, slot.isoformat())
+                print('[approval] 기존 승인 요청 처리: ' + result + ' → 공용 수신기가 발행합니다.')
                 return 0
 
     # 편에 brand 가 있으면 그 편만 다른 시리즈 이름으로 나간다
@@ -404,8 +430,7 @@ def run_once(args) -> int:
 
     from codex.approvals import claude_source
     import hashlib
-    intended = (datetime.now(KST) + timedelta(days=1 if ask_tomorrow else 0)).replace(
-        hour=20, minute=0, second=0, microsecond=0)
+    intended = slot_for(datetime.now(KST) + timedelta(days=1 if ask_tomorrow else 0))
     context = {'ig_format': ig_format, 'fingerprint': digest,
                'source_hash': claude_source(item, cta), 'scheduled_at': intended.isoformat(),
                'files': {str(p.relative_to(IMAGES.parent)): hashlib.sha256(p.read_bytes()).hexdigest()
