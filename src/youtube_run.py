@@ -98,6 +98,39 @@ def uploaded_today() -> tuple[int, list[str]]:
     return len(ids), ids
 
 
+def supersede_youtube(item_id: str) -> dict | None:
+    """그 편의 유튜브 기록을 '지난 기록'으로 옮겨 다시 올릴 수 있게 한다.
+
+    왜 필요한가 —
+      구글 심사 통과 전에 API 로 올린 영상은 비공개로 잠기고, 채널 주인이
+      손으로도 공개로 못 바꾼다. 그런데 원장에는 youtube: done 이 박혀 있어
+      따라올리기가 영영 그 편을 건너뛴다 = 공개된 적 없는 편이 조용히 남는다.
+      (실제 사례: cx054-taxi-vs-driver, 2026-09-16 업로드분)
+
+      기록을 지우는 게 아니라 youtube_superseded 로 옮긴다. 옛 영상 id 를
+      남겨 둬야 나중에 '이건 왜 두 번 올라갔나'를 추적할 수 있다.
+      옛 영상 자체는 사람이 유튜브 스튜디오에서 지운다(되돌릴 수 없는 삭제라
+      자동화하지 않는다).
+    """
+    from src.run import DELIVERY as LEDGER, push, sh
+    if not LEDGER.exists():
+        return None
+    ledger = json.loads(LEDGER.read_text(encoding="utf-8"))
+    ops = ledger.get(item_id) or {}
+    old = ops.pop("youtube", None)
+    if not old:
+        return None
+    ops.setdefault("youtube_superseded", []).append(old)
+    ledger[item_id] = ops
+    LEDGER.write_text(json.dumps(ledger, ensure_ascii=False, indent=2), encoding="utf-8")
+    sh("git", "add", str(LEDGER))
+    sh("git", "-c", "user.name=donvalue-bot", "-c", "user.email=bot@users.noreply.github.com",
+       "commit", "-m", f"redo: {item_id}/youtube (이전 {old.get('id')} 는 지난 기록으로)")
+    push()
+    print(f"[redo] {item_id} 의 이전 유튜브 기록({old.get('id')})을 지난 기록으로 옮겼습니다")
+    return old
+
+
 def posted_ids() -> list[str]:
     """인스타에 나간 순서대로. 같은 편이 여러 번 있으면 첫 기록만."""
     if not POSTED.exists():
@@ -309,7 +342,22 @@ def main() -> int:
                     help="올리지 않고 영상만 만들어 텔레그램으로 확인")
     ap.add_argument("--auto", action="store_true",
                     help="정기 따라올리기 — content/youtube_hold.json 보류 중이면 아무것도 안 함")
+    ap.add_argument("--redo", action="store_true",
+                    help="--id 로 지정한 편을 다시 올린다 (심사 전에 올라가 "
+                         "비공개로 잠긴 편 복구용). 이전 기록은 지우지 않고 "
+                         "youtube_superseded 로 옮긴다")
     args = ap.parse_args()
+
+    if args.redo:
+        # 사람이 일부러 누르는 복구 경로다. 정기 실행에서는 쓰지 않는다.
+        if not args.id:
+            print("[stop] --redo 는 --id 와 함께 써야 합니다 (어느 편을 다시 올릴지)")
+            return 1
+        if args.auto:
+            print("[stop] --redo 는 정기 실행(--auto)에서 쓰지 않습니다")
+            return 1
+        if not args.dry_run and supersede_youtube(args.id) is None:
+            print(f"[info] {args.id} 에 옮길 유튜브 기록이 없습니다 — 그냥 올립니다")
 
     if args.auto and not args.dry_run:
         reason = youtube.hold_reason()
