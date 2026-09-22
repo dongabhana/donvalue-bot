@@ -85,6 +85,40 @@ def register(item_id, title, body, video, photos, context):
     return None
 
 
+def remind(key, request, slot):
+    """이미 만든 승인 요청을 이번 슬롯 기준으로 다시 챙긴다. 반환값은 로그용 상태.
+
+    - 발행 완료/진행 중: 아무것도 안 함
+    - 승인됨: 아무것도 안 함(공용 수신기가 예정 시각에 발행)
+    - 미결정·미룸: 승인 버튼을 새로 보내고 예정 시각을 이번 슬롯으로 옮긴다.
+      옛 버튼은 message_id 가 바뀌어 '이전 승인창'으로 처리된다.
+    예전에는 이 경우 아무 말 없이 끝나 9/19~9/21 Claude 트랙이 조용히 멈췄다.
+    """
+    from src import notify
+    from codex.engine import commit
+    rec = state().get('shared_reviews', {}).get(key, {})
+    if rec.get('done') or rec.get('started'):
+        return 'done'
+    if rec.get('decision') == 'approved':
+        return 'approved ' + str(rec.get('scheduled_at'))
+    context = request['context']
+    if slot > context['scheduled_at']:
+        context['scheduled_at'] = slot
+    was = '미뤄 둔' if rec.get('decision') == 'deferred' else '아직 승인하지 않은'
+    message = notify.send_message(
+        '⏳ ' + was + ' 편입니다. 승인해야 나갑니다.\n' + request['title'] +
+        '\n게시 예정: ' + context['scheduled_at'][:16].replace('T', ' ') +
+        '\n아래 버튼만 유효해요(이전 메시지 버튼은 만료).',
+        buttons=[[{'text': '승인', 'callback_data': f'v|{key}|a'},
+                  {'text': '미루기', 'callback_data': f'v|{key}|h'}]])
+    request['message_id'] = message['message_id']
+    path = REQUESTS / (key + '.enc')
+    crypt = cipher(os.environ['TELEGRAM_BOT_TOKEN'])
+    path.write_bytes(crypt.encrypt(json.dumps(request, ensure_ascii=False).encode()))
+    commit([path], 'Re-send approval buttons ' + request['item_id'])
+    return 'reminded'
+
+
 def schedule(original, now):
     return max(datetime.fromisoformat(original), now + timedelta(minutes=1)).isoformat()
 
