@@ -212,5 +212,10 @@
       "id": "pT7CPKXCDp0",
       "at": "2026-09-21T12:30:51+09:00"
     }
+  },
+  "cx103-taxi-transit": {
+    "youtube": {
+      "status": "in_flight"
+    }
   }
 }
