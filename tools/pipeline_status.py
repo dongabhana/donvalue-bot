@@ -55,6 +55,35 @@ GPT_SLOTS = {0: '21:20', 2: '21:20', 4: '15:30', 5: '15:30'}    # 월·수·금�
 CLAUDE_SLOTS = {1: '21:20', 3: '21:20', 6: '15:30'}            # 화·목·일
 
 
+def youtube_section(delivery, today, today_posted):
+    """점검표의 유튜브 칸. (줄 목록, 경고 목록) 을 돌려준다.
+
+    왜 따로 있나 —
+      유튜브는 content/delivery.json 한 곳에만 기록된다. 예전 점검표는
+      인스타·쓰레드만 봐서, 인스타에는 나갔는데 유튜브만 빠진 날을
+      '이상 없음'으로 넘겼다. 2026-09-22 부터 같은 날 세 곳에 올리므로
+      유튜브가 빠졌는지를 여기서 본다. 회귀 테스트 codex/tests/test_status_youtube.py
+    """
+    done_today = sorted((ops['youtube']['at'][11:16], key)
+                        for key, ops in delivery.items()
+                        if (ops.get('youtube') or {}).get('status') == 'done'
+                        and str(ops['youtube'].get('at', '')).startswith(today))
+    lines = ['[유튜브]'] + ([f'{t} {k} ✅' for t, k in done_today] or ['오늘 올라간 편 없음'])
+
+    warn = []
+    # in_flight 는 따라올리기가 건너뛴다. 사람이 안 보면 영영 안 올라간다.
+    stuck = sorted(k for k, ops in delivery.items()
+                   if (ops.get('youtube') or {}).get('status') == 'in_flight')
+    if stuck:
+        warn.append('유튜브 업로드 중단됨: ' + ', '.join(stuck))
+    # 오늘 인스타에 나간 편은 20분 안에 유튜브로 따라 올라가야 한다.
+    pending = sorted(k for k in today_posted
+                     if (delivery.get(k, {}).get('youtube') or {}).get('status') != 'done')
+    if pending:
+        warn.append('유튜브 미게시: ' + ', '.join(pending))
+    return lines, warn
+
+
 def daily_summary(now=None):
     """매일 밤 텔레그램으로 보내는 한 장짜리 점검표. 조용한 실패를 없애는 게 목적.
 
@@ -95,6 +124,13 @@ def daily_summary(now=None):
     for key, rec in records.items():
         if any(op.get('status') in ('needs_review', 'in_flight') for op in (rec.get('operations') or {}).values()):
             warn.append(key + ' 게시 단계 확인 필요')
+
+    delivery = json.loads((ROOT / 'content/delivery.json').read_text(encoding='utf-8'))
+    yt_lines, yt_warn = youtube_section(
+        delivery, today.isoformat(),
+        {k for _, k in gpt_today} | {k for _, k in claude_today})
+    lines += yt_lines
+    warn += yt_warn
 
     lines.append('[내일 예정]')
     if tomorrow.weekday() in GPT_SLOTS:
