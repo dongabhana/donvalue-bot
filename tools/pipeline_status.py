@@ -51,74 +51,64 @@ def main():
     print('== 기타: offset', st.get('offset'), '/ 의견', len(st.get('feedback', [])), '건')
 
 
+GPT_SLOTS = {0: '21:20', 2: '21:20', 4: '15:30', 5: '15:30'}    # 월·수·금·토
+CLAUDE_SLOTS = {1: '21:20', 3: '21:20', 6: '15:30'}            # 화·목·일
+
+
 def daily_summary(now=None):
-    """매일 밤 텔레그램으로 보내는 한 장짜리 점검표. 조용한 실패를 없애는 게 목적."""
+    """매일 밤 텔레그램으로 보내는 한 장짜리 점검표. 조용한 실패를 없애는 게 목적.
+
+    2026-09-22부터 두 트랙 모두 승인 없이 순번대로 매일 한 편씩 나간다.
+    그래서 '오늘 슬롯에 실제로 나갔는지', '내일 무엇이 나갈지', '몇 편 남았는지'만 본다.
+    """
     from datetime import datetime, timedelta
     from zoneinfo import ZoneInfo
-    kst = ZoneInfo('Asia/Seoul')
-    now = now or datetime.now(kst)
+    import yaml
+    from codex.engine import next_in_line
+    now = now or datetime.now(ZoneInfo('Asia/Seoul'))
+    today, tomorrow = now.date(), now.date() + timedelta(days=1)
     crypt = cipher(os.environ['TELEGRAM_BOT_TOKEN'])
     st = json.loads(crypt.decrypt((ROOT / 'codex/state.enc').read_bytes()))
+    records = st.get('records', {})
     items = json.loads((ROOT / 'codex/content.json').read_text())['items']
-    reqs = {p.stem: json.loads(crypt.decrypt(p.read_bytes()))
-            for p in (ROOT / 'content/reviews').glob('*.enc')}
-    shared = st.get('shared_reviews', {})
     posted = json.loads((ROOT / 'content/posted.json').read_text(encoding='utf-8'))
-    lines, warn = ['📋 돈값하나 점검 ' + now.strftime('%m/%d %H:%M')], []
-    for day, label in ((now.date(), '오늘'), (now.date() + timedelta(days=1), '내일')):
-        rows = []
-        for it in items:
-            due = datetime.fromisoformat(it['publish_at'])
-            if due.date() != day or it.get('posted_early_on'):
-                continue
-            rec = st.get('records', {}).get(it['id'], {})
-            ops = rec.get('operations', {})
-            if all(ops.get(k, {}).get('status') == 'done' for k in ('instagram', 'threads')):
-                state_ = '✅ 게시 완료'
-            elif any(o.get('status') == 'needs_review' for o in ops.values()):
-                state_ = '⚠ 게시 확인 필요'; warn.append(it['id'])
-            elif rec.get('decision') == 'approved':
-                state_ = '승인됨'
-            elif rec.get('message_id'):
-                state_ = '승인 대기(텔레그램 버튼)'
-            else:
-                state_ = '승인 요청 전(전날 저녁에 옴)'
-            if now > due and '완료' not in state_:
-                state_ += ' ⚠ 예정 시각 지남·미게시'; warn.append(it['id'])
-            rows.append(f"GPT {due:%H:%M} {it['id']} — {state_}")
-        for key, req in reqs.items():
-            when = datetime.fromisoformat(req['context']['scheduled_at'])
-            if when.date() != day:
-                continue
-            rec = shared.get(key, {})
-            if rec.get('done'):
-                state_ = '✅ 게시 완료'
-            elif rec.get('needs_review'):
-                state_ = '⚠ 게시 확인 필요'; warn.append(req['item_id'])
-            elif rec.get('decision') == 'approved':
-                state_ = '승인됨'
-            else:
-                state_ = '승인 대기(텔레그램 버튼)'
-            if now > when and '완료' not in state_:
-                state_ += ' ⚠ 예정 시각 지남·미게시'; warn.append(req['item_id'])
-            rows.append(f"Claude {when:%H:%M} {req['item_id']} — {state_}")
-        if label == '오늘':
-            for p in posted:
-                if str(p.get('posted_at', '')).startswith(day.isoformat()):
-                    rows.append(f"Claude {p['posted_at'][11:16]} {p['id']} — ✅ 게시 완료")
-        # Claude 트랙 요일(화·목·일)인데 그날 편이 하나도 안 잡혀 있으면 경고
-        if day.weekday() in (1, 3, 6) and not any(r.startswith('Claude') for r in rows):
-            rows.append('Claude — ⚠ 이 날 편이 잡혀 있지 않음(전날 21:00 승인 요청 확인)')
-            if label == '오늘':
-                warn.append('Claude 트랙 ' + day.isoformat())
-        lines.append(f'[{label}]')
-        lines += sorted(set(rows)) or ['예정된 편 없음']
-    waiting = [r['item_id'] for k, r in reqs.items()
-               if not shared.get(k, {}).get('decision') and not shared.get(k, {}).get('done')]
-    if waiting:
-        lines.append('⏳ 승인 대기: ' + ', '.join(waiting))
+    queue = yaml.safe_load((ROOT / 'content/queue.yaml').read_text(encoding='utf-8'))
+    posted_ids = {p['id'] for p in posted}
+    claude_left = [i['id'] for i in queue['items'] if i['id'] not in posted_ids and i.get('verified')]
+    gpt_left = [i['id'] for i in next_in_line(items, records)]
+
+    gpt_today = sorted((op['at'][11:16], key) for key, rec in records.items()
+                       for name, op in (rec.get('operations') or {}).items()
+                       if name == 'instagram' and op.get('status') == 'done'
+                       and str(op.get('at', '')).startswith(today.isoformat()))
+    claude_today = sorted((p['posted_at'][11:16], p['id']) for p in posted
+                          if str(p.get('posted_at', '')).startswith(today.isoformat()))
+    warn = []
+    lines = ['📋 돈값하나 점검 ' + now.strftime('%m/%d %H:%M'), '[오늘 게시]']
+    lines += [f'GPT {t} {k} ✅' for t, k in gpt_today] + [f'Claude {t} {k} ✅' for t, k in claude_today]
+    if not gpt_today and not claude_today:
+        lines.append('없음')
+    for track, slots, done in (('GPT', GPT_SLOTS, gpt_today), ('Claude', CLAUDE_SLOTS, claude_today)):
+        hm = slots.get(today.weekday())
+        if hm and now.strftime('%H:%M') > hm and not done:
+            warn.append(f'{track} 오늘 {hm} 슬롯 미게시')
+    for key, rec in records.items():
+        if any(op.get('status') in ('needs_review', 'in_flight') for op in (rec.get('operations') or {}).values()):
+            warn.append(key + ' 게시 단계 확인 필요')
+
+    lines.append('[내일 예정]')
+    if tomorrow.weekday() in GPT_SLOTS:
+        lines.append(f'GPT {GPT_SLOTS[tomorrow.weekday()]} {(gpt_left or ["없음"])[0]}')
+    if tomorrow.weekday() in CLAUDE_SLOTS:
+        lines.append(f'Claude {CLAUDE_SLOTS[tomorrow.weekday()]} {(claude_left or ["없음"])[0]}')
+    lines.append(f'[남은 편] GPT {len(gpt_left)}편 · Claude {len(claude_left)}편')
+    for track, left in (('GPT', gpt_left), ('Claude', claude_left)):
+        if len(left) < 6:
+            warn.append(f'{track} 남은 편 {len(left)}편 — 채워야 함')
     if warn:
-        lines.append('⚠ 확인 필요: ' + ', '.join(sorted(set(warn))))
+        lines.append('⚠ 확인 필요: ' + ' / '.join(warn))
+    else:
+        lines.append('이상 없음')
     return '\n'.join(lines)
 
 
