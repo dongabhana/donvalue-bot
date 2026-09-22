@@ -307,11 +307,24 @@ def run_once(args) -> int:
 
     # An outstanding immutable review belongs to the single receiver. Do not
     # rerender it or create a second approval window from the scheduled publisher.
+    # 2026-09-22: 승인을 쓰지 않는 운영(APPROVAL_REQUIRED=0)에서는 남아 있는
+    # 승인 요청이 발행을 막으면 안 된다. 예전에는 요청이 하나라도 남아 있으면
+    # 이 자리에서 무조건 return 0 이라, 버튼을 한 번 놓친 편 뒤로 트랙 전체가
+    # 조용히 멈췄다 (9/20 일요일 미발행의 실제 원인 — 006-car-tco 요청이
+    # 9/19 부터 미결정으로 남아 매 슬롯이 '알림만 보내고 종료'였다).
+    approval_on = os.getenv('APPROVAL_REQUIRED', '1') == '1'
     if not args.dry_run and not getattr(args, 'review_key', None) and os.getenv('TELEGRAM_BOT_TOKEN'):
-        from codex.approvals import load_requests, claude_source, validate_request, remind
+        from codex.approvals import (load_requests, claude_source, validate_request,
+                                     remind, discard)
         for key, request in load_requests().items():
             if (request['item_id'] == item['id'] and
                     request['context']['source_hash'] == claude_source(item, queue.get('cta') or {})):
+                if not approval_on:
+                    # 지금 이 실행에서 발행한다. 남은 요청은 지운다 —
+                    # 남겨두면 나중에 옛 버튼을 누르는 순간 같은 편이 또 나간다.
+                    discard(key, item['id'])
+                    print('[approval] 승인 없이 발행 설정 → 남은 승인 요청을 정리하고 계속합니다')
+                    break
                 validate_request(request)
                 # 예전에는 여기서 아무 말 없이 끝나, 승인 버튼을 한 번 놓치면 그 편과
                 # 뒤의 편들이 알림 없이 멈췄다(9/20 미발행 원인). 이제 결정이 안 된
