@@ -96,5 +96,18 @@
       "threads_chain": "18151269925534330,18097447013436821"
     },
     "errors": []
+  },
+  {
+    "id": "006-car-tco",
+    "product": "차 유지비",
+    "posted_at": "2026-09-22T14:41:57+09:00",
+    "results": {
+      "instagram_reel": "17972507835138342",
+      "instagram_reel_comment": "18627800347061592",
+      "youtube": "9Pny4Z0ItYo",
+      "threads": "18108926780335834",
+      "threads_chain": "18142192336648406,18113091955832737"
+    },
+    "errors": []
   }
 ]
