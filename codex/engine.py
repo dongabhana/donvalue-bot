@@ -76,6 +76,9 @@ def eligible(item, record, now):
     if record.get('review_kind')=='owner_chat_once':
         from codex.today_once import authorized_now
         return authorized_now(item,record,now)
+    if record.get('review_kind')=='owner_now':
+        from codex.owner_now import authorized_now
+        return authorized_now(item,record,now)
     if record.get('approval_policy') == 'unified-v2':
         return (record.get('decision') == 'approved'
                 and record.get('review_kind') == 'real'
