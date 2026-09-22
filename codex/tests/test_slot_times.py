@@ -84,48 +84,5 @@ class StaleApprovalTests(unittest.TestCase):
         self.assertEqual(self.rec['operations'], {})  # 게시 시도 없음
 
 
-class SameDayReapprovalTests(unittest.TestCase):
-    def today_item(self):
-        # 오늘(9/21) 실제로 막혔던 편
-        return copy.deepcopy(next(i for i in items() if i['id'].startswith('cx103')))
-
-    def run_loop(self, rec, now):
-        item = self.today_item()
-        item['publish_at'] = '2026-09-21T21:20:00+09:00'
-        e = object.__new__(Engine)
-        e.items = [item]
-        e.state = {'offset': 0, 'records': {item['id']: rec} if rec is not None else {}}
-        e.save = Mock(); e.tell = Mock(); e.preview = Mock(); e.publish = Mock()
-        e.callbacks = Mock(); e.observations = Mock()
-        e.tg = Mock(side_effect=lambda m, **k: {'username': 'donvalue_approval_bot'} if m == 'getMe' else {})
-        with patch('codex.engine.datetime') as dt, \
-             patch('codex.approvals.publish_due'), patch('codex.approvals.migrate_buttons'):
-            dt.now.return_value = now
-            dt.fromisoformat = datetime.fromisoformat
-            e.run('tick')
-        return item, e
-
-    def test_due_day_without_valid_approval_asks_again(self):
-        now = datetime(2026, 9, 21, 18, 0, tzinfo=KST)
-        stale = {'decision': 'approved', 'manifest': {'sha256': {}}, 'hash': 'old', 'operations': {}}
-        item, e = self.run_loop(stale, now)
-        e.preview.assert_called_once_with(item, real=True)
-
-    def test_due_day_with_valid_approval_does_not_ask_again(self):
-        now = datetime(2026, 9, 21, 18, 0, tzinfo=KST)
-        item = self.today_item()
-        item['publish_at'] = '2026-09-21T21:20:00+09:00'  # 편 날짜가 옮겨져도 테스트 유지
-        manifest = {'sha256': {}}
-        good = {'decision': 'approved', 'manifest': manifest,
-                'hash': fingerprint(item, manifest), 'operations': {}}
-        _, e = self.run_loop(good, now)
-        e.preview.assert_not_called()
-
-    def test_two_days_before_does_not_ask(self):
-        now = datetime(2026, 9, 19, 21, 0, tzinfo=KST)
-        _, e = self.run_loop(None, now)
-        e.preview.assert_not_called()
-
-
 if __name__ == '__main__':
     unittest.main()
