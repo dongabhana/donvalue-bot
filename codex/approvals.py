@@ -119,6 +119,24 @@ def remind(key, request, slot):
     return 'reminded'
 
 
+def discard(key, note):
+    """남은 승인 요청 하나를 지운다.
+
+    왜 필요한가 —
+      승인 없이 순번대로 발행하도록 바뀐 뒤에도(APPROVAL_REQUIRED=0),
+      예전에 만들어 둔 승인 요청이 남아 있으면 발행기가 그 자리에서 멈췄다.
+      지금 바로 발행할 것이므로 요청을 지운다. 지우지 않으면 나중에 누군가
+      옛 버튼을 누르는 순간 같은 편이 한 번 더 나간다.
+    """
+    from codex.engine import commit
+    path = REQUESTS / (key + '.enc')
+    if not path.exists():
+        return False
+    path.unlink()
+    commit([path], 'Discard stale approval request: ' + note)
+    return True
+
+
 def schedule(original, now):
     return max(datetime.fromisoformat(original), now + timedelta(minutes=1)).isoformat()
 
