@@ -124,6 +124,16 @@ def deliver_once(item_id: str, key: str, action):
     return result
 
 
+def _tell_youtube(text: str) -> None:
+    """유튜브 쪽 경고를 텔레그램으로. 통보 실패가 발행을 깨뜨리지는 않게 한다."""
+    if not notify.enabled():
+        return
+    try:
+        notify.send_message(text)
+    except Exception as e:                                        # noqa: BLE001
+        print(f"[telegram] 전송 실패: {e}")
+
+
 def pick_next(queue: dict, posted_ids: set[str], only: str = "") -> dict | None:
     """다음 발행분을 고른다.
 
@@ -570,10 +580,33 @@ def run_once(args) -> int:
             vid = deliver_once(item["id"], "youtube", lambda: youtube.publish_short(
                 item, mp4, build_caption(item, cta), handle, h_yt))
             results["youtube"] = vid
-            privacy = os.getenv("YT_PRIVACY", "private")
-            print(f"[youtube] 발행 완료 {youtube.watch_url(vid)} (공개상태 {privacy})")
+            privacy = youtube.resolve_privacy()
+            url = youtube.watch_url(vid)
+            print(f"[youtube] 발행 완료 {url} (요청한 공개상태 {privacy})")
             if privacy != "public":
-                print("[youtube] ※ 아직 비공개입니다. 심사 통과 후 YT_PRIVACY=public 으로 바꾸세요.")
+                print("[youtube] ※ 요청한 공개상태가 public 이 아닙니다 "
+                      "(YT_PRIVACY 확인).")
+            # 업로드 응답만 믿지 않는다. 채널에서 실제 공개상태를 다시 읽는다.
+            # 심사가 다시 막히면 public 으로 올려도 private 로 잠기는데,
+            # 원장에는 done 이 박혀 따라올리기가 그 편을 건너뛴다 → 조용히
+            # '영영 공개 못 하는 편'이 된다. 그 상태를 반드시 사람에게 알린다.
+            try:
+                status = youtube.video_status(vid)
+                actual = status.get("privacyStatus")
+                print(f"[verify] 실제 공개상태={actual} "
+                      f"업로드상태={status.get('uploadStatus')}")
+                if actual != privacy:
+                    errors.append(
+                        f"youtube_privacy: 요청 {privacy} → 실제 {actual}")
+                    _tell_youtube(
+                        f"⚠ 유튜브 공개상태 불일치\n{item['product']} <{item['id']}>\n"
+                        f"요청 {privacy} → 실제 {actual}\n{url}\n"
+                        "심사 상태를 확인해주세요.")
+            except Exception as e:                                # noqa: BLE001
+                errors.append(f"youtube_verify: {e}")
+                print(f"[verify] 상태 조회 실패: {e}")
+                _tell_youtube(f"⚠ 유튜브 업로드 후 확인 실패\n"
+                              f"{item['product']} <{item['id']}>\n{url}\n{e}")
         except Exception as e:                                    # noqa: BLE001
             errors.append(f"youtube: {e}")
             print(f"[youtube] 실패: {e}")
