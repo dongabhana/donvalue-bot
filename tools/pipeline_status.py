@@ -51,5 +51,82 @@ def main():
     print('== 기타: offset', st.get('offset'), '/ 의견', len(st.get('feedback', [])), '건')
 
 
+def daily_summary(now=None):
+    """매일 밤 텔레그램으로 보내는 한 장짜리 점검표. 조용한 실패를 없애는 게 목적."""
+    from datetime import datetime, timedelta
+    from zoneinfo import ZoneInfo
+    kst = ZoneInfo('Asia/Seoul')
+    now = now or datetime.now(kst)
+    crypt = cipher(os.environ['TELEGRAM_BOT_TOKEN'])
+    st = json.loads(crypt.decrypt((ROOT / 'codex/state.enc').read_bytes()))
+    items = json.loads((ROOT / 'codex/content.json').read_text())['items']
+    reqs = {p.stem: json.loads(crypt.decrypt(p.read_bytes()))
+            for p in (ROOT / 'content/reviews').glob('*.enc')}
+    shared = st.get('shared_reviews', {})
+    posted = json.loads((ROOT / 'content/posted.json').read_text(encoding='utf-8'))
+    lines, warn = ['📋 돈값하나 점검 ' + now.strftime('%m/%d %H:%M')], []
+    for day, label in ((now.date(), '오늘'), (now.date() + timedelta(days=1), '내일')):
+        rows = []
+        for it in items:
+            due = datetime.fromisoformat(it['publish_at'])
+            if due.date() != day or it.get('posted_early_on'):
+                continue
+            rec = st.get('records', {}).get(it['id'], {})
+            ops = rec.get('operations', {})
+            if all(ops.get(k, {}).get('status') == 'done' for k in ('instagram', 'threads')):
+                state_ = '✅ 게시 완료'
+            elif any(o.get('status') == 'needs_review' for o in ops.values()):
+                state_ = '⚠ 게시 확인 필요'; warn.append(it['id'])
+            elif rec.get('decision') == 'approved':
+                state_ = '승인됨'
+            elif rec.get('message_id'):
+                state_ = '승인 대기(텔레그램 버튼)'
+            else:
+                state_ = '승인 요청 전(전날 저녁에 옴)'
+            if now > due and '완료' not in state_:
+                state_ += ' ⚠ 예정 시각 지남·미게시'; warn.append(it['id'])
+            rows.append(f"GPT {due:%H:%M} {it['id']} — {state_}")
+        for key, req in reqs.items():
+            when = datetime.fromisoformat(req['context']['scheduled_at'])
+            if when.date() != day:
+                continue
+            rec = shared.get(key, {})
+            if rec.get('done'):
+                state_ = '✅ 게시 완료'
+            elif rec.get('needs_review'):
+                state_ = '⚠ 게시 확인 필요'; warn.append(req['item_id'])
+            elif rec.get('decision') == 'approved':
+                state_ = '승인됨'
+            else:
+                state_ = '승인 대기(텔레그램 버튼)'
+            if now > when and '완료' not in state_:
+                state_ += ' ⚠ 예정 시각 지남·미게시'; warn.append(req['item_id'])
+            rows.append(f"Claude {when:%H:%M} {req['item_id']} — {state_}")
+        if label == '오늘':
+            for p in posted:
+                if str(p.get('posted_at', '')).startswith(day.isoformat()):
+                    rows.append(f"Claude {p['posted_at'][11:16]} {p['id']} — ✅ 게시 완료")
+        # Claude 트랙 요일(화·목·일)인데 그날 편이 하나도 안 잡혀 있으면 경고
+        if day.weekday() in (1, 3, 6) and not any(r.startswith('Claude') for r in rows):
+            rows.append('Claude — ⚠ 이 날 편이 잡혀 있지 않음(전날 21:00 승인 요청 확인)')
+            if label == '오늘':
+                warn.append('Claude 트랙 ' + day.isoformat())
+        lines.append(f'[{label}]')
+        lines += sorted(set(rows)) or ['예정된 편 없음']
+    waiting = [r['item_id'] for k, r in reqs.items()
+               if not shared.get(k, {}).get('decision') and not shared.get(k, {}).get('done')]
+    if waiting:
+        lines.append('⏳ 승인 대기: ' + ', '.join(waiting))
+    if warn:
+        lines.append('⚠ 확인 필요: ' + ', '.join(sorted(set(warn))))
+    return '\n'.join(lines)
+
+
 if __name__ == '__main__':
-    main()
+    if '--notify' in sys.argv:
+        from src import notify
+        text = daily_summary()
+        print(text)
+        notify.send_message(text)
+    else:
+        main()
