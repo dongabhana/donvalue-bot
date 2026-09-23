@@ -256,5 +256,10 @@
       ],
       "at": "2026-09-22T14:41:56+09:00"
     }
+  },
+  "cx104-self-full-gas": {
+    "youtube": {
+      "status": "in_flight"
+    }
   }
 }
