@@ -1,0 +1,24 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/01.jpg",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/02.jpg",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/03.jpg",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/04.jpg",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/05.jpg",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "video": "codex/assets/cx104-self-full-gas/57011e6ad8657e39/reel.mp4",
+  "duration_seconds": 18.4,
+  "opening_seconds": 1.8,
+  "sha256": {
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/01.jpg": "c7c45c57837f42a63d1e7347851973a6406cb1041332e5073d2270a6e7fceb8e",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/02.jpg": "49d7c9ca5d4c62387486833ff859d4ef2ce2ed83f50002b05389764e33a7074e",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/03.jpg": "104c95776353b1085e1a956d618b0111314990fa8a82f19c3982b1e6408ad33d",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/04.jpg": "59bdb35dddd858e80d2604b374015e407d4da89783b540925bfb0140b8924f90",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/05.jpg": "bb481e05e3b9a70c01ea3829ab6c10671b5b05095b2d5a53542d373d354a65b7",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/06.jpg": "1409199741f090d4208494a6718d58552064ca8e895b26db3281bacdf2593c96",
+    "codex/assets/cx104-self-full-gas/57011e6ad8657e39/reel.mp4": "1e4cf60b467ccde5f2cbfe4cf9545a2ddc8d0ca783e463b1e06c5c0e4924e2ae"
+  }
+}
