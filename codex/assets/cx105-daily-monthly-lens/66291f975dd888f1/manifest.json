@@ -1,0 +1,20 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/01.jpg",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/02.jpg",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/03.jpg",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/04.jpg",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/05.jpg",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "sha256": {
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/01.jpg": "8d43a9a826b301b033ec3f90a8fa95fd52f74616c2d9417a90622a7b58a205c9",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/02.jpg": "a45173444a004f6f9b22614457b3312c6dd9f3e6eabcb96b30ffbf670b687c6c",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/03.jpg": "626a549473446407be47cae6eea5cb249dcab0c9a0a82f8804238fb3b9881372",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/04.jpg": "3aca3f7ba850dbc3fdbc91019297b8c4e9713a29a382e14cdb28b0f5358afbff",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/05.jpg": "3dbda3f2dfb1fc114d4b335a596cbfaf2588c41fdbeac22fa9e50e4189f3cb51",
+    "codex/assets/cx105-daily-monthly-lens/66291f975dd888f1/06.jpg": "7cb11c69dc978155d34053c86abd59451e07e77cfef6949013debb8b425f1cae"
+  }
+}
