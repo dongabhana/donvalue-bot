@@ -1,0 +1,24 @@
+{
+  "renderer": "money-editorial-v4-comparison",
+  "cards": [
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/01.jpg",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/02.jpg",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/03.jpg",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/04.jpg",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/05.jpg",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/06.jpg"
+  ],
+  "music": "original-playful-112bpm",
+  "video": "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/reel.mp4",
+  "duration_seconds": 18.4,
+  "opening_seconds": 1.8,
+  "sha256": {
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/01.jpg": "9607573009001e532cd03e106c3c1cd496d50f7c24c165028d29dfec8062c859",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/02.jpg": "72cf66eb8cb980b6b9fdbbf8af63c46facfde4ad4e447fc12983f0fb8bd74219",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/03.jpg": "2497862ddfbb04e7452cc93456696d7de36b4e55198020f497fc2f4509edb8e9",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/04.jpg": "7ae91c2baecbc4b86cb3eae66be80aeea2e3bf3cc8666e11e1634490a6547681",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/05.jpg": "1a0bc87981ebec9dfd4ec11479b9fcfe85da8b0c85de75f4789bd43ea6e353cd",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/06.jpg": "d80111edbe0a1167a6188e7857245aac3060cbf51183e085843e2af12975e76e",
+    "codex/assets/cx106-refurb-new/26c9e8a0134ac2ed/reel.mp4": "5329b8767ea84e33b2b02b98a1177f95e40b8016cba428324c077e2bf6e877fa"
+  }
+}
