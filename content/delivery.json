@@ -310,7 +310,9 @@
   },
   "010-coffee": {
     "instagram": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17937419010371270",
+      "at": "2026-09-27T15:40:55+09:00"
     }
   }
 }
