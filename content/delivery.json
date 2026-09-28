@@ -340,7 +340,9 @@
   },
   "cx107-filter-service": {
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "3MZ0ujpUcW4",
+      "at": "2026-09-28T21:57:54+09:00"
     }
   }
 }
