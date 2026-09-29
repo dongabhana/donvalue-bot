@@ -51,8 +51,15 @@ def main():
     print('== 기타: offset', st.get('offset'), '/ 의견', len(st.get('feedback', [])), '건')
 
 
-GPT_SLOTS = {0: '21:20', 2: '21:20', 4: '15:30', 5: '15:30'}    # 월·수·금·토
-CLAUDE_SLOTS = {1: '21:20', 3: '21:20', 6: '15:30'}            # 화·목·일
+GPT_SLOTS = {0: '21:20', 2: '21:20', 4: '15:30', 5: '15:30'}    # 월·수·금·토 (자동 발행 켤 때만)
+# 2026-09-29: 한 파이프라인으로 통합 — Claude 트랙(src/run.py)이 매일 한 편.
+CLAUDE_SLOTS = {0: '21:20', 1: '21:20', 2: '21:20', 3: '21:20',
+                4: '15:30', 5: '15:30', 6: '15:30'}
+
+
+def gpt_slots():
+    from codex.engine import auto_enabled
+    return GPT_SLOTS if auto_enabled() else {}
 
 
 def youtube_section(delivery, today, today_posted):
@@ -103,8 +110,13 @@ def daily_summary(now=None):
     posted = json.loads((ROOT / 'content/posted.json').read_text(encoding='utf-8'))
     queue = yaml.safe_load((ROOT / 'content/queue.yaml').read_text(encoding='utf-8'))
     posted_ids = {p['id'] for p in posted}
-    claude_left = [i['id'] for i in queue['items'] if i['id'] not in posted_ids and i.get('verified')]
-    gpt_left = [i['id'] for i in next_in_line(items, records)]
+    from src.photo_covers import available as has_cover
+    claude_left = [i['id'] for i in queue['items'] if i['id'] not in posted_ids
+                   and i.get('verified') and not i.get('hold')]
+    # 표지(assets/covers/<id>.editorial-v3.jpg)가 없는 편은 발행되지 않는다(2026-09-29)
+    claude_ready = [i for i in claude_left if has_cover(ROOT, {'id': i})]
+    gpt_on = bool(gpt_slots())
+    gpt_left = [i['id'] for i in next_in_line(items, records)] if gpt_on else []
 
     gpt_today = sorted((op['at'][11:16], key) for key, rec in records.items()
                        for name, op in (rec.get('operations') or {}).items()
@@ -117,7 +129,7 @@ def daily_summary(now=None):
     lines += [f'GPT {t} {k} ✅' for t, k in gpt_today] + [f'Claude {t} {k} ✅' for t, k in claude_today]
     if not gpt_today and not claude_today:
         lines.append('없음')
-    for track, slots, done in (('GPT', GPT_SLOTS, gpt_today), ('Claude', CLAUDE_SLOTS, claude_today)):
+    for track, slots, done in (('GPT', gpt_slots(), gpt_today), ('Claude', CLAUDE_SLOTS, claude_today)):
         hm = slots.get(today.weekday())
         if hm and now.strftime('%H:%M') > hm and not done:
             warn.append(f'{track} 오늘 {hm} 슬롯 미게시')
@@ -133,14 +145,19 @@ def daily_summary(now=None):
     warn += yt_warn
 
     lines.append('[내일 예정]')
-    if tomorrow.weekday() in GPT_SLOTS:
+    if tomorrow.weekday() in gpt_slots():
         lines.append(f'GPT {GPT_SLOTS[tomorrow.weekday()]} {(gpt_left or ["없음"])[0]}')
     if tomorrow.weekday() in CLAUDE_SLOTS:
-        lines.append(f'Claude {CLAUDE_SLOTS[tomorrow.weekday()]} {(claude_left or ["없음"])[0]}')
-    lines.append(f'[남은 편] GPT {len(gpt_left)}편 · Claude {len(claude_left)}편')
-    for track, left in (('GPT', gpt_left), ('Claude', claude_left)):
-        if len(left) < 6:
-            warn.append(f'{track} 남은 편 {len(left)}편 — 채워야 함')
+        lines.append(f'{CLAUDE_SLOTS[tomorrow.weekday()]} {(claude_ready or ["없음(표지 필요)"])[0]}')
+    lines.append(f'[남은 편] {len(claude_left)}편 (표지 준비 {len(claude_ready)}편)'
+                 + (f' · GPT {len(gpt_left)}편' if gpt_on else ''))
+    if len(claude_ready) < 3:
+        missing = [i for i in claude_left if i not in claude_ready][:3]
+        warn.append(f'표지 준비된 편 {len(claude_ready)}편 — 표지 필요: ' + ', '.join(missing))
+    if len(claude_left) < 6:
+        warn.append(f'남은 편 {len(claude_left)}편 — 채워야 함')
+    if gpt_on and len(gpt_left) < 6:
+        warn.append(f'GPT 남은 편 {len(gpt_left)}편 — 채워야 함')
     if warn:
         lines.append('⚠ 확인 필요: ' + ' / '.join(warn))
     else:
