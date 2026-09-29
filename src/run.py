@@ -29,6 +29,7 @@ from src import publish                                 # noqa: E402
 from src import hooks                                   # noqa: E402
 from src import notify                                  # noqa: E402
 from src import youtube                                 # noqa: E402
+from src import tags as tags_mod                         # noqa: E402
 from src import approval                                # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -81,7 +82,7 @@ def push(tries: int = 5) -> None:
 
 
 # 2026-09-21 발행 시각을 조회 피크로 옮김 — 월~목 21:20 / 금~일 15:30 (KST).
-# Claude 트랙은 화·목 21:20, 일 15:30 에 나간다. post.yml 크론과 반드시 같아야 한다.
+# 2026-09-29부터 이 파이프라인이 매일 한 편을 낸다. post.yml 크론과 반드시 같아야 한다.
 SLOTS = {0: (21, 20), 1: (21, 20), 2: (21, 20), 3: (21, 20),
          4: (15, 30), 5: (15, 30), 6: (15, 30)}
 
@@ -141,17 +142,33 @@ def pick_next(queue: dict, posted_ids: set[str], only: str = "") -> dict | None:
     카드뉴스만 몰아서 낼 때). 지정이 없는 편은 대상이 아니다.
     """
     skipped: list[str] = []
+    no_cover: list[str] = []
     for item in queue["items"]:
         if item["id"] in posted_ids:
+            continue
+        # 2026-09-29: 새 일상 주제를 앞세우면서 예전 편은 보관(hold)한다. 지우지 않는다.
+        if item.get("hold"):
             continue
         if only and (item.get("ig_format") or "").lower() != only:
             continue
         if not item.get("verified"):
             skipped.append(item["id"])
             continue
+        # 2026-09-29 소유자 결정: 표지(assets/covers/<id>.editorial-v3.jpg)까지 붙은
+        # 완성본만 낸다. 표지가 없는 편은 건너뛰고 다음 편을 본다.
+        if require_cover() and not has_cover(item):
+            no_cover.append(item["id"])
+            continue
         if skipped:
             print(f"[info] 미검수라 건너뜀: {', '.join(skipped)}")
+        if no_cover:
+            print(f"[info] 표지가 없어 건너뜀: {', '.join(no_cover)}")
+            _tell_cover_missing(no_cover, picked=item["id"])
         return item
+    if no_cover:
+        print(f"[stop] 표지가 없어 낼 편이 없습니다 → {', '.join(no_cover)}")
+        _tell_cover_missing(no_cover, picked="")
+        return None
     if skipped:
         print("[stop] 발행 가능한 항목이 없습니다. "
               f"아래 항목의 verify 를 확인하고 verified: true 로 바꾸세요 → {', '.join(skipped)}")
@@ -160,16 +177,41 @@ def pick_next(queue: dict, posted_ids: set[str], only: str = "") -> dict | None:
     return None
 
 
+def require_cover() -> bool:
+    return os.getenv("REQUIRE_COVER", "1") != "0"
+
+
+def has_cover(item: dict) -> bool:
+    from src import photo_covers
+    return photo_covers.available(ROOT, item)
+
+
+def _tell_cover_missing(ids: list[str], picked: str) -> None:
+    """표지 때문에 건너뛴 편을 알린다. 조용히 건너뛰면 발행이 왜 멈췄는지 모른다."""
+    names = ", ".join(f"assets/covers/{i}.editorial-v3.jpg" for i in ids[:5])
+    more = f" 외 {len(ids) - 5}편" if len(ids) > 5 else ""
+    head = (f"표지가 없어 건너뛰고 {picked} 를 냅니다." if picked
+            else "표지가 없어 오늘은 아무 편도 내지 못했습니다.")
+    print(f"[cover] {head} 필요한 파일: {names}{more}")
+    if not notify.enabled():
+        return
+    try:
+        notify.send_message(f"{notify.LABEL} · 🖼 {head}\n필요한 표지: {names}{more}")
+    except Exception as e:                                        # noqa: BLE001
+        print(f"[telegram] 전송 실패: {e}")
+
+
 def build_caption(item: dict, cta: dict | None = None) -> str:
     """인스타 캡션. 마지막에 댓글 요청 한 줄을 붙인다.
 
     댓글은 참여 신호이자 다음 소재의 공급원이라 두 번 남는 장사다.
     """
     cta = cta or {}
-    tail = cta.get("caption_tail",
-                   "다음에 계산해줬으면 하는 거 있으면 댓글로 남겨주세요. 하나씩 다 따져봅니다.")
-    tags = " ".join(f"#{t}" for t in item.get("hashtags", []))
-    body = item["caption"].strip()
+    # 2026-09-29: 좋아요·팔로우 유도를 캡션 끝에 확실히 넣는다(소유자 요청).
+    tail = cta.get("caption_tail") or hooks.IG_CTA
+    # 태그는 src/tags.py 가 정한다 — 검색되지 않는 태그(#분기점 등)는 걸러지고 5개까지만.
+    tags = tags_mod.instagram_line(item)
+    body = tags_mod.strip_all(item["caption"].strip())
     # 캡션은 약 125자에서 '... 더 보기'로 잘린다. 첫 줄이 사실상 두 번째 훅이다.
     head = hooks.caption_first_line(item)
     if head and not body.startswith(head[:12]):
@@ -354,6 +396,11 @@ def run_once(args) -> int:
                  or by_weekday.get(wd)
                  or queue.get("ig_format_default")
                  or "reel").lower()
+    # 2026-09-29 소유자 결정: 인스타는 릴스만. 카드뉴스(캐러셀)는 내지 않는다.
+    # 예전 편에 ig_format: carousel 이 남아 있어도 릴스로 낸다. 되돌리려면 REELS_ONLY=0.
+    if os.getenv("REELS_ONLY", "1") != "0" and ig_format != "reel":
+        print(f"[format] {ig_format} → reel (릴스 전용 운영)")
+        ig_format = "reel"
     print(f"[format] {'내일' if (args.tomorrow or ask_tomorrow) else '오늘'} "
           f"{'월화수목금토일'[wd]}요일 → {ig_format}")
 
@@ -550,7 +597,13 @@ def run_once(args) -> int:
         already_posted = item["id"] in posted_ids
         ledger = json.loads(DELIVERY.read_text()) if DELIVERY.exists() else {}
         uncertain_reel = ledger.get(item['id'], {}).get('instagram_reel', {}).get('status') == 'in_flight'
-        allow_fallback = (ig_format == "reel" and not did_reel and not already_posted and not uncertain_reel)
+        # 2026-09-29: 릴스 전용 운영에서는 캐러셀로 대신 내지 않는다(카드뉴스 폐지).
+        # 실패는 아래 errors 로 텔레그램 완료 알림에 실린다.
+        fallback_on = os.getenv("IG_CAROUSEL_FALLBACK", "0") == "1"
+        allow_fallback = (fallback_on and ig_format == "reel" and not did_reel
+                          and not already_posted and not uncertain_reel)
+        if ig_format == "reel" and not did_reel and not fallback_on:
+            print("[instagram] 릴스 실패 — 카드뉴스 대체 발행은 꺼져 있습니다")
         if already_posted and not did_reel:
             print("[instagram] 이미 발행된 편이라 캐러셀 폴백을 건너뜁니다(중복 방지)")
         if ig_format in ("carousel", "both") or allow_fallback:
@@ -651,7 +704,10 @@ def run_once(args) -> int:
             print(f"[threads] 발행 완료 post_id={results['threads']}")
 
             # 내 글에 답글을 이어 단다. 쓰레드는 답글이 붙은 글을 더 밀어준다.
-            chain = [t for t in (item.get("threads_chain") or []) if str(t).strip()]
+            # 2026-09-29 소유자 요청: 쓰레드는 본편 글 하나 + 스하리 글만. 답글 체인은
+            # 계정을 복잡하게 만들어 기본으로 끈다(THREADS_CHAIN=1 이면 다시 켜짐).
+            chain = ([t for t in (item.get("threads_chain") or []) if str(t).strip()]
+                     if os.getenv("THREADS_CHAIN", "0") == "1" else [])
             if chain:
                 try:
                     ids = deliver_once(item['id'], 'threads_chain', lambda: publish.publish_threads_chain(

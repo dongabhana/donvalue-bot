@@ -64,6 +64,20 @@ MAX_VOICE = 30
 # 인스타 캡션은 약 125자에서 '... 더 보기'로 잘린다. 첫 줄이 두 번째 훅이다.
 CAPTION_CUT = 125
 
+# ---------------------------------------------------------------- 행동 유도(CTA)
+# 2026-09-29 소유자 요청: 좋아요·팔로우(유튜브는 구독) 유도가 '제대로' 들어가게.
+# 한 곳에서만 정의하고 인스타 캡션·유튜브 설명·영상 마지막 화면·나레이션이 같이 쓴다.
+IG_CTA = ("도움 됐으면 ❤️ 좋아요 한 번 눌러주세요.\n"
+          "매일 하나씩 생활 속 돈 계산 올려요. 놓치기 싫으면 팔로우!\n"
+          "이거 필요한 친구 있으면 공유해 주세요.")
+YT_CTA = ("매일 하나씩, 생활 속 돈 계산을 올립니다.\n"
+          "도움 됐으면 좋아요, 다음 편 놓치기 싫으면 구독해 주세요.")
+# 영상 마지막 장면 화면 문구(인스타·유튜브에 같은 영상이 나가므로 둘 다 부른다)
+END_BIG = "좋아요 · 팔로우"
+END_SUB = "매일 하나씩, 생활 속 돈 계산\n유튜브는 구독으로 받아보세요"
+# 나레이션 마지막 한 문장. 루프 질문 뒤에 붙는다.
+VOICE_CTA = "도움 됐으면 좋아요, 매일 하나씩 올리니까 팔로우랑 구독 해 둬."
+
 
 def _clean(s: str) -> str:
     return re.sub(r"\s+", " ", (s or "").strip())
@@ -154,7 +168,9 @@ def build_caption(item: dict, cta: str = "") -> str:
     if body.startswith(head[:12]):
         head = ""
     cta = cta or default_cta(item)
-    tags = " ".join(f"#{str(t).lstrip('#')}" for t in (item.get("hashtags") or []))
+    from src import tags as tags_mod
+    tags = tags_mod.instagram_line(item)
+    body = tags_mod.strip_all(body)
 
     chunks = [c for c in (head, body, cta, tags) if c]
     return "\n\n".join(chunks).strip()
@@ -165,10 +181,8 @@ def _clean_block(s: str) -> str:
 
 
 def default_cta(item: dict) -> str:
-    """저장·공유를 직접 요구한다. 알고리즘상 DM 공유 > 저장 > 댓글 순으로 신호가 세다."""
-    name = _clean(item.get("product", "이거"))
-    return (f"이 계산 필요한 사람한테 그냥 보내주세요.\n"
-            f"나중에 {name} 고민될 때 꺼내보려면 저장.")
+    """좋아요·팔로우를 먼저, 공유를 뒤에 요구한다(2026-09-29 소유자 요청)."""
+    return IG_CTA
 
 
 def validate(item: dict) -> list[str]:
@@ -185,8 +199,10 @@ def validate(item: dict) -> list[str]:
         warn.append("badge(금액/단위)가 비어 있음 — 숫자가 있으면 멈춤률이 올라감")
     if len(h["beats"]) < 3:
         warn.append("본문 비트가 3개 미만 — 릴스가 너무 짧아짐")
-    if not item.get("hashtags"):
-        warn.append("해시태그 없음")
-    elif len(item["hashtags"]) > 8:
-        warn.append("해시태그가 8개 초과 — 주제가 흐려짐")
+    from src import tags as tags_mod
+    if not tags_mod.topic_tags(item):
+        warn.append("주제 해시태그 없음 — 공통 태그만 붙음")
+    blocked = [t for t in (item.get("hashtags") or []) if tags_mod.is_blocked(t)]
+    if blocked:
+        warn.append(f"검색되지 않는 태그는 빠짐: {', '.join(map(str, blocked))}")
     return warn

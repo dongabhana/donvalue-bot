@@ -293,20 +293,28 @@ def scene_loop(h: dict, brand: str, handle: str,
     _label(d, brand, PAD + _s(42), TOP_SAFE - _s(98), th, _s(30), white)
     _label(d, handle, PAD, BOT_SAFE + _s(58), th, _s(28), faint)
 
+    # 2026-09-29: 마지막 화면은 좋아요·팔로우(유튜브는 구독) 유도. 문구는 hooks 에서 한 번만 정의.
+    from src import hooks as hooks_mod
+    first, _, rest = hooks_mod.END_BIG.partition(" · ")
     y = TOP_SAFE + _s(180)
     f = font(BLACK, _s(150))
-    d.text((PAD, y), "저장", font=f, fill=th.accent)
-    aw = d.textlength("저장", font=f)
-    d.text((PAD + aw + _s(30), y + _s(48)), "· 공유", font=font(BLACK, _s(86)),
-           fill=white)
+    d.text((PAD, y), first, font=f, fill=th.accent)
+    if rest:
+        aw = d.textlength(first, font=f)
+        d.text((PAD + aw + _s(30), y + _s(48)), "· " + rest, font=font(BLACK, _s(86)),
+               fill=white)
     y += _s(250)
-    block(d, "필요한 사람한테 그냥 보내주세요.\n주 3회, 같은 계산으로 돌아옵니다.",
-          font(MED, _s(52)), PAD, y, TEXT_W, faint, 1.45)
+    block(d, hooks_mod.END_SUB, font(MED, _s(52)), PAD, y, TEXT_W, faint, 1.45)
 
     lf = fit(d, h["loop"], BLACK, TEXT_W, _s(300), _s(112), _s(62), 1.14)
     ly = BOT_SAFE - block_h(d, h["loop"], lf, TEXT_W, 1.14) - _s(20)
-    tw = max(d.textlength(ln, font=lf) for ln in wrap(d, h["loop"], lf, TEXT_W))
-    T.marker(d, PAD - _s(14), ly + int(lf.size * 0.16), int(tw) + _s(42),
-             int(lf.size * 1.02), th, slant=_s(6))
-    block(d, h["loop"], lf, PAD, ly, TEXT_W, th.marker_on, 1.14)
+    # 2026-09-29: 질문이 두 줄로 넘어가면 예전엔 첫 줄에만 형광펜이 깔려 둘째 줄이
+    # 어두운 배경에 어두운 글자로 사라졌다. 줄마다 형광펜을 깐다.
+    lh = int(lf.size * 1.14)
+    for i, ln in enumerate(wrap(d, h["loop"], lf, TEXT_W)):
+        y_ln = ly + i * lh
+        tw = d.textlength(ln, font=lf)
+        T.marker(d, PAD - _s(14), y_ln + int(lf.size * 0.16), int(tw) + _s(42),
+                 int(lf.size * 1.02), th, slant=_s(6))
+        d.text((PAD, y_ln), ln, font=lf, fill=th.marker_on)
     return img

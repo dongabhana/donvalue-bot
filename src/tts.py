@@ -167,8 +167,20 @@ def _from_script(plan: list[dict], sc: dict) -> list[str]:
         elif k == "verdict":
             out.append(str(sc.get("verdict") or ""))
         else:
-            out.append(str(sc.get("loop") or ""))
+            out.append(_with_cta(str(sc.get("loop") or "")))
     return out
+
+
+def _with_cta(loop: str) -> str:
+    """마지막 장면 대사 끝에 좋아요·팔로우 한 문장을 붙인다(2026-09-29 소유자 요청).
+
+    대본(narration.yaml)에 이미 비슷한 말이 있으면 두 번 말하지 않는다.
+    """
+    from src import hooks as hooks_mod
+    loop = loop.strip()
+    if "팔로우" in loop or "구독" in loop:
+        return loop
+    return f"{loop} {hooks_mod.VOICE_CTA}".strip()
 
 
 def script_for(plan: list[dict], item: dict, h: dict) -> list[str]:
@@ -218,7 +230,7 @@ def script_for(plan: list[dict], item: dict, h: dict) -> list[str]:
             v = str(item.get("verdict_text", "")).strip()
             lines.append(v)
         else:                                   # loop
-            lines.append(h["loop"])
+            lines.append(_with_cta(h["loop"]))
 
     return [speakable(x) for x in lines]
 

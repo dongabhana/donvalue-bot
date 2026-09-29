@@ -111,7 +111,9 @@ def pick(pool: dict, posted_ids: set[str], count: int,
     track 을 주면 그 성격의 글만 꺼낸다. 밤 슬롯은 맞팔용(soft), 낮 슬롯은
     본편(content) 으로 나누기 위한 것이다.
     """
-    remaining = [p for p in (pool.get("posts") or []) if p["id"] not in posted_ids]
+    # skip: true — 이미 나간 본편·단문과 소재가 겹치는 글(2026-09-29 중복 발행 정리)
+    remaining = [p for p in (pool.get("posts") or [])
+                 if p["id"] not in posted_ids and not p.get("skip")]
     if track:
         remaining = [p for p in remaining if track_of(p) == track]
     return remaining[:max(0, count)]
@@ -152,18 +154,30 @@ def run(count: int, dry_run: bool, track: str | None = None) -> int:
     if not pool.get("enabled"):
         print("[micro] enabled 가 false 입니다 → 올리지 않습니다.")
         return 0
+    # 2026-09-29 소유자 요청: 쓰레드는 본편 글 + 스하리(soft) 글만. 단문 콘텐츠 글은 끈다.
+    # 허용 목록은 microposts.yaml 의 tracks 가 정한다(없으면 soft 만).
+    allowed = [t for t in (pool.get("tracks") or ["soft"]) if t in TRACKS]
+    if track and track not in allowed:
+        print(f"[micro] {track} 글은 꺼져 있습니다(tracks={allowed}) → 올리지 않습니다.")
+        return 0
+    if not track:
+        track = allowed[0] if len(allowed) == 1 else None
 
     ledger = load_ledger()
     posted_ids = {r["id"] for r in ledger}
     picks = pick(pool, posted_ids, count, track)
     fellback = False
     if track and not picks:
-        # 요청한 성격의 글이 떨어졌다고 슬롯을 비우지는 않는다.
-        # 대신 비었다는 사실을 알리고 남은 글로 채운다.
-        picks = pick(pool, posted_ids, count)
+        # 요청한 성격의 글이 떨어졌을 때 다른 성격 글로 채우는 건 허용된 성격끼리만.
+        # (예전엔 soft 가 비면 콘텐츠 단문으로 채웠다 — 이제 콘텐츠 단문은 꺼져 있다.)
+        others = [t for t in allowed if t != track]
+        for t in others:
+            picks = pick(pool, posted_ids, count, t)
+            if picks:
+                break
         fellback = bool(picks)
-        print(f"[micro] {track} 풀이 비었습니다 → 남은 글로 대체합니다.")
-    remaining = len([p for p in pool["posts"] if p["id"] not in posted_ids])
+        print(f"[micro] {track} 풀이 비었습니다" + (" → 다른 허용 글로 대체합니다." if picks else "."))
+    remaining = len([p for p in pool["posts"] if p["id"] not in posted_ids and not p.get("skip")])
     left_in_track = len(pick(pool, posted_ids, 10 ** 6, track)) if track else None
 
     if not picks:

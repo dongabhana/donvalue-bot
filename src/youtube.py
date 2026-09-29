@@ -40,6 +40,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import time
 from pathlib import Path
 
@@ -174,6 +175,11 @@ def resolve_privacy(privacy: str = "") -> str:
 def build_title(item: dict, h: dict | None = None) -> str:
     """쇼츠 제목. 앞 40자 안에 '무엇을 얼마' 가 들어가야 클릭이 붙는다."""
     h = h or {}
+    # 편에 유튜브 제목을 따로 적어 두었으면 그걸 쓴다(검색될 말 + 숫자 + 반전).
+    custom = str(item.get("yt_title") or "").strip()
+    if custom:
+        title = f"{custom} #Shorts"
+        return title if len(title) <= TITLE_MAX else custom[:TITLE_MAX - 8].rstrip(" ,.·") + "… #Shorts"
     big = " ".join(h.get("big") or []).strip()
     product = str(item.get("product", "")).strip()
     hook = str(item.get("hook", "")).strip()
@@ -196,25 +202,38 @@ def build_title(item: dict, h: dict | None = None) -> str:
 
 def build_description(item: dict, caption: str = "",
                       handle: str = "@dongabhana") -> str:
-    """설명란. 유튜브는 여기 텍스트로 주제를 잡으므로 캡션을 그대로 재활용한다."""
-    caption = (caption or item.get("caption") or "").strip()
-    tags = " ".join(f"#{str(t).lstrip('#')}" for t in (item.get("hashtags") or []))
-    parts = [caption]
+    """설명란. 본문 → 출처 → 구독·좋아요 유도 → 해시태그 순서.
+
+    2026-09-29: 예전엔 인스타 캡션을 통째로 넣어 '팔로우·저장' 같은 인스타용 문구와
+    인스타 태그가 그대로 나갔다. 이제 본문만 가져오고, 유도 문구·태그는 유튜브용으로
+    따로 붙인다. 해시태그는 src/tags.py 가 정한다(검색되지 않는 태그 제외).
+    """
+    from src import hooks as hooks_mod
+    from src import tags as tags_mod
+
+    body = (caption or item.get("caption") or "").strip()
+    # 인스타 유도 문구·해시태그를 걷어낸다(유튜브에는 유튜브용을 따로 붙인다)
+    for cta in (hooks_mod.IG_CTA, str((item.get("cta") or {}).get("caption_tail") or "")):
+        if cta:
+            body = body.replace(cta.strip(), "")
+    body = tags_mod.strip_all(body)
+    body = re.sub(r"\n{3,}", "\n\n", body).strip()
+
+    parts = [body]
     # 사람에게 보여줄 근거 출처만 넣는다. 어느 트랙에서 왔는지(track)는 내부용이라
     # 설명란에 나가면 안 된다 — 예전엔 "기준·출처: codex" 가 그대로 나갔다.
     src = str(item.get("sources") or "").strip()
     if src:
         parts.append(f"기준·출처: {src}")
+    parts.append(hooks_mod.YT_CTA)
     parts.append(f"{handle} · 돈값하나?")
-    parts.append(f"#Shorts {tags}".strip())
+    parts.append(" ".join(f"#{t}" for t in tags_mod.youtube_description(item)))
     return "\n\n".join(p for p in parts if p)[:DESC_MAX]
 
 
 def build_tags(item: dict) -> list[str]:
-    tags = [str(t).lstrip("#") for t in (item.get("hashtags") or [])]
-    for extra in ("돈값하나", "생활비절약", "가성비"):
-        if extra not in tags:
-            tags.append(extra)
+    from src import tags as tags_mod
+    tags = tags_mod.youtube_keywords(item)
     # 유튜브 태그 총합 500자 제한
     out, total = [], 0
     for t in tags:
