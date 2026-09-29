@@ -13,6 +13,8 @@ items:
 # ---------------------------------------------------------------- 2026-09-29 일상 주제 7편
 # 숫자는 출처 확인값 또는 "설명용 가정값"(캡션·카드에 명시). sources 는 공개용.
 - id: d001-snooze-taxi
+  # 2026-09-29 27편 캠페인(p11)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: 늦잠 5분 더 자고 택시 타면, 시급 12만원짜리 잠
   product: 5분 더 자고 택시
   price: 시급 12만원
@@ -73,6 +75,8 @@ items:
   - 택시
 
 - id: d002-kpass-offpeak
+  # 2026-09-29 27편 캠페인(p05)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: K패스 아침 9~10시에 타면 교통비 환급 2.5배
   product: 교통비 환급 시간대
   price: 환급 20%→50%
@@ -135,6 +139,8 @@ items:
   - 출퇴근
 
 - id: d003-lotto-weekly
+  # 2026-09-29 27편 캠페인(p23)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: 매주 로또 5천원, 1년이면 13만원은 그냥 사라진다
   product: 매주 로또 5천원
   price: 연 26만원
@@ -201,6 +207,8 @@ items:
   - 돈관리
 
 - id: d004-one-plus-one
+  # 2026-09-29 27편 캠페인(p26)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: 편의점 1+1 사서 하나 버리면 할인은 0원
   product: 편의점 1+1
   price: 할인 0원
@@ -256,6 +264,8 @@ items:
   - 장보기
 
 - id: d005-tumbler-400
+  # 2026-09-29 27편 캠페인(p25)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: 스타벅스 텀블러 할인 400원, 75번은 가야 본전
   product: 텀블러 할인 400원
   price: 75번이면 본전
@@ -312,6 +322,8 @@ items:
   - 홈카페
 
 - id: d006-late-night-delivery
+  # 2026-09-29 27편 캠페인(p24)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: 야식 배달 주 2번이면 1년에 260만원
   product: 주 2회 야식 배달
   price: 연 260만원
@@ -366,6 +378,8 @@ items:
   - 돈모으기
 
 - id: d007-vinyl-umbrella
+  # 2026-09-29 27편 캠페인(p27)과 같은 주제라 보관. 캠페인이 먼저 나간다(codex/campaign27.py).
+  hold: true
   yt_title: 편의점 비닐우산 5개면 좋은 우산 이미 산 거다
   product: 편의점 비닐우산
   price: 3년 75,000원
