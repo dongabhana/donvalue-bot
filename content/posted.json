@@ -133,5 +133,19 @@
       "threads_chain": "18126550219869979,18621707662023470"
     },
     "errors": []
+  },
+  {
+    "id": "p01-ai-compare",
+    "product": "ChatGPT·Claude·Gemini 하나만 결제한다면?",
+    "campaign": "campaign27",
+    "posted_at": "2026-09-29T21:55:24+09:00",
+    "results": {
+      "instagram_reel": "18094392938647474",
+      "youtube": "NBkIApqxrDk",
+      "threads": "18209535475365777"
+    },
+    "errors": [
+      "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
+    ]
   }
 ]
