@@ -73,7 +73,8 @@ class Campaign27Tests(unittest.TestCase):
                 ig = hashtags_in(e['caption'])
                 self.assertEqual(len(ig), 5)
                 self.assertFalse({t.lower() for t in ig} & {b.lower() for b in tags.BLOCKED})
-                for mega in ('AI', '쇼핑', '비오는날', '살림', '자동차', '유튜브', '야식'):
+                # #AI 는 게시물 수가 매우 크지만 2026-09-29 소유자 요청으로 1편에 쓴다
+                for mega in ('쇼핑', '비오는날', '살림', '자동차', '유튜브', '야식'):
                     self.assertNotIn(mega, ig)
                 yt = hashtags_in(e['youtube_description'])
                 self.assertEqual(yt[0], 'Shorts')
