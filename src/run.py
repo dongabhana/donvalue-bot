@@ -315,6 +315,40 @@ def ask_for_tomorrow(item: dict, ig_format: str, paths: list, mp4, body: str,
     return 0
 
 
+def _campaign_pick(args, posted: list, posted_ids: set, ask_tomorrow: bool) -> int | None:
+    """캠페인 편을 냈으면 종료 코드, 캠페인에 해당이 없으면 None."""
+    from src import campaign
+    # 큐를 다른 곳으로 돌린 실행(테스트·임시 큐)에서는 캠페인을 건드리지 않는다.
+    if (ask_tomorrow or getattr(args, "review_key", None) or args.pick
+            or QUEUE.resolve() != (ROOT / "content" / "queue.yaml").resolve()):
+        return None
+    if args.id:
+        if args.id not in campaign.ids():
+            return None
+        if args.id in posted_ids:
+            print(f"[stop] {args.id}는 이미 발행됐습니다")
+            return 0
+        item = next(e for e in campaign.load() if e["id"] == args.id)
+        ok, why = campaign.cover_ok(item)
+        if not ok:
+            print(f"[stop] {args.id}: {why}")
+            return 1
+    else:
+        today = datetime.now(KST).date().isoformat()
+        if (not args.dry_run
+                and any(str(p.get('posted_at', '')).startswith(today) for p in posted)):
+            print('[skip] 오늘은 이미 한 편이 발행됐습니다 → 다음 슬롯에 냅니다.')
+            return 0
+        item, waiting = campaign.next_ready(posted_ids)
+        if waiting:
+            print(f"[campaign] 표지 대기로 건너뜀: {', '.join(waiting)}")
+        if item is None:
+            return None
+    ctx = dict(sh=sh, push=push, deliver_once=deliver_once, POSTED=POSTED, IMAGES=IMAGES,
+               PREVIEW=PREVIEW, KST=KST, notify=notify, youtube=youtube, publish=publish)
+    return campaign.publish(item, ctx, dry_run=args.dry_run)
+
+
 def run_once(args) -> int:
     # 직접 Namespace 를 만들어 호출하는 곳(테스트 등)이 있어 기본값을 여기서 채운다.
     ask_tomorrow = getattr(args, "ask_tomorrow", False)
@@ -323,6 +357,12 @@ def run_once(args) -> int:
     queue = hooks.attach(yaml.safe_load(QUEUE.read_text(encoding="utf-8")))
     posted = load_posted()
     posted_ids = {p["id"] for p in posted}
+
+    # ---------------- 27편 캠페인(2026-09-29 소유자 결정: 오늘부터 순서대로 발행)
+    # 캠페인에 낼 편이 있으면 그걸 먼저 낸다. 없으면(전부 발행·표지 대기) 아래 기존 큐로 넘어간다.
+    camp = _campaign_pick(args, posted, posted_ids, ask_tomorrow)
+    if camp is not None:
+        return camp
 
     if args.id:
         item = next((i for i in queue["items"] if i["id"] == args.id), None)
