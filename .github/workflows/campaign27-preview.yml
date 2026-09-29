@@ -1,0 +1,64 @@
+name: 27편 제작본 미리보기(ZIP)
+
+# 저장소의 현재 원고(codex/campaign27.py)와 표지로 27편을 새로 렌더해 ZIP 으로 올린다.
+# 발행하지 않는다. 미리보기·ZIP·발행본이 같은 코드와 같은 원고에서 나오게 하려고
+# 따로 만든 파일을 올리지 않고, 매번 이 워크플로로 만든다.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "편 번호(공백 구분, 비우면 27편 전부) 예: 2 5 6"
+        required: false
+        default: ""
+  push:
+    branches: [main]
+    paths:
+      - codex/campaign27.py
+      - tools/build_campaign27.py
+      - assets/covers/p*.editorial-v3.jpg
+
+permissions:
+  contents: read
+
+concurrency:
+  group: campaign27-preview
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: 한글 폰트 · ffmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+      - run: pip install -r requirements.txt
+      - name: 테스트
+        run: python -m unittest discover -s codex/tests -q
+      - name: 렌더(장면·음성·영상) + 검증
+        run: |
+          ONLY="${{ github.event.inputs.only }}"
+          if [ -n "$ONLY" ]; then ARGS="--only $ONLY"; else ARGS=""; fi
+          python tools/build_campaign27.py --out build/campaign27 --video $ARGS
+      - name: 검증 요약(길이·평균 음량·장면 수)
+        run: |
+          python - <<'PY'
+          import json, pathlib
+          rows = []
+          for f in sorted(pathlib.Path('build/campaign27').glob('*/verify.json')):
+              r = json.loads(f.read_text())
+              for p, v in r.items():
+                  rows.append(f"{f.parent.name:24s} {p:9s} {v['duration']:6.2f}s {v['mean_volume_db']:6.1f}dB 장면{len(v['scenes'])} {v['bytes']//1024}KB")
+          print('\n'.join(rows)); print(len(rows), 'videos')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: campaign27-preview
+          path: build/campaign27/
+          retention-days: 14

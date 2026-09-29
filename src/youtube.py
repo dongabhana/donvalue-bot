@@ -333,6 +333,30 @@ def upload_short(mp4: Path, title: str, description: str,
     raise YouTubeError("업로드가 끝났는데 video_id 를 못 받았습니다")
 
 
+def set_thumbnail(video_id: str, image: Path, token: str = "") -> dict:
+    """올린 영상에 표지 이미지를 썸네일로 건다(thumbnails.set).
+
+    2026-09-29 소유자 요청: 쇼츠가 표지 대신 중간 장면으로 보인다.
+    유튜브는 2026-07-24부터 쇼츠 맞춤 썸네일을 파트너 프로그램(YPP) 채널부터 열었다
+    (blog.youtube 'New thumbnail updates in YouTube Studio'). 자격이 없으면 403 이 오거나
+    요청이 받아들여져도 쇼츠 피드에는 자동 프레임이 보일 수 있다 → 호출부는 실패해도 발행을 유지한다.
+    그래서 영상 첫 장면도 표지로 두고, 표지 장면을 가장 길게(훅 나레이션 전체) 보여 준다.
+    """
+    image = Path(image)
+    data = image.read_bytes()
+    if len(data) > 2 * 1024 * 1024:
+        raise YouTubeError(f"썸네일은 2MB 이하여야 합니다: {len(data)} bytes")
+    mime = "image/png" if image.suffix.lower() == ".png" else "image/jpeg"
+    r = requests.post("https://www.googleapis.com/upload/youtube/v3/thumbnails/set",
+                      params={"videoId": video_id, "uploadType": "media"},
+                      headers={"Authorization": f"Bearer {token or access_token()}",
+                               "Content-Type": mime},
+                      data=data, timeout=120)
+    if r.status_code != 200:
+        raise YouTubeError(f"썸네일 적용 실패 {r.status_code}: {r.text[:300]}")
+    return r.json()
+
+
 def watch_url(video_id: str) -> str:
     return f"https://youtube.com/shorts/{video_id}"
 

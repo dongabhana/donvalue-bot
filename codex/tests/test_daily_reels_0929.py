@@ -91,7 +91,9 @@ class QueueTests(unittest.TestCase):
         q = queue()
         posted = {p['id'] for p in json.loads((ROOT / 'content/posted.json').read_text())}
         self.assertEqual([i['id'] for i in q['items'][:len(NEW)]], NEW)
-        for item in q['items'][len(NEW):]:
+        # 2026-09-29 오후: d001~d007 은 27편 캠페인(codex/campaign27.py)과 주제가 같아
+        # 보관한다. 같은 주제가 두 번 나가지 않게 큐의 미발행 편은 전부 hold.
+        for item in q['items']:
             if item['id'] not in posted:
                 self.assertTrue(item.get('hold'), item['id'])
 

@@ -26,9 +26,10 @@ python -m unittest discover -s codex/tests -q
 | GPT 트랙 | 자동 발행 **꺼짐**. 코드·`codex/content.json`·기록은 그대로 | `CODEX_AUTO_PUBLISH=1` 이면 다시 켜짐 |
 | 인스타 포맷 | **릴스만**. 카드뉴스·캐러셀 대체 발행 없음 | `REELS_ONLY=0`, `IG_CAROUSEL_FALLBACK=1` |
 | 표지 | `assets/covers/<id>.editorial-v3.jpg` 가 **있는 편만** 발행. 없으면 건너뛰고 텔레그램 알림 | `REQUIRE_COVER=0` |
-| 큐 순서 | 새 일상 주제(`d0xx-`)가 맨 앞. 예전 미발행 편은 `hold: true`(삭제 아님) | `hold` 를 지우면 복귀 |
+| 큐 순서 | 새 일상 주제(`d0xx-`)가 맨 앞 → 27편 캠페인과 겹쳐 보관. 예전 미발행 편은 `hold: true`(삭제 아님) | `hold` 를 지우면 복귀 |
 | 해시태그 | `src/tags.py` 한 곳. 인스타 5개까지, 검색되지 않는 태그(`#분기점` `#돈값하나` `#비교분석` `#몰라서내는돈`)는 자동 제거 | `tags.BLOCKED`, `tags.CORE` |
 | 행동 유도 | 인스타 캡션·유튜브 설명·영상 마지막 화면·나레이션 끝에 좋아요·팔로우(유튜브는 구독) | `src/hooks.py` 의 `IG_CTA` `YT_CTA` `END_BIG` `VOICE_CTA` |
+| 27편 캠페인 | `codex/campaign27.py` 원고를 번호 순서로 **큐보다 먼저** 발행(`src/campaign.py`). 표지 대기 12편은 새 표지 파일이 들어와야 풀림 | `docs/campaign27.md` |
 | 쓰레드 | 본편 글 1개 + **스하리(soft) 글 하루 1번(21:40)**. 단문 콘텐츠 글·답글 체인 끔 | `microposts.yaml` 의 `tracks`, `THREADS_CHAIN=1` |
 
 - 새 편을 쓸 때: `yt_title`(유튜브 제목), `hashtags`(주제 태그 3개 이하, 게시물 수 수만~수십만), 가정값이면 `sources`·캡션·쓰레드 본문에 "가정"을 적는다.
