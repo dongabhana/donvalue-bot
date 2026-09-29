@@ -355,6 +355,9 @@
       "status": "done",
       "id": "NBkIApqxrDk",
       "at": "2026-09-29T21:44:26+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
