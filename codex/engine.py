@@ -26,6 +26,11 @@ ALLOWED_SLOTS = ((20, 0), (21, 20), (15, 30))
 # 2026-09-22 소유자 결정: 승인 없이 순번대로 매 슬롯 자동 발행. GPT 트랙 요일·시각(KST).
 AUTO_SLOTS = {0: (21, 20), 2: (21, 20), 4: (15, 30), 5: (15, 30)}
 AUTO_SOURCE = 'owner_auto_daily_2026_09_22'
+# 2026-09-29 소유자 결정: 발행을 Claude 트랙(src/run.py) 한 파이프라인으로 통합한다.
+# GPT 트랙 자동 발행은 기본으로 꺼 둔다. 코드·기록·content.json 은 그대로 두며,
+# 되살리려면 codex-approval 워크플로 env 에 CODEX_AUTO_PUBLISH: "1" 을 넣는다.
+def auto_enabled():
+    return os.getenv('CODEX_AUTO_PUBLISH', '0') == '1'
 
 
 def canonical(value):
@@ -549,6 +554,8 @@ class Engine:
 
     def auto_publish(self, now):
         """GPT 트랙 슬롯(월·수 21:20 / 금·토 15:30)마다 안 나간 편 중 맨 앞 한 편을 올린다."""
+        if not auto_enabled():
+            return
         slot=AUTO_SLOTS.get(now.weekday())
         if not slot: return
         if now < now.replace(hour=slot[0],minute=slot[1],second=0,microsecond=0): return
