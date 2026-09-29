@@ -25,10 +25,10 @@ class SlotTests(unittest.TestCase):
                 self.assertEqual(run.slot_for(day).strftime('%H:%M'), hm)
 
     def test_matches_post_cron(self):
-        # post.yml: 화·목 12:20 UTC(21:20 KST), 일 06:30 UTC(15:30 KST)
+        # 2026-09-29 매일 발행: 월~목 12:20 UTC(21:20 KST), 금·토·일 06:30 UTC(15:30 KST)
         src = (Path(run.__file__).parents[1] / '.github/workflows/post.yml').read_text(encoding='utf-8')
-        self.assertIn('"20 12 * * 2,4"', src)
-        self.assertIn('"30 6 * * 0"', src)
+        self.assertIn('"20 12 * * 1-4"', src)
+        self.assertIn('"30 6 * * 5,6,0"', src)
         self.assertEqual(run.SLOTS[1], (21, 20))
         self.assertEqual(run.SLOTS[6], (15, 30))
 

@@ -87,6 +87,8 @@ class GitDeliveryTests(unittest.TestCase):
                      patch.object(run.notify, 'done'), \
                      patch.object(run.publish, 'publish_instagram_reel', return_value='reel-id') as publish_reel, \
                      patch.dict(run.os.environ, {'GITHUB_REPOSITORY': 'test/repo', 'IG_USER_ID': 'test-id',
-                                                 'IG_ACCESS_TOKEN': 'test-token', 'SKIP_THREADS': 'true'}, clear=True):
+                                                 'IG_ACCESS_TOKEN': 'test-token', 'SKIP_THREADS': 'true',
+                         # 표지 게이트는 test_daily_reels_0929 에서 따로 검증한다
+                         'REQUIRE_COVER': '0'}, clear=True):
                     self.assertEqual(run.run_once(args), 0)
                 publish_reel.assert_called_once()

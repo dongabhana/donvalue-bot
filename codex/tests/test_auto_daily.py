@@ -25,10 +25,19 @@ class AutoDailyTests(unittest.TestCase):
         e.price_check = Mock(return_value=True)
         return e
 
-    def run_auto(self, e, now):
+    def run_auto(self, e, now, enabled=True):
         with patch.object(eng, 'render', return_value={'sha256': {}, 'cards': []}), \
-             patch.object(eng, 'commit'), patch.object(eng, 'git', return_value='abc'):
+             patch.object(eng, 'commit'), patch.object(eng, 'git', return_value='abc'), \
+             patch.dict(eng.os.environ, {'CODEX_AUTO_PUBLISH': '1' if enabled else '0'}):
             e.auto_publish(now)
+
+    def test_auto_publish_is_off_by_default_since_0929(self):
+        # 2026-09-29: 발행을 Claude 파이프라인 하나로 통합 — GPT 자동 발행은 기본 꺼짐
+        e = self.engine()
+        with patch.dict(eng.os.environ, {}, clear=False):
+            eng.os.environ.pop('CODEX_AUTO_PUBLISH', None)
+            e.auto_publish(datetime(2026, 9, 30, 22, 0, tzinfo=KST))
+        e.publish.assert_not_called()
 
     def test_queue_order_skips_posted_and_closed(self):
         its = items()

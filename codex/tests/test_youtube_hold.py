@@ -130,7 +130,9 @@ class PublishWithHoldTests(unittest.TestCase):
                           return_value='c-id'), \
              patch.dict(run.os.environ,
                         {'GITHUB_REPOSITORY': 'test/repo', 'IG_USER_ID': 'x',
-                         'IG_ACCESS_TOKEN': 'y', 'SKIP_THREADS': 'true'}, clear=True):
+                         'IG_ACCESS_TOKEN': 'y', 'SKIP_THREADS': 'true',
+                         # 표지 게이트는 test_daily_reels_0929 에서 따로 검증한다
+                         'REQUIRE_COVER': '0'}, clear=True):
             run.run_once(args)
         return publish_reel.call_count, upload.call_count
 
