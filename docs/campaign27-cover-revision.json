@@ -1,0 +1,98 @@
+[
+  {
+    "id": "p01-ai-compare",
+    "number": 1,
+    "cover": "assets/covers/p01-ai-compare.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. Three open laptops arranged in a semicircle on one desk, each screen displaying a clearly recognizable AI assistant robot/chat symbol with the same document and identical little code and image icons. A person's hand is choosing ONE laptop while pushing the other two away, two unused bank cards beside the rejected laptops. Story: choosing one of three AI subscriptions for the same work, not simply using a laptop.",
+    "generator": "built-in image_gen",
+    "sha256": "ac592637f0a332c3e84460c558716dc095076f146a748de448ace3c2ddbb8664"
+  },
+  {
+    "id": "p03-phone-plan",
+    "number": 3,
+    "cover": "assets/covers/p03-phone-plan.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. Balanced left/right comparison in ONE vertical composition: left an unlocked smartphone bought outright next to a loose SIM card and a single modest pile of coins; right the exact same smartphone attached to a long accordion strip of recurring monthly payment receipts with many coins. A blank desk calendar connects the two sides. Clear upfront phone purchase versus carrier monthly contract. No readable receipt print.",
+    "generator": "built-in image_gen",
+    "sha256": "d26d52476660beead10e31a9c8ddf5498cd2e3bdf654fe7ef68f773f33dcae15"
+  },
+  {
+    "id": "p04-hybrid",
+    "number": 4,
+    "cover": "assets/covers/p04-hybrid.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. A clear balanced comparison of TWO same-size sedans at a fuel station, left conventional gasoline car connected to fuel nozzle beside a short upfront coin pile but a long repeated row of fuel cans; right hybrid car with hood partly open exposing orange electric motor cables beside a visibly larger upfront coin pile but far fewer fuel cans. A curving miniature road between cars conveys distance traveled until savings recover higher initial cost. No plug-in charging cable; hybrid is not an electric charging car. Large cars, fuel and coin tradeoff immediately readable.",
+    "generator": "built-in image_gen",
+    "sha256": "461df560715b962b406c17f260b03aa6ebb4e61e7ddc5ec780b7f4a3ce68bb6a"
+  },
+  {
+    "id": "p07-car-fixed",
+    "number": 7,
+    "cover": "assets/covers/p07-car-fixed.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. A modern car sitting motionless in a dim apartment parking space, dust lightly on windshield. In sharp foreground a hand holds a fan of insurance document with shield icon, parking ticket with P pictogram, and tax-like bill, beside accumulating coins and car keys. Clear bills accumulating while car is parked, absolutely no fuel nozzle or driving scene.",
+    "generator": "built-in image_gen",
+    "sha256": "154d43e00bf601f412fcf8c0345ca37245ac3bc1f6a212e1d1603c33f6606428"
+  },
+  {
+    "id": "p09-robot-time",
+    "number": 9,
+    "cover": "assets/covers/p09-robot-time.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. A clear two-state comparison within one realistic living room: on the left an adult actively pushing a manual vacuum and looking tired; on the right a round robot vacuum cleans the floor while an adult relaxes comfortably with a cup on the sofa. A large analog stopwatch without digits between sides links cleaning and time saved. Story unmistakable even without text.",
+    "generator": "built-in image_gen",
+    "sha256": "dcc80fe097f26a83934e7c504eeef90a784c3804817be1c1153219a8f0fa7f55"
+  },
+  {
+    "id": "p10-youtube",
+    "number": 10,
+    "cover": "assets/covers/p10-youtube.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. One person watching videos, strong left/right visual comparison of two large phone screens with identical cooking footage. Left phone footage is interrupted by a bright obstructing generic advertisement card and a loading hourglass, person looks impatient. Right phone shows clear unobstructed full-screen footage with a play triangle and a relaxed hand. No written AD label. Visually convey waiting for an ad versus uninterrupted paid video viewing.",
+    "generator": "built-in image_gen",
+    "sha256": "14f0e437f9f1ef6e9e31aaf7fb6648ed6f2b073972cb7eaf82a9f0b8c82681d8"
+  },
+  {
+    "id": "p12-rental",
+    "number": 12,
+    "cover": "assets/covers/p12-rental.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. Two IDENTICAL premium water purifier appliances side by side on a counter. Left appliance is paired with a long physical desk calendar strip and a neat sequence of small equal coin piles representing recurring monthly rental payments. Right identical appliance beside one large payment pile and a hand handing over the appliance's ownership key/tag. Clear monthly rental versus one-time purchase. No generic product beauty shot.",
+    "generator": "built-in image_gen",
+    "sha256": "2f5a2ba4ec2faa7ff5024042250ff748f7ad2cecd90283b407d2068b3ac03f60"
+  },
+  {
+    "id": "p15-pickup",
+    "number": 15,
+    "cover": "assets/covers/p15-pickup.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. Cinematic split-scene comparison: left a resident in house slippers receiving a takeaway food bag from a helmeted delivery rider at their apartment door; right the SAME resident in walking shoes receiving an identical food bag directly from a restaurant counter, pavement and walking route visible. Show the difference between delivery and self pickup immediately. Food bags unbranded.",
+    "generator": "built-in image_gen",
+    "sha256": "57b0a1eb5dd5071b475329e1434910bb1030136726a71ddf33456b2f73574ee9"
+  },
+  {
+    "id": "p17-earbuds",
+    "number": 17,
+    "cover": "assets/covers/p17-earbuds.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. Closeup editorial comparison of the SAME wireless earbuds in two situations: left a commuter actively wearing one earbud, open charging case and large analog stopwatch nearby; right identical unused earbuds forgotten in a dusty half-open drawer. A few coins near stopwatch connect purchase price to actual listening time. Not just two earbud products.",
+    "generator": "built-in image_gen",
+    "sha256": "16db0e8425d42d292d4a629522993fbcec16f6c9477a8d677545857cf6c936b7"
+  },
+  {
+    "id": "p20-five-hundred",
+    "number": 20,
+    "cover": "assets/covers/p20-five-hundred.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. An expensive durable ergonomic office chair being used at a desk by a person, with a dramatic long stream of blank daily calendar sheets curling around the chair, and one large pile of coins at the start progressively dividing into many equal tiny coin piles along the calendar path. Visual story: one expensive purchase spread over thousands of actual days used until daily cost becomes small. Chair and calendar repetition must dominate, not decorative desk accessories.",
+    "generator": "built-in image_gen",
+    "sha256": "207de71a7590fcd76d9969a27598064d2951015498e9e04e82d3dfefa1b46cfc"
+  },
+  {
+    "id": "p22-appliance-use",
+    "number": 22,
+    "cover": "assets/covers/p22-appliance-use.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. Two same front-loading clothes dryers in matching laundry spaces: left dryer is actively tumbling clean clothes with many neatly folded towels and a row of small tokens each representing one use; right dryer stands idle with just one towel and a large pile of coins. Recurring laundry uses spread the purchase cost, sparse use costs more per load. Big dryer doors and laundry recognizable.",
+    "generator": "built-in image_gen",
+    "sha256": "1de6f97d59f33cd70a08989488b606feb46582c06410fd25add8a99eb7f420b5"
+  },
+  {
+    "id": "p25-tumbler",
+    "number": 25,
+    "cover": "assets/covers/p25-tumbler.editorial-v3.jpg",
+    "prompt": "Create a single premium cinematic photoreal editorial cover for Korean finance short, portrait 9:16. This must visually communicate the specific comparison WITHOUT ANY WORDS. Main storytelling objects occupy upper 60%, lower 40% dark quiet negative space for title later. Strong focal point, readable at phone size, realistic proportions. No text, digits, labels, logos, watermarks. A new stainless reusable coffee tumbler with its open gift box and a large pile of coins at left; at right a barista repeatedly filling the same type of tumbler, with a winding row of many tiny equal coin piles on a cafe counter and a worn older tumbler. Show new purchase cost versus small repeated personal-cup discounts, not generic cafe objects.",
+    "generator": "built-in image_gen",
+    "sha256": "569d51255cf1343f776b2c1ae3aa7225bf3c92f5b8187762833e9fdfbdb67746"
+  }
+]

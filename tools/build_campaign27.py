@@ -49,6 +49,16 @@ def photo(e):
     return Image.alpha_composite(img.convert('RGBA'),overlay).convert('RGB')
 
 def render(e,folder):
+    from campaign27_design import render_frames, BOUNDS
+    frames=render_frames(e,ROOT)
+    manifest=[]
+    for name,img,speech in frames:
+        img.save(folder/(name+'.png'))
+        manifest.append(dict(name=name,file=name+'.png',narration=speech,width=W,height=H,design='editorial-v2'))
+    BOXES.extend(BOUNDS); BOUNDS.clear()
+    return manifest
+
+def render_legacy(e,folder):
     frames=[]
     img=photo(e); d=chrome(img,e,'',True)
     textblock(d,e['hook'],72,1050,850,100,'white',350)
