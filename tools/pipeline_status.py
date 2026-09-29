@@ -115,6 +115,18 @@ def daily_summary(now=None):
                    and i.get('verified') and not i.get('hold')]
     # 표지(assets/covers/<id>.editorial-v3.jpg)가 없는 편은 발행되지 않는다(2026-09-29)
     claude_ready = [i for i in claude_left if has_cover(ROOT, {'id': i})]
+    # 2026-09-29: 27편 캠페인이 큐보다 먼저 나간다(src/campaign.py). 표지 대기 편은 남은 편에만 센다.
+    try:
+        from src import campaign
+        camp = [e for e in sorted(campaign.load(), key=lambda e: e['order']) if e['id'] not in posted_ids]
+        camp_ready = [e['id'] for e in camp if campaign.cover_ok(e)[0]]
+        claude_left = [e['id'] for e in camp] + claude_left
+        claude_ready = camp_ready + claude_ready
+    except Exception as exc:                                      # noqa: BLE001
+        warn_campaign = f'캠페인 상태 확인 실패: {exc}'
+    else:
+        warn_campaign = ''
+
     gpt_on = bool(gpt_slots())
     gpt_left = [i['id'] for i in next_in_line(items, records)] if gpt_on else []
 
@@ -124,7 +136,7 @@ def daily_summary(now=None):
                        and str(op.get('at', '')).startswith(today.isoformat()))
     claude_today = sorted((p['posted_at'][11:16], p['id']) for p in posted
                           if str(p.get('posted_at', '')).startswith(today.isoformat()))
-    warn = []
+    warn = [warn_campaign] if warn_campaign else []
     lines = ['📋 돈값하나 점검 ' + now.strftime('%m/%d %H:%M'), '[오늘 게시]']
     lines += [f'GPT {t} {k} ✅' for t, k in gpt_today] + [f'Claude {t} {k} ✅' for t, k in claude_today]
     if not gpt_today and not claude_today:
