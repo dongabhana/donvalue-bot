@@ -58,6 +58,19 @@ def photo(e):
     return Image.alpha_composite(img.convert('RGBA'),overlay).convert('RGB')
 
 def render(e,folder):
+    """2026-09-29: GPT 개편 디자인(tools/campaign27_design.py, 짙은 그린·라임·오렌지)을 쓴다."""
+    import importlib.util
+    spec=importlib.util.spec_from_file_location('campaign27_design',Path(__file__).with_name('campaign27_design.py'))
+    D=importlib.util.module_from_spec(spec); spec.loader.exec_module(D)
+    frames=D.render_frames(e,ROOT)
+    manifest=[]
+    for name,img,speech in frames:
+        img.save(folder/(name+'.png'))
+        manifest.append(dict(name=name,file=name+'.png',narration=speech,width=W,height=H,design='editorial-v2'))
+    BOXES.extend(D.BOUNDS); D.BOUNDS.clear()
+    return manifest
+
+def render_legacy(e,folder):
     frames=[]
     img=photo(e); d=chrome(img,e,'',True)
     textblock(d,e['hook'],72,1050,850,100,'white',350)
