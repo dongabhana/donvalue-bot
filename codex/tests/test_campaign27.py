@@ -150,5 +150,28 @@ class CampaignRoutingTests(unittest.TestCase):
         pub.assert_not_called()
 
 
+class ScreenDesignTests(unittest.TestCase):
+    """GPT 개편 디자인의 화면 문장·비교 막대가 교정된 카드 숫자와 어긋나지 않게."""
+
+    def test_screen_copy_and_compare_match_cards(self):
+        import importlib.util
+        from codex.campaign27_screen_copy import SCREEN
+        spec = importlib.util.spec_from_file_location('d', ROOT / 'tools/campaign27_design.py')
+        D = importlib.util.module_from_spec(spec); spec.loader.exec_module(D)
+        items = {e['order']: e for e in C.package()['items']}
+        self.assertEqual(sorted(SCREEN), list(range(1, 28)))
+        for n, lines in SCREEN.items():
+            self.assertEqual(len(lines), 4, n)
+        num = lambda t: {x.replace(',', '') for x in re.findall(r'\d[\d,.]*', t)}
+        for (n, i), (_, _, a, b, _, _) in D.COMPARE.items():
+            card = items[n]['cards'][i]
+            have = num(card['figure'] + ' ' + card['body'])
+            with self.subTest(n=n, i=i):
+                self.assertTrue(num(a) <= have and num(b) <= have, (a, b, card))
+        # 예전(교정 전) 숫자가 화면에 남지 않았는지
+        for n, bad in [(4, '400만원'), (4, '1,800원'), (9, '267'), (10, '하루 2분')]:
+            self.assertNotIn(bad, ' '.join(SCREEN[n]))
+
+
 if __name__ == '__main__':
     unittest.main()
