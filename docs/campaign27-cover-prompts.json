@@ -1,0 +1,25 @@
+{
+  "generator": "Built-in image_gen",
+  "date": "2026-09-29",
+  "purpose": "무문자 세로 표지. 글자를 가려도 해당 주제를 알아볼 수 있는 핵심 사물과 상황.",
+  "common_constraints": "One single cinematic photorealistic editorial cover photo, portrait 9:16. Main subject in upper-middle 60 percent, lower 40 percent dark simple negative space for later typography. Clear visual storytelling identifiable without any words. No text, labels, logos, watermarks, no collage.",
+  "subjects": {
+    "p02": "A visibly worn older smartphone with scuffed edges and a fresh pristine modern smartphone side by side on a desk, discarded older phone packaging behind, a small hourglass between them; unmistakable phone replacement and keeping a phone for longer.",
+    "p04": "Two realistic similar modern sedans side by side at a gas station, one has its hood raised revealing a gasoline engine and orange hybrid electrical cables, a fuel nozzle and a small hourglass in foreground. Clear gasoline versus hybrid running cost.",
+    "p05": "Quiet Korean subway platform at morning light, a train approaching, a hand tapping an unbranded transit card on fare gate, a large analog clock showing approximately nine ten. Clear offpeak public transit timing, no words or numbers on clock face.",
+    "p06": "Closeup of laptop displaying abstract AI chat bubbles and a large analog stopwatch in front, beside a small bank card. A worker's hands typing. The subject is whether an AI subscription saves enough work time. Not social media.",
+    "p08": "Two open laptops side by side showing abstract AI chat bubbles: one simple freely accessible screen and the other with a small metallic lock and a bank card beside it. Clear free versus paid AI subscription comparison. No readable interface text.",
+    "p11": "Early morning bedroom, a sleepy hand reaching from bed to snooze a glowing smartphone alarm, through the large nearby apartment window a clearly recognizable yellow taxi waiting on street. Alarm and taxi both prominent. The story is oversleeping then taking a taxi.",
+    "p13": "A small overseas delivery cardboard parcel with an unbranded sneaker inside, an airplane visible through airport cargo glass in background, customs inspection rubber stamp and scattered coins next to parcel. International shopping delivery and hidden costs visually clear.",
+    "p14": "A long queue of people waiting outside a clothing store, foreground closeup of a weary shopper holding a blank discount coupon and looking at a wristwatch, moody evening city lighting. Waiting a long time for a small discount.",
+    "p16": "Modern car interior view with driver's hand feeling the perforated ventilated seat, center dashboard parking camera image showing a car space, tactile steering wheel controls. Clear comparison of useful car comfort and parking options.",
+    "p18": "A human hand offering a few coins in exchange for a large analog stopwatch held by another hand above a desk. A physical metaphor of buying ten minutes with money. Both hands and stopwatch clearly visible. No currency numerals visible.",
+    "p19": "Two worn-out cheap fabric shoes beside one well-maintained premium leather shoe, repair tools nearby, same size and purpose. Clear repeated replacement versus buying durable once, no brand.",
+    "p20": "A well-used high quality office chair at a home desk, beside it a thick desk calendar with many pages fanned out and a small pile of coins. Clear expensive daily-use object spread across many days.",
+    "p21": "An online shopping cardboard parcel overflowing with unnecessary small household goods, hand adding another item while a few coins representing delivery charge sit ignored nearby, unbranded shopping phone interface no text. Clear buying extras for free delivery.",
+    "p23": "Closeup of several generic Korean-style lottery number-grid paper slips with small circles but NO legible letters or numbers, a pencil and a modest stack of Korean-style banknotes shown face-down and coins on a convenience store countertop. Lottery purchase unmistakable, no food, backpacks or unrelated objects.",
+    "p24": "Late-night dark living room lit by television, open fried chicken delivery box, takeaway side dishes, smartphone face down, two crumpled delivery bags. Clear habitual late night food delivery, appetizing realistic chicken.",
+    "p26": "Two identical bottled milk drinks on kitchen counter: one opened and consumed, the other visibly spoiled and tipping into a small waste bin. The pair is important, one is wasted. No words on bottles. Buying two and wasting one.",
+    "p27": "Rainy apartment entrance with exactly five simple transparent vinyl umbrellas in an umbrella stand, wet floor, moody blue gray natural lighting. Main umbrellas fully visible in upper and middle 60 percent, lower 40 percent very dark simple negative space for later text overlay. No text, numbers, logos, watermarks or brands. This is a single cover photo, not a collage or infographic."
+  }
+}
