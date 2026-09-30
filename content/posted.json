@@ -147,5 +147,19 @@
     "errors": [
       "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
     ]
+  },
+  {
+    "id": "p02-phone-cycle",
+    "product": "스마트폰 2년 교체 vs 4년 사용",
+    "campaign": "campaign27",
+    "posted_at": "2026-09-30T21:58:58+09:00",
+    "results": {
+      "instagram_reel": "18077555210720466",
+      "youtube": "2DGntO8WrIo",
+      "threads": "17884390821622855"
+    },
+    "errors": [
+      "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
+    ]
   }
 ]
