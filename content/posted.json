@@ -161,5 +161,19 @@
     "errors": [
       "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
     ]
+  },
+  {
+    "id": "p03-phone-plan",
+    "product": "자급제+알뜰폰 vs 통신사",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-01T21:57:35+09:00",
+    "results": {
+      "instagram_reel": "17870618394642459",
+      "youtube": "M3vNLb66w0s",
+      "threads": "18088653725660027"
+    },
+    "errors": [
+      "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
+    ]
   }
 ]
