@@ -389,6 +389,9 @@
       "status": "done",
       "id": "M3vNLb66w0s",
       "at": "2026-10-01T21:46:40+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
