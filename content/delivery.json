@@ -398,7 +398,9 @@
   },
   "p04-hybrid": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "18582333940064291",
+      "at": "2026-10-02T15:46:09+09:00"
     }
   }
 }
