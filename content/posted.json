@@ -175,5 +175,19 @@
     "errors": [
       "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
     ]
+  },
+  {
+    "id": "p04-hybrid",
+    "product": "하이브리드는 몇 km 타야 본전인가",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-02T15:57:09+09:00",
+    "results": {
+      "instagram_reel": "18582333940064291",
+      "youtube": "L2zOoO86j0Q",
+      "threads": "17908893180558187"
+    },
+    "errors": [
+      "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
+    ]
   }
 ]
