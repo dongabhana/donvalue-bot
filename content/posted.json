@@ -189,5 +189,19 @@
     "errors": [
       "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
     ]
+  },
+  {
+    "id": "p05-kpass",
+    "product": "K-패스 환급 시간대",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-03T16:03:47+09:00",
+    "results": {
+      "instagram_reel": "18431369782183074",
+      "youtube": "eC6T6fqLPds",
+      "threads": "17878834395629819"
+    },
+    "errors": [
+      "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
+    ]
   }
 ]
