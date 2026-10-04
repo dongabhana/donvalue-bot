@@ -440,6 +440,9 @@
       "status": "done",
       "id": "is_7VTArpnU",
       "at": "2026-10-04T22:52:53+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
