@@ -203,5 +203,19 @@
     "errors": [
       "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
     ]
+  },
+  {
+    "id": "p06-ai-breakeven",
+    "product": "AI 구독 본전",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-04T23:03:52+09:00",
+    "results": {
+      "instagram_reel": "17870568177640513",
+      "youtube": "is_7VTArpnU",
+      "threads": "17962865946197853"
+    },
+    "errors": [
+      "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
+    ]
   }
 ]
