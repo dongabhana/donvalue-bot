@@ -432,7 +432,9 @@
   },
   "p06-ai-breakeven": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17870568177640513",
+      "at": "2026-10-04T22:52:49+09:00"
     }
   }
 }
