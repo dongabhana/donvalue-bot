@@ -23,6 +23,8 @@ import time
 from datetime import datetime
 from pathlib import Path
 
+from src import thumbs
+
 ROOT = Path(__file__).resolve().parent.parent
 BUILD_DIR = ROOT / ".preview" / "campaign-build"
 # 공개 URL 이 필요한 파일만 images/<id>/ 로 옮겨 커밋한다(유튜브 영상은 로컬에서 바로 올린다).
@@ -172,13 +174,16 @@ def publish(item: dict, ctx: dict, dry_run: bool = False) -> int:
                 yt_mp4, title, desc, item.get("youtube_tags") or []))
             results["youtube"] = vid
             print(f"[youtube] 발행 완료 {youtube.watch_url(vid)}")
-            # 표지를 썸네일로. 쇼츠 맞춤 썸네일은 채널 자격에 따라 거절될 수 있어 실패해도 발행은 유지한다.
-            try:
-                youtube.set_thumbnail(vid, outdir / "cover.jpg")
-                print("[youtube] 표지 썸네일 적용 요청 완료")
-            except Exception as e:                                # noqa: BLE001
-                errors.append(f"youtube_thumbnail: {e}")
-                print(f"[youtube] 썸네일 적용 실패(영상은 정상): {e}")
+            # 표지를 썸네일로. 실패해도 발행은 유지하고, 원장에 남겨 src/thumbs.py 가 다시 건다.
+            led = json.loads(ctx["DELIVERY"].read_text(encoding="utf-8"))
+            row = thumbs.apply(item["id"], vid, outdir / "cover.jpg", led, datetime.now(ctx["KST"]),
+                              setter=youtube.set_thumbnail)
+            ctx["DELIVERY"].write_text(json.dumps(led, ensure_ascii=False, indent=2), encoding="utf-8")
+            if row["status"] == "done":
+                print("[youtube] 표지 썸네일 적용 완료")
+            else:
+                errors.append(f"youtube_thumbnail: {row.get('error', '')}")
+                print(f"[youtube] 썸네일 적용 실패(영상은 정상, 나중에 다시 시도): {row.get('error', '')}")
             try:
                 status = youtube.video_status(vid)
                 want = youtube.resolve_privacy()
@@ -224,6 +229,8 @@ def publish(item: dict, ctx: dict, dry_run: bool = False) -> int:
     ctx["POSTED"].write_text(json.dumps(posted, ensure_ascii=False, indent=2), encoding="utf-8")
     notify.done(item["id"], item["product"], results, errors)
     sh("git", "add", str(ctx["POSTED"]))
+    if ctx.get("DELIVERY") is not None:            # 썸네일 결과(youtube_thumbnail)도 같이 남긴다
+        sh("git", "add", str(ctx["DELIVERY"]))
     sh("git", "-c", "user.name=donvalue-bot", "-c", "user.email=bot@users.noreply.github.com",
        "commit", "-m", f"posted: {item['id']}")
     push()
