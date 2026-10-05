@@ -150,7 +150,29 @@ class ThreadsTests(unittest.TestCase):
 
     def test_micro_workflow_runs_once_a_day(self):
         src = (ROOT / '.github/workflows/threads-micro.yml').read_text(encoding='utf-8')
-        self.assertEqual(re.findall(r'cron: "([^"]+)"', src), ['40 12 * * *'])
+        # 2026-10-05: 본 실행 21:40 + 보조 22:40·23:40 (중복은 posted_recently 가 막는다)
+        self.assertEqual(re.findall(r'cron: "([^"]+)"', src), ['40 12 * * *', '40 13 * * *', '40 14 * * *'])
+
+
+class MicroBackupRunTests(unittest.TestCase):
+    """2026-10-05 보조 실행이 하루 두 번 올리지 않는지."""
+    def test_recent_post_blocks_scheduled_backup(self):
+        from datetime import datetime, timedelta, timezone
+        kst = timezone(timedelta(hours=9))
+        now = datetime(2026, 10, 5, 22, 41, tzinfo=kst)
+        ledger = [{'id': 'a', 'posted_at': '2026-10-05T21:58:00+09:00'}]
+        self.assertEqual(microposts.posted_recently(ledger, 10, now), 'a')
+        # 전날 밤 늦게 밀려 나간 글(새벽 3시)은 그날 밤 21:40 실행을 막지 않는다
+        ledger = [{'id': 'b', 'posted_at': '2026-10-05T03:20:41+09:00'}]
+        self.assertEqual(microposts.posted_recently(ledger, 10, datetime(2026, 10, 5, 21, 41, tzinfo=kst)), '')
+
+    def test_scheduled_run_skips_when_recent(self):
+        from datetime import datetime
+        row = {'id': 'x', 'posted_at': datetime.now(microposts.KST).isoformat(timespec='seconds')}
+        with patch.object(microposts, 'load_ledger', return_value=[row]), \
+             patch.object(microposts, 'pick', side_effect=AssertionError('pick 까지 가면 안 됨')), \
+             patch.dict(os.environ, {'SCHEDULE': '40 13 * * *'}):
+            self.assertEqual(microposts.run(1, dry_run=False, track='soft'), 0)
 
 
 class ScheduleTests(unittest.TestCase):
