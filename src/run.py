@@ -344,7 +344,7 @@ def _campaign_pick(args, posted: list, posted_ids: set, ask_tomorrow: bool) -> i
             print(f"[campaign] 표지 대기로 건너뜀: {', '.join(waiting)}")
         if item is None:
             return None
-    ctx = dict(sh=sh, push=push, deliver_once=deliver_once, POSTED=POSTED, IMAGES=IMAGES,
+    ctx = dict(sh=sh, push=push, deliver_once=deliver_once, POSTED=POSTED, IMAGES=IMAGES, DELIVERY=DELIVERY,
                PREVIEW=PREVIEW, KST=KST, notify=notify, youtube=youtube, publish=publish)
     return campaign.publish(item, ctx, dry_run=args.dry_run)
 
