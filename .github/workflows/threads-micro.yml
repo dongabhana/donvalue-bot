@@ -14,6 +14,10 @@ name: 쓰레드 단문 발행
 on:
   schedule:
     - cron: "40 12 * * *"     # 매일 21:40 KST — 스하리(soft)
+    # 2026-10-05 보조 실행: 주말에 예약이 4~5시간 밀린 적이 있다(10/3·10/4).
+    # 앞 실행이 이미 올렸으면 src/microposts.py 가 10시간 간격 검사로 건너뛴다.
+    - cron: "40 13 * * *"     # 22:40 KST 보조
+    - cron: "40 14 * * *"     # 23:40 KST 보조
   workflow_dispatch:
     inputs:
       count:
