@@ -476,5 +476,10 @@
       "at": "2026-10-05T18:56:47+09:00",
       "tries": 1
     }
+  },
+  "p07-car-fixed": {
+    "instagram_reel": {
+      "status": "in_flight"
+    }
   }
 }
