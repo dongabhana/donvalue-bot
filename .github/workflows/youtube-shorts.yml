@@ -112,6 +112,9 @@ jobs:
           if [ "$EVENT_NAME" = "schedule" ]; then
             # 정기: 보류 스위치 + 하루 상한(YT_DAILY_MAX, 기본 3편)을 코드에서 적용.
             # 20분마다 돌지만 그날 올린 편 수를 원장에서 세므로 상한을 넘지 않는다.
+            # 2026-10-05: 썸네일이 안 걸린 최근 편(실패·기록 없음)에 표지를 다시 건다.
+            # 실패해도 업로드는 계속한다(src/thumbs.py 가 원장에 남기고 6시간 뒤 재시도).
+            python -m src.thumbs || echo "[thumbs] 실행 실패 — 업로드는 계속합니다"
             python -m src.youtube_run --auto --count 3
             exit $?
           fi
