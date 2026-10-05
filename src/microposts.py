@@ -36,6 +36,9 @@ LOW_WATER = 6          # 남은 글이 이보다 적으면 채우라고 알린�
 # 글의 성격. content = 계산·비교 본편, soft = 맞팔(스하리)용 인사글.
 # track 이 없으면 content 로 본다 — 기존 글을 전부 고치지 않기 위해서다.
 TRACKS = ("content", "soft")
+# 2026-10-05: GitHub 예약 실행이 주말에 4~5시간씩 밀려 보조 실행(+1h, +2h)을 붙였다.
+# 예약 실행끼리는 이 시간 안에 이미 한 편이 나갔으면 건너뛴다(손으로 돌린 실행은 제외).
+SCHEDULED_GAP_HOURS = 10
 DEFAULT_TRACK = "content"
 
 
@@ -145,6 +148,21 @@ def commit_ledger(message: str) -> bool:
     raise RuntimeError("원장 푸시 실패 — 중복 발행을 막기 위해 중단합니다")
 
 
+def posted_recently(ledger: list[dict], hours: float, now: datetime | None = None) -> str:
+    """최근 hours 시간 안에 나간 글 id. 없으면 빈 문자열."""
+    now = now or datetime.now(KST)
+    for row in reversed(ledger):
+        try:
+            at = datetime.fromisoformat(str(row.get("posted_at", "")))
+        except ValueError:
+            continue
+        if at.tzinfo is None:
+            at = at.replace(tzinfo=KST)
+        if timedelta(0) <= now - at < timedelta(hours=hours):
+            return str(row.get("id", ""))
+    return ""
+
+
 def run(count: int, dry_run: bool, track: str | None = None) -> int:
     from src import notify
 
@@ -164,6 +182,11 @@ def run(count: int, dry_run: bool, track: str | None = None) -> int:
         track = allowed[0] if len(allowed) == 1 else None
 
     ledger = load_ledger()
+    if os.getenv("SCHEDULE") and not dry_run:
+        recent = posted_recently(ledger, SCHEDULED_GAP_HOURS)
+        if recent:
+            print(f"[micro] 최근 {SCHEDULED_GAP_HOURS}시간 안에 이미 올렸습니다({recent}) → 보조 실행은 건너뜁니다.")
+            return 0
     posted_ids = {r["id"] for r in ledger}
     picks = pick(pool, posted_ids, count, track)
     fellback = False
