@@ -217,5 +217,17 @@
     "errors": [
       "youtube_thumbnail: 썸네일 적용 실패 403: {\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n    \"errors\": [\n      {\n        \"message\": \"The authenticated user doesn't have permissions to upload and set custom video thumbnails.\",\n        \"domain\": \"you"
     ]
+  },
+  {
+    "id": "p07-car-fixed",
+    "product": "자동차는 안 타도 얼마가 나갈까",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-05T21:58:32+09:00",
+    "results": {
+      "instagram_reel": "18334540066279276",
+      "youtube": "nPo_NBeYP8U",
+      "threads": "17904611715355499"
+    },
+    "errors": []
   }
 ]
