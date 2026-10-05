@@ -487,6 +487,14 @@
       "status": "done",
       "id": "nPo_NBeYP8U",
       "at": "2026-10-05T21:47:31+09:00"
+    },
+    "youtube_thumbnail": {
+      "status": "done",
+      "at": "2026-10-05T21:47:32+09:00",
+      "tries": 1
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
