@@ -150,6 +150,23 @@ def heart(d,x,y,color):
         pts.append((x+1.8*16*math.sin(t)**3,y-1.8*(13*math.cos(t)-5*math.cos(2*t)-2*math.cos(3*t)-math.cos(4*t))))
     d.polygon(pts,fill=color)
 
+def cta_cover(e,root):
+    """2026-10-06 소유자 결정(A안): 유튜브 마지막 장면은 표지 위에 '좋아요 + 구독'만 얹는다.
+
+    파트너(YPP)가 아닌 채널은 쇼츠 썸네일을 직접 정할 수 없고, 유튜브가 영상의
+    시작·중간·끝 근처에서 뽑은 장면 중 하나를 쓴다. 시작(표지)과 끝을 표지로 맞추면
+    3장 중 2장이 표지가 된다. 표지의 사진·훅 글자는 그대로 두고 아래 안내 문구 자리만 덮는다.
+    """
+    im=cover(e,root); d=ImageDraw.Draw(im)
+    d.rectangle((0,1385,W,H),fill='#101A1C')
+    d.rounded_rectangle((60,1405,1020,1620),radius=28,fill=ORANGE)
+    txt(d,'좋아요 + 구독',100,1428,860,92,WHITE,120,900)
+    txt(d,'다음 계산도, 돈값하나와.',100,1548,860,34,WHITE,48,600)
+    q=e['question']; f=font(32,500)
+    while d.textlength(q,font=f)>880 and f.size>24: f=font(f.size-2,500)
+    d.text((96,1660),q,font=f,fill='#D5DBD2')
+    return im
+
 def cta(e,platform):
     im,d=frame(e,True)
     # Oversized editorial call to action, with a warm accent and a shared palette.
@@ -173,5 +190,6 @@ def render_frames(e,root):
     frames=[('01-cover',cover(e,root),e['narration'][0])]
     frames += [(f'{i+2:02d}-body',render_body(e,i),e['narration'][i+1]) for i in range(4)]
     frames += [('06-conclusion',conclusion(e),e['narration'][-1])]
-    frames += [('07-'+p+'-cta',cta(e,p),e['cta'][p]['narration']) for p in ['instagram','youtube']]
+    frames += [('07-instagram-cta',cta(e,'instagram'),e['cta']['instagram']['narration']),
+               ('07-youtube-cta',cta_cover(e,root),e['cta']['youtube']['narration'])]
     return frames
