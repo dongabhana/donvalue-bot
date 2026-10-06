@@ -175,13 +175,20 @@ def publish(item: dict, ctx: dict, dry_run: bool = False) -> int:
             results["youtube"] = vid
             print(f"[youtube] 발행 완료 {youtube.watch_url(vid)}")
             # 표지를 썸네일로. 실패해도 발행은 유지하고, 원장에 남겨 src/thumbs.py 가 다시 건다.
-            led = json.loads(ctx["DELIVERY"].read_text(encoding="utf-8"))
-            row = thumbs.apply(item["id"], vid, outdir / "cover.jpg", led, datetime.now(ctx["KST"]),
-                              setter=youtube.set_thumbnail)
-            ctx["DELIVERY"].write_text(json.dumps(led, ensure_ascii=False, indent=2), encoding="utf-8")
+            # 2026-10-06: 채널이 '중급 기능' 단계라 맞춤 썸네일 하루 한도에 걸려 API 로 올린 이미지가
+            # '처리 중'으로 멈추고 공개 화면엔 자동 장면이 나갔다. 고급 기능 인증 전까지 끈다
+            # (post.yml YT_THUMBNAIL=1 로 다시 켠다). 그동안은 스튜디오에서 첫 장면(=표지)을 고른다.
+            if os.getenv("YT_THUMBNAIL", "0") == "1":
+                led = json.loads(ctx["DELIVERY"].read_text(encoding="utf-8"))
+                row = thumbs.apply(item["id"], vid, outdir / "cover.jpg", led, datetime.now(ctx["KST"]),
+                                  setter=youtube.set_thumbnail)
+                ctx["DELIVERY"].write_text(json.dumps(led, ensure_ascii=False, indent=2), encoding="utf-8")
+            else:
+                row = {"status": "skipped"}
+                print("[youtube] 썸네일 API 꺼짐(YT_THUMBNAIL!=1) — 스튜디오에서 첫 장면(표지)을 고를 것")
             if row["status"] == "done":
                 print("[youtube] 표지 썸네일 적용 완료")
-            else:
+            elif row["status"] != "skipped":
                 errors.append(f"youtube_thumbnail: {row.get('error', '')}")
                 print(f"[youtube] 썸네일 적용 실패(영상은 정상, 나중에 다시 시도): {row.get('error', '')}")
             try:
