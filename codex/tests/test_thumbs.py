@@ -99,6 +99,17 @@ class CatchUpTests(unittest.TestCase):
 
 class CampaignPublishTests(unittest.TestCase):
     """발행 직후 썸네일 결과가 원장(youtube_thumbnail)에 남는지 — 성공·실패 둘 다."""
+    yt_thumb = '1'
+
+    def test_switch_off_skips_api(self):
+        """2026-10-06: YT_THUMBNAIL 이 꺼져 있으면 API 를 부르지 않고 오류도 남기지 않는다."""
+        self.yt_thumb = '0'
+        def boom(v, c):
+            raise AssertionError('썸네일 API 를 부르면 안 됨')
+        led, posted, _ = self._publish(boom)
+        self.assertNotIn('youtube_thumbnail', led['p07-car-fixed'])
+        self.assertEqual(posted['errors'], [])
+        self.assertIn('youtube', posted['results'])
     def _publish(self, set_thumbnail):
         from src import campaign
         tmp = tempfile.TemporaryDirectory()
@@ -140,7 +151,7 @@ class CampaignPublishTests(unittest.TestCase):
                    PREVIEW=root / 'preview', KST=KST, notify=Notify, youtube=YT, publish=None,
                    DELIVERY=delivery)
         item = {'id': 'p07-car-fixed', 'order': 7, 'product': '차', 'yt_title': '제목'}
-        env = {'GITHUB_REPOSITORY': 'o/r', 'APPROVAL_REQUIRED': '0', 'IG_USER_ID': '',
+        env = {'GITHUB_REPOSITORY': 'o/r', 'APPROVAL_REQUIRED': '0', 'IG_USER_ID': '', 'YT_THUMBNAIL': self.yt_thumb,
                'IG_ACCESS_TOKEN': '', 'TH_USER_ID': '', 'TH_ACCESS_TOKEN': ''}
         with patch.object(campaign, 'render', lambda it: folder), patch.dict('os.environ', env):
             self.assertEqual(campaign.publish(item, ctx), 0)
