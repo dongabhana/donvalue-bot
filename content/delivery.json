@@ -20,6 +20,11 @@
       "id": "KpK-pr0KMPs",
       "at": "2026-09-14T00:00:00+09:00",
       "source": "manual-upload"
+    },
+    "youtube_thumbnail": {
+      "status": "done",
+      "at": "2026-10-06T09:59:27+09:00",
+      "tries": 1
     }
   },
   "005-mvno": {
@@ -43,6 +48,11 @@
       "id": "UFaIoyZCRzk",
       "at": "2026-09-14T00:00:00+09:00",
       "source": "manual-upload"
+    },
+    "youtube_thumbnail": {
+      "status": "done",
+      "at": "2026-10-06T09:59:27+09:00",
+      "tries": 1
     }
   },
   "007-dishwasher": {
@@ -66,6 +76,11 @@
       "id": "pThcxlN3qEc",
       "at": "2026-09-14T00:00:00+09:00",
       "source": "manual-upload"
+    },
+    "youtube_thumbnail": {
+      "status": "done",
+      "at": "2026-10-06T09:59:27+09:00",
+      "tries": 1
     }
   },
   "008-commute-vs-rent": {
