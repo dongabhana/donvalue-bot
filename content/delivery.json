@@ -524,6 +524,9 @@
       "status": "done",
       "id": "-37hCxMl7hQ",
       "at": "2026-10-06T21:44:46+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
