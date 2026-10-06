@@ -229,5 +229,17 @@
       "threads": "17904611715355499"
     },
     "errors": []
+  },
+  {
+    "id": "p08-free-paid-ai",
+    "product": "무료 AI vs 유료 AI",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-06T21:55:37+09:00",
+    "results": {
+      "instagram_reel": "18150893923531705",
+      "youtube": "-37hCxMl7hQ",
+      "threads": "17977707450125136"
+    },
+    "errors": []
   }
 ]
