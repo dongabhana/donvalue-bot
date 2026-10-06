@@ -516,7 +516,9 @@
   },
   "p08-free-paid-ai": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "18150893923531705",
+      "at": "2026-10-06T21:44:42+09:00"
     }
   }
 }
