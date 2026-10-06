@@ -163,5 +163,37 @@ class CampaignPublishTests(unittest.TestCase):
         self.assertIn('youtube', posted['results'])
 
 
+class MakeCoverTests(unittest.TestCase):
+    """2026-10-05: 영상 장면이 아니라 표지 이미지를 올린다 — 예전 편도 표지를 만든다."""
+    def test_real_older_items_get_vertical_cover(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as tmp:
+            # 실제 저장소 파일을 그대로 쓰되 결과물만 임시 폴더로
+            root = Path(tmp)
+            for rel in ('codex/content.json', 'images/001-coupang-wow/001-coupang-wow_01.png'):
+                (root / rel).parent.mkdir(parents=True, exist_ok=True)
+                (root / rel).write_bytes((ROOT / rel).read_bytes())
+            data = json.loads((ROOT / 'codex/content.json').read_text(encoding='utf-8'))
+            items = data.get('items', data) if isinstance(data, dict) else data
+            photo = next(i for i in items if i['id'] == 'cx107-filter-service')['cover_photo']['path']
+            (root / photo).parent.mkdir(parents=True, exist_ok=True)
+            (root / photo).write_bytes((ROOT / photo).read_bytes())
+            for item_id in ('001-coupang-wow', 'cx107-filter-service'):
+                out = thumbs.make_cover(root, item_id)
+                self.assertIsNotNone(out, item_id)
+                with Image.open(out) as im:
+                    self.assertEqual(im.size, (1080, 1920))
+                self.assertLess(out.stat().st_size, 2 * 1024 * 1024)
+            self.assertIsNone(thumbs.make_cover(root, 'zz-none'))
+            self.assertFalse(thumbs.has_cover_source(root, 'zz-none'))
+
+    def test_campaign_cover_file_wins(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / 'images' / 'p07').mkdir(parents=True)
+            (root / 'images' / 'p07' / 'cover.jpg').write_bytes(b'jpg')
+            self.assertEqual(thumbs.make_cover(root, 'p07'), root / 'images' / 'p07' / 'cover.jpg')
+
+
 if __name__ == '__main__':
     unittest.main()
