@@ -114,7 +114,8 @@ jobs:
             # 20분마다 돌지만 그날 올린 편 수를 원장에서 세므로 상한을 넘지 않는다.
             # 2026-10-05: 썸네일이 안 걸린 최근 편(실패·기록 없음)에 표지를 다시 건다.
             # 실패해도 업로드는 계속한다(src/thumbs.py 가 원장에 남기고 6시간 뒤 재시도).
-            python -m src.thumbs || echo "[thumbs] 실행 실패 — 업로드는 계속합니다"
+            # 2026-10-06 중지: API 로 올린 썸네일이 쇼츠에서 '처리 중'으로 멈춰 공개 화면에 자동 장면이 나간다.
+            # python -m src.thumbs
             python -m src.youtube_run --auto --count 3
             exit $?
           fi
