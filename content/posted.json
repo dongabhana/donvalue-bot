@@ -241,5 +241,17 @@
       "threads": "17977707450125136"
     },
     "errors": []
+  },
+  {
+    "id": "p09-robot-time",
+    "product": "로봇청소기 시간값",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-07T21:58:27+09:00",
+    "results": {
+      "instagram_reel": "18116378378080283",
+      "youtube": "QZdC82ceNes",
+      "threads": "18146415433569099"
+    },
+    "errors": []
   }
 ]
