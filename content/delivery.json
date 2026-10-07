@@ -541,6 +541,9 @@
       "status": "done",
       "id": "QZdC82ceNes",
       "at": "2026-10-07T21:47:39+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
