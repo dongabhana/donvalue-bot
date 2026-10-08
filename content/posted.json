@@ -253,5 +253,17 @@
       "threads": "18146415433569099"
     },
     "errors": []
+  },
+  {
+    "id": "p10-youtube",
+    "product": "유튜브 프리미엄 vs 라이트",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-08T21:58:36+09:00",
+    "results": {
+      "instagram_reel": "17935836756392607",
+      "youtube": "_FrSM4vS9As",
+      "threads": "17898090261398332"
+    },
+    "errors": []
   }
 ]
