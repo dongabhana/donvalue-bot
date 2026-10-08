@@ -1,0 +1,32 @@
+{
+  "instagram": {
+    "duration": 39.23,
+    "mean_volume_db": -21.0,
+    "scenes": [
+      "01-cover.png",
+      "02-body.png",
+      "03-body.png",
+      "04-body.png",
+      "05-body.png",
+      "06-conclusion.png",
+      "07-instagram-cta.png"
+    ],
+    "sha256": "c7d06635788b8b95719e16213f526c57cf7b123246b8943d27e1329f06e5e34d",
+    "bytes": 1121280
+  },
+  "youtube": {
+    "duration": 39.19,
+    "mean_volume_db": -21.0,
+    "scenes": [
+      "01-cover.png",
+      "02-body.png",
+      "03-body.png",
+      "04-body.png",
+      "05-body.png",
+      "06-conclusion.png",
+      "07-youtube-cta.png"
+    ],
+    "sha256": "7802b08352273bafd08f4196df77d2db7e21f70fb52497a5f141b61ccbe50cf8",
+    "bytes": 1230122
+  }
+}
