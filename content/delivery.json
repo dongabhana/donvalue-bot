@@ -550,7 +550,9 @@
   },
   "p10-youtube": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17935836756392607",
+      "at": "2026-10-08T21:47:34+09:00"
     }
   }
 }
