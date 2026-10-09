@@ -265,5 +265,17 @@
       "threads": "17898090261398332"
     },
     "errors": []
+  },
+  {
+    "id": "p11-snooze-taxi",
+    "product": "5분 더 자고 택시",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-09T15:59:51+09:00",
+    "results": {
+      "instagram_reel": "17948348358344967",
+      "youtube": "artlLmhaIbU",
+      "threads": "18100899311532145"
+    },
+    "errors": []
   }
 ]
