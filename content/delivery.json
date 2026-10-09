@@ -575,6 +575,9 @@
       "status": "done",
       "id": "artlLmhaIbU",
       "at": "2026-10-09T15:49:03+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
