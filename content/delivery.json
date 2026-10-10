@@ -584,7 +584,9 @@
   },
   "p12-rental": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17976159761935971",
+      "at": "2026-10-10T15:46:05+09:00"
     }
   }
 }
