@@ -277,5 +277,17 @@
       "threads": "18100899311532145"
     },
     "errors": []
+  },
+  {
+    "id": "p12-rental",
+    "product": "가전 렌탈 vs 구매",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-10T15:57:04+09:00",
+    "results": {
+      "instagram_reel": "17976159761935971",
+      "youtube": "AKKpvXJ9vyw",
+      "threads": "18628520851012415"
+    },
+    "errors": []
   }
 ]
