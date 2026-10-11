@@ -601,7 +601,9 @@
   },
   "p13-import": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "18122009725989562",
+      "at": "2026-10-11T15:47:22+09:00"
     }
   }
 }
