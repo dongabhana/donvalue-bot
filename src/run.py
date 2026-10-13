@@ -93,6 +93,26 @@ def slot_for(day: datetime) -> datetime:
     return day.replace(hour=h, minute=m, second=0, microsecond=0)
 
 
+# 2026-10-14: GitHub 예약 실행이 몇 시간씩 밀린다(10/12 21:40 예약이 다음 날 06:51 실행).
+# 밀린 예약 실행이 새벽에 돌면 ① 새벽에 게시되고 ② '오늘은 이미 한 편' 검사 때문에
+# 그날 저녁 정식 슬롯이 건너뛰어진다. 예약(schedule) 실행이 그날 슬롯보다 EARLY_SKIP_MIN 분
+# 넘게 이르면 = 어제 슬롯이 밀려 온 것이므로 게시하지 않는다. 손으로 돌린 실행(workflow_dispatch)과
+# 슬롯 뒤 보조 실행(+1h, +2h)은 그대로 나간다.
+EARLY_SKIP_MIN = int(os.getenv("EARLY_SKIP_MIN", "60"))
+
+
+def stale_schedule(now: datetime, event: str | None = None) -> str:
+    """밀려서 엉뚱한 시각에 돈 예약 실행이면 사유, 아니면 빈 문자열."""
+    event = os.getenv("GITHUB_EVENT_NAME", "") if event is None else event
+    if event != "schedule":
+        return ""
+    slot = slot_for(now)
+    if now < slot - timedelta(minutes=EARLY_SKIP_MIN):
+        return (f"예약 실행이 밀려 {now:%m/%d %H:%M}에 시작됨 — 오늘 슬롯({slot:%H:%M})보다 "
+                f"{EARLY_SKIP_MIN}분 넘게 이르므로 어제 몫으로 보고 게시하지 않음")
+    return ""
+
+
 def load_posted() -> list[dict]:
     if POSTED.exists():
         return json.loads(POSTED.read_text(encoding="utf-8"))
@@ -816,6 +836,16 @@ def main() -> int:
     count = 1 if args.id else max(1, args.count)
     if count > 1:
         print(f"[burst] {count}편을 {gap}분 간격으로 발행합니다")
+
+    stale = "" if (args.dry_run or args.ask_tomorrow) else stale_schedule(datetime.now(KST))
+    if stale:
+        print(f"[skip] {stale}")
+        try:
+            if notify.enabled():
+                notify.send_message(f"⏭ 자동 발행 건너뜀\n{stale}\n오늘 슬롯에 정상 발행합니다.")
+        except Exception as e:                                    # noqa: BLE001
+            print(f"[telegram] 알림 실패: {e}")
+        return 0
 
     rc = 0
     previous_start = None
