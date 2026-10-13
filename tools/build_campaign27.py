@@ -152,6 +152,8 @@ def run(args):
 
 def synth_one(job):
     import edge_tts
+    from src import tts_endpoint
+    tts_endpoint.apply()  # 2026-10-12 마이크로소프트 합성 주소 변경 대응(예전 주소는 403)
     folder,s=job; path=folder/(s['name']+'.mp3')
     speech=speakable(s['narration'])
     digest=hashlib.sha256(f'{VOICE}|{RATE}|{speech}'.encode()).hexdigest()

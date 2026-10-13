@@ -245,6 +245,8 @@ def synth_line(text: str, out: Path, voice: str = "", rate: str = "",
                pitch: str = "", tries: int = 3) -> Path:
     """한 문장을 mp3 로 만든다. 여기만 갈아끼우면 다른 TTS 로 옮길 수 있다."""
     import edge_tts
+    from src import tts_endpoint
+    tts_endpoint.apply()  # 2026-10-12 마이크로소프트 합성 주소 변경 대응(예전 주소는 403)
 
     # 워크플로가 빈 문자열을 넘길 수 있어 getenv 기본값이 아니라 or 로 받는다
     voice = voice or os.getenv("TTS_VOICE") or DEFAULT_VOICE
