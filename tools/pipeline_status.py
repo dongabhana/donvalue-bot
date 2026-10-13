@@ -118,7 +118,7 @@ def daily_summary(now=None):
     # 2026-09-29: 27편 캠페인이 큐보다 먼저 나간다(src/campaign.py). 표지 대기 편은 남은 편에만 센다.
     try:
         from src import campaign
-        camp = [e for e in sorted(campaign.load(), key=lambda e: e['order']) if e['id'] not in posted_ids]
+        camp = [e for e in campaign.load() if e['id'] not in posted_ids]   # load() 가 이미 발행 순서
         camp_ready = [e['id'] for e in camp if campaign.cover_ok(e)[0]]
         claude_left = [e['id'] for e in camp] + claude_left
         claude_ready = camp_ready + claude_ready

@@ -61,6 +61,14 @@ COMPARE={
 def render_body(e,i):
     from src import editorial_design as D
     c=e['cards'][i]; n=e['order']
+    if e.get('screen'):
+        # 2026-10-13 새 30편(codex/campaign30.py): 화면 문장·비교 막대·하단 문구를 편 원고가 직접 들고 온다.
+        # 27편 전용 표(SCREEN·COMPARE)는 편 번호로 찾으므로 다른 캠페인에 쓰면 엉뚱한 편 문장이 나온다.
+        cmp=(e.get('compare') or {}).get(i)
+        im=D.body(c['title'],c['figure'],e['screen'][i],i,comparison=tuple(cmp) if cmp else None,
+                  note=e.get('note') or '상세 조건과 출처는 캡션')
+        BOUNDS.extend(D.BOUNDS); D.BOUNDS.clear()
+        return im
     note='가정값 · 시간가치 ≠ 현금 수입' if n in [1,6,8,9,10,14,15,18] else '설명용 가정 포함 · 상세 조건과 출처는 캡션'
     if n==5: note='2026년 12월까지 · 정률 기준 / 이용 조건 확인'
     if n==23: note='지급률은 전체 평균 · 개인 당첨액 보장 아님'
@@ -72,7 +80,10 @@ def render_body(e,i):
 
 
 def cover(e,root):
-    im=ImageOps.fit(Image.open(root/e['cover_file']).convert('RGB'),(W,H))
+    im=ImageOps.fit(Image.open(root/e['cover_file']).convert('RGB'),(W,H),method=Image.Resampling.LANCZOS)
+    if e.get('cover_complete'):
+        # 새 30편 표지는 제목·브랜드까지 들어간 완성 이미지(GPT 제작) — 글자를 또 얹으면 겹친다.
+        return im
     overlay=Image.new('RGBA',(W,H));od=ImageDraw.Draw(overlay)
     for y in range(H):
         a=20+int(224*max(0,min(1,(y-650)/900)))
@@ -92,8 +103,27 @@ def cover(e,root):
 
 def conclusion(e):
     from src import editorial_design as D
-    im=D.conclusion(e['verdict_text'])
+    im=D.conclusion(e['verdict_text'],key=e.get('key'))  # 9/29 소유자 요청: 결론에 핵심 숫자 한 번 더
     BOUNDS.extend(D.BOUNDS); D.BOUNDS.clear()
+    return im
+
+
+def cta_cover(e,root):
+    """2026-10-06 소유자 결정(A안): 유튜브 마지막 장면은 표지 위에 '좋아요 + 구독'만 얹는다.
+
+    파트너(YPP)가 아닌 채널은 쇼츠 썸네일을 직접 정할 수 없고, 유튜브가 영상의
+    시작·중간·끝 근처에서 뽑은 장면 중 하나를 쓴다. 시작(표지)과 끝을 표지로 맞추면
+    3장 중 2장이 표지가 된다. 표지의 사진·훅 글자는 그대로 두고 아래 안내 문구 자리만 덮는다.
+    2026-10-13: PR #4 가 이 장면을 일반 엔딩으로 바꿨던 것을 되돌림(소유자 결정 유지).
+    """
+    im=cover(e,root); d=ImageDraw.Draw(im)
+    d.rectangle((0,1385,W,H),fill='#101A1C')
+    d.rounded_rectangle((60,1405,1020,1620),radius=28,fill=ORANGE)
+    txt(d,'좋아요 + 구독',100,1428,860,92,WHITE,120,900)
+    txt(d,'다음 계산도, 돈값하나와.',100,1548,860,34,WHITE,48,600)
+    q=e['question']; f=font(32,500)
+    while d.textlength(q,font=f)>880 and f.size>24: f=font(f.size-2,500)
+    d.text((96,1660),q,font=f,fill='#D5DBD2')
     return im
 
 
@@ -109,5 +139,5 @@ def render_frames(e,root):
     frames += [(f'{i+2:02d}-body',render_body(e,i),e['narration'][i+1]) for i in range(4)]
     frames += [('06-conclusion',conclusion(e),e['narration'][-1])]
     frames += [('07-instagram-cta',cta(e,'instagram'),e['cta']['instagram']['narration']),
-               ('07-youtube-cta',cta(e,'youtube'),e['cta']['youtube']['narration'])]
+               ('07-youtube-cta',cta_cover(e,root),e['cta']['youtube']['narration'])]
     return frames

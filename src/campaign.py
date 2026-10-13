@@ -42,16 +42,37 @@ def builder():
     return _module("build_campaign27", ROOT / "tools" / "build_campaign27.py")
 
 
+# 발행 우선순위대로. 2026-10-13 소유자 결정: 새 30편(campaign30)을 27편 캠페인보다 먼저 낸다.
+# 새 30편은 START 날짜(KST)부터 나가고, 그 뒤로는 날짜 고정 없이 앞 편이 나가면 다음 편이 잇는다
+# (2026-09-22 '순번제' 방침). START 전에는 27편의 남은 편이 슬롯을 채운다.
+CAMPAIGNS = ("campaign30", "campaign27")
+
+
+def _mod(name: str):
+    import importlib
+    return importlib.import_module(f"codex.{name}")
+
+
 def load() -> list[dict]:
-    """원고는 codex/campaign27.py 하나가 원본이다(JSON 사본을 따로 두지 않는다 → 어긋날 일이 없다)."""
+    """원고는 codex/<campaign>.py 가 원본이다(JSON 사본을 따로 두지 않는다 → 어긋날 일이 없다).
+
+    돌려주는 순서 = 발행 우선순위(캠페인 순서 → 편 번호)."""
     import copy
-    from codex import campaign27 as C
-    return copy.deepcopy(C.package()["items"])
+    items: list[dict] = []
+    for name in CAMPAIGNS:
+        for e in sorted(copy.deepcopy(_mod(name).package()["items"]), key=lambda e: e["order"]):
+            e.setdefault("campaign", name)
+            items.append(e)
+    return items
+
+
+def start_date(item: dict) -> str:
+    return getattr(_mod(item["campaign"]), "START", "") or ""
 
 
 def cover_ok(item: dict) -> tuple[bool, str]:
     """표지 판정은 JSON 에 박힌 값이 아니라 지금 파일 상태로 한다."""
-    from codex import campaign27 as C
+    C = _mod(item.get("campaign", "campaign27"))
     probe = dict(item)
     own = ROOT / f"assets/covers/{item['id']}.editorial-v3.jpg"
     if own.is_file():
@@ -63,12 +84,17 @@ def ids() -> set[str]:
     return {e["id"] for e in load()}
 
 
-def next_ready(posted_ids: set[str]) -> tuple[dict | None, list[str]]:
-    """(낼 편, 표지 때문에 건너뛴 편 목록)."""
+def next_ready(posted_ids: set[str], today: str | None = None) -> tuple[dict | None, list[str]]:
+    """(낼 편, 표지 때문에 건너뛴 편 목록). today 는 'YYYY-MM-DD'(KST), 비우면 지금."""
+    if today is None:
+        from zoneinfo import ZoneInfo
+        today = datetime.now(ZoneInfo("Asia/Seoul")).date().isoformat()
     waiting: list[str] = []
-    for item in sorted(load(), key=lambda e: e["order"]):
+    for item in load():
         if item["id"] in posted_ids:
             continue
+        if start_date(item) and today < start_date(item):
+            continue                      # 아직 시작 전인 캠페인 → 다음 캠페인으로
         ok, why = cover_ok(item)
         if not ok:
             waiting.append(item["id"])
@@ -82,7 +108,7 @@ def render(item: dict) -> Path:
     if BUILD_DIR.exists():
         shutil.rmtree(BUILD_DIR)
     b = builder()
-    b.build(BUILD_DIR, only=[item["id"]], video=True)
+    b.build(BUILD_DIR, only=[item["id"]], video=True, campaign=item.get("campaign", "campaign27"))
     folder = BUILD_DIR / item["id"]
     report = json.loads((folder / "verify.json").read_text(encoding="utf-8"))
     for p in ("instagram", "youtube"):
@@ -148,7 +174,7 @@ def publish(item: dict, ctx: dict, dry_run: bool = False) -> int:
     sh("git", "add", str(outdir))
     if sh("git", "status", "--porcelain", str(outdir)):
         sh("git", "-c", "user.name=donvalue-bot", "-c", "user.email=bot@users.noreply.github.com",
-           "commit", "-m", f"images: {item['id']} (campaign27)")
+           "commit", "-m", f"images: {item['id']} ({item.get('campaign', 'campaign27')})")
         push()
     sha = sh("git", "rev-parse", "HEAD")
     base = f"https://raw.githubusercontent.com/{repo}/{sha}/images/{item['id']}"
@@ -230,7 +256,7 @@ def publish(item: dict, ctx: dict, dry_run: bool = False) -> int:
         print("[stop] 어느 플랫폼에도 발행하지 못했습니다. 기록하지 않고 종료합니다.")
         return 1
     posted = json.loads(ctx["POSTED"].read_text(encoding="utf-8")) if ctx["POSTED"].exists() else []
-    posted.append({"id": item["id"], "product": item["product"], "campaign": "campaign27",
+    posted.append({"id": item["id"], "product": item["product"], "campaign": item.get("campaign", "campaign27"),
                    "posted_at": datetime.now(ctx["KST"]).isoformat(timespec="seconds"),
                    "results": results, "errors": errors})
     ctx["POSTED"].write_text(json.dumps(posted, ensure_ascii=False, indent=2), encoding="utf-8")

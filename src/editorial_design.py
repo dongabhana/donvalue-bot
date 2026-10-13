@@ -182,13 +182,23 @@ def stake(value,brand='돈값하나',handle='@dongabhana'):
     return im
 
 
-def conclusion(value,brand='돈값하나',handle='@dongabhana'):
+def conclusion(value,brand='돈값하나',handle='@dongabhana',key=None):
     im,d=frame('돈값하나의 결론',4,4,brand,handle)
-    icon(d,'check',80,315,LIME,1.15)
-    text(d,'그래서, 돈값하나?',(80,465,866,110),61,LIME,800)
-    card(d,(78,646,947,1265),fill='#21373A')
-    d.rounded_rectangle((78,675,86,1236),radius=4,fill=LIME)
-    text(d,value,(114,703,794,506),85,WHITE,850)
+    key=key or {}
+    if key.get('figure'):
+        # 2026-09-29 소유자 요청: 결론 화면에 핵심 숫자를 한 번 더 보여준다.
+        text(d,'그래서, 돈값하나?',(80,300,866,90),56,LIME,800)
+        text(d,key.get('label',''),(80,420,866,60),36,MUTED,600)
+        text(d,key['figure'],(80,490,866,170),104,ORANGE,900)
+        card(d,(78,700,947,1265),fill='#21373A')
+        d.rounded_rectangle((78,729,86,1236),radius=4,fill=LIME)
+        text(d,value,(114,757,794,452),76,WHITE,850)
+    else:
+        icon(d,'check',80,315,LIME,1.15)
+        text(d,'그래서, 돈값하나?',(80,465,866,110),61,LIME,800)
+        card(d,(78,646,947,1265),fill='#21373A')
+        d.rounded_rectangle((78,675,86,1236),radius=4,fill=LIME)
+        text(d,value,(114,703,794,506),85,WHITE,850)
     icon(d,'bookmark',84,1343,ORANGE,.55)
     text(d,'내 조건으로 한 번 더 확인',(135,1347,804,80),39,MUTED,550)
     return im

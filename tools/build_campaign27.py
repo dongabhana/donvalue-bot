@@ -263,13 +263,16 @@ def gallery(out,items):
     (out/'index.html').write_text(page,encoding='utf8')
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--out',type=Path,required=True); ap.add_argument('--audio',action='store_true'); ap.add_argument('--video',action='store_true'); ap.add_argument('--only',type=int,nargs='*'); ap.add_argument('--ready',action='store_true',help='표지가 준비된 편만'); ap.add_argument('--keep-cache',action='store_true'); args=ap.parse_args()
-    build(args.out,only=args.only,audio=args.audio,video=args.video,ready=args.ready,keep_cache=args.keep_cache)
+    ap=argparse.ArgumentParser(); ap.add_argument('--out',type=Path,required=True); ap.add_argument('--audio',action='store_true'); ap.add_argument('--video',action='store_true'); ap.add_argument('--only',type=int,nargs='*'); ap.add_argument('--ready',action='store_true',help='표지가 준비된 편만'); ap.add_argument('--keep-cache',action='store_true'); ap.add_argument('--campaign',default='campaign27'); args=ap.parse_args()
+    build(args.out,only=args.only,audio=args.audio,video=args.video,ready=args.ready,keep_cache=args.keep_cache,campaign=args.campaign)
 
-def build(out,only=None,audio=False,video=False,ready=False,keep_cache=False):
-    """out/<id>/ 에 장면 PNG·음성·영상·캡션을 만든다. 만든 편 목록을 돌려준다."""
+def build(out,only=None,audio=False,video=False,ready=False,keep_cache=False,campaign='campaign27'):
+    """out/<id>/ 에 장면 PNG·음성·영상·캡션을 만든다. 만든 편 목록을 돌려준다.
+
+    campaign: 원고 모듈 이름(codex/<campaign>.py). 2026-10-13 새 30편(campaign30)도 같은 제작기를 쓴다."""
     out=Path(out)
-    from codex import campaign27 as C   # 원고 원본에서 바로 만든다(JSON 사본을 거치지 않음)
+    import importlib
+    C=importlib.import_module(f'codex.{campaign}')   # 원고 원본에서 바로 만든다(JSON 사본을 거치지 않음)
     data=C.package(); items=data['items']
     selected=[e for e in items if (not only or e['order'] in only or e['id'] in only) and (not ready or e.get('cover_ready'))]
     out.mkdir(parents=True,exist_ok=True)

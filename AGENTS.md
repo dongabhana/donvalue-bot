@@ -30,6 +30,7 @@ python -m unittest discover -s codex/tests -q
 | 해시태그 | `src/tags.py` 한 곳. 인스타 5개까지, 검색되지 않는 태그(`#분기점` `#돈값하나` `#비교분석` `#몰라서내는돈`)는 자동 제거 | `tags.BLOCKED`, `tags.CORE` |
 | 행동 유도 | 인스타 캡션·유튜브 설명·영상 마지막 화면·나레이션 끝에 좋아요·팔로우(유튜브는 구독) | `src/hooks.py` 의 `IG_CTA` `YT_CTA` `END_BIG` `VOICE_CTA` |
 | 27편 캠페인 | `codex/campaign27.py` 원고를 번호 순서로 **큐보다 먼저** 발행(`src/campaign.py`). 표지 대기 12편은 새 표지 파일이 들어와야 풀림 | `docs/campaign27.md` |
+| 새 30편 (10/13 추가) | `codex/campaign30.py`(n01~n30)를 **27편보다 먼저**, `START`(2026-10-15)부터 번호 순서로 발행. 날짜 고정 아님(밀리면 다음 편이 잇는다) | `src/campaign.py` 의 `CAMPAIGNS`, `campaign30.START` |
 | 쓰레드 | 본편 글 1개 + **스하리(soft) 글 하루 1번(21:40)**. 단문 콘텐츠 글·답글 체인 끔 | `microposts.yaml` 의 `tracks`, `THREADS_CHAIN=1` |
 
 - 새 편을 쓸 때: `yt_title`(유튜브 제목), `hashtags`(주제 태그 3개 이하, 게시물 수 수만~수십만), 가정값이면 `sources`·캡션·쓰레드 본문에 "가정"을 적는다.
@@ -120,3 +121,7 @@ python -m unittest discover -s codex/tests -q
 ## 2026-10-13 새 디자인 및 30편 표지 인계
 
 새 영상의 본문·엔딩과 10/15~11/13 기획 표지를 작업할 때 먼저 `docs/claude-design-handoff.md`를 읽는다. 표지 원본과 주제 대응표는 `assets/cover-packs/2026-10-15_30days/`에 있다. 기획 날짜는 발행 예약이 아니며 새 콘텐츠 ID 연결은 인계 문서 순서를 따른다.
+
+반영 결과(2026-10-13, Claude): 원고 30편 `codex/campaign30.py`, 운영 표지 `assets/covers/n01~n30-*.editorial-v3.jpg`
+(원본 PNG → 1080×1920 JPEG, 대응표 `content_id` 채움). PR #4 에서 바뀌었던 두 장면은 소유자 결정대로 되돌림 —
+유튜브 마지막 장 = 표지 + '좋아요 + 구독'(10/06 A안), 결론 = 핵심 숫자 포함(09/29). 회귀 테스트 `codex/tests/test_campaign30_1013.py`.
