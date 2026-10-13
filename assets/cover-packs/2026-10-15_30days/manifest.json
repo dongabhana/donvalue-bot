@@ -1,0 +1,302 @@
+[
+  {
+    "sequence": 1,
+    "planned_date": "2026-10-15",
+    "title": "택시 23시의 벽",
+    "series": "1분 차이 돈",
+    "headline": "택시비가 바뀌는 밤 11시",
+    "file": "01_2026-10-15.png",
+    "sha256": "5d3dab65eac84f18c9af8126dbce94ec7ae88f6b3cf0f6935a1cb20bccd59393",
+    "content_id": null
+  },
+  {
+    "sequence": 2,
+    "planned_date": "2026-10-16",
+    "title": "이사할 때 두고 나오는 돈",
+    "series": "몰라서 못 받은 돈",
+    "headline": "이삿짐은 챙기고\n이 돈은 두고 간다?",
+    "file": "02_2026-10-16.png",
+    "sha256": "08ecc99a3783f96b5d7844e82d38c825a8e2201ccb976b7717ad655eb0f8d044",
+    "content_id": null
+  },
+  {
+    "sequence": 3,
+    "planned_date": "2026-10-17",
+    "title": "KTX 19분 vs 20분",
+    "series": "1분 차이 돈",
+    "headline": "KTX 지연\n19분과 20분의 차이",
+    "file": "03_2026-10-17.png",
+    "sha256": "28b86ee495102f746ac1c31d6e4fb8115f974e68add60465aa2e7c5c92cf9087",
+    "content_id": null
+  },
+  {
+    "sequence": 4,
+    "planned_date": "2026-10-18",
+    "title": "1주차 결산",
+    "series": "이번 주 돈값",
+    "headline": "택시·이사·KTX\n놓친 돈 3가지",
+    "file": "04_2026-10-18.png",
+    "sha256": "79885edad9b425433c89a64fb857a263dfe26856c3c7e41a079621cbf23280d6",
+    "content_id": null
+  },
+  {
+    "sequence": 5,
+    "planned_date": "2026-10-19",
+    "title": "보일러 1도의 값",
+    "series": "겨울 고지서 해부",
+    "headline": "보일러 온도\n1도의 돈값",
+    "file": "05_2026-10-19.png",
+    "sha256": "c4e141e2b5d6d53391d4a74578d0acf66dd2d79efd341500f29669d8a225b234",
+    "content_id": null
+  },
+  {
+    "sequence": 6,
+    "planned_date": "2026-10-20",
+    "title": "이미 가입된 보험",
+    "series": "몰라서 못 받은 돈",
+    "headline": "우리 동네가\n보험료를 낸다고?",
+    "file": "06_2026-10-20.png",
+    "sha256": "3378b7d380a078ea846a00900f108903487147f86a9f846a09b6aa504c58afb7",
+    "content_id": null
+  },
+  {
+    "sequence": 7,
+    "planned_date": "2026-10-21",
+    "title": "과태료 vs 범칙금",
+    "series": "1분 차이 돈",
+    "headline": "과태료 vs 범칙금\n싼 쪽이 이득일까?",
+    "file": "07_2026-10-21.png",
+    "sha256": "c4cfa508042013503e9368223a956554e9236e674ab6e9459a8cbcb8b507b2ce",
+    "content_id": null
+  },
+  {
+    "sequence": 8,
+    "planned_date": "2026-10-22",
+    "title": "증발하는 카드포인트",
+    "series": "몰라서 못 받은 돈",
+    "headline": "내 카드포인트가\n사라지고 있다",
+    "file": "08_2026-10-22.png",
+    "sha256": "4f26b972ca8219c7361b73cfbed20a8ccf29ed4a5c17792bc4f2a37fadde7ed7",
+    "content_id": null
+  },
+  {
+    "sequence": 9,
+    "planned_date": "2026-10-23",
+    "title": "지역난방의 함정",
+    "series": "겨울 고지서 해부",
+    "headline": "지역난방\n전원 끄기 전 확인",
+    "file": "09_2026-10-23.png",
+    "sha256": "5dd186005a6267febe6705898f049cc172bc0f7c7c27258029aa78516fa32f34",
+    "content_id": null
+  },
+  {
+    "sequence": 10,
+    "planned_date": "2026-10-24",
+    "title": "밤 9시 환승 규칙",
+    "series": "1분 차이 돈",
+    "headline": "밤 9시 이후\n환승 시간이 늘어난다",
+    "file": "10_2026-10-24.png",
+    "sha256": "77f8f7138af34c30f07506fd1163cb8f7efd116e09e13d0ec279cf6a797b1309",
+    "content_id": null
+  },
+  {
+    "sequence": 11,
+    "planned_date": "2026-10-25",
+    "title": "2주차 결산",
+    "series": "이번 주 돈값",
+    "headline": "카드·교통·난방\n놓치기 쉬운 돈",
+    "file": "11_2026-10-25.png",
+    "sha256": "d8b445760e62a47c2596bafd0a52b83f70fdb5f4faec208e8ec5ebc4223cc99e",
+    "content_id": null
+  },
+  {
+    "sequence": 12,
+    "planned_date": "2026-10-26",
+    "title": "안 찾아간 보험금",
+    "series": "몰라서 못 받은 돈",
+    "headline": "잠든 보험금\n찾아봤나요?",
+    "file": "12_2026-10-26.png",
+    "sha256": "f1d3a8f887a6e7844ecd23c41d87f075039ef7d3894d7e6d772a4837979443a4",
+    "content_id": null
+  },
+  {
+    "sequence": 13,
+    "planned_date": "2026-10-27",
+    "title": "보일러 끄고 외출",
+    "series": "겨울 고지서 해부",
+    "headline": "외출할 때 보일러\n끄는 게 답일까?",
+    "file": "13_2026-10-27.png",
+    "sha256": "f26ad53fafe6315b7cdd2baa8a134d97cef1f202bb8fc421c8944d2f7bd40cfd",
+    "content_id": null
+  },
+  {
+    "sequence": 14,
+    "planned_date": "2026-10-28",
+    "title": "비행기 59분 지연",
+    "series": "1분 차이 돈",
+    "headline": "비행기 지연\n59분과 60분의 차이",
+    "file": "14_2026-10-28.png",
+    "sha256": "4e99fd2da859bce04b0ff8feb68a5896b81498bec49a9e0fd77b3a7b27fd1db0",
+    "content_id": null
+  },
+  {
+    "sequence": 15,
+    "planned_date": "2026-10-29",
+    "title": "실손 이중 납부",
+    "series": "몰라서 못 받은 돈",
+    "headline": "회사 실손 + 개인 실손\n두 번 내고 있나요?",
+    "file": "15_2026-10-29.png",
+    "sha256": "551fc6fa664fd053dba3b772aa71757683b655fc2b1f432bb95c5d477f19bb51",
+    "content_id": null
+  },
+  {
+    "sequence": 16,
+    "planned_date": "2026-10-30",
+    "title": "경차 30만원",
+    "series": "몰라서 못 받은 돈",
+    "headline": "경차 주유비\n환급 챙기셨나요?",
+    "file": "16_2026-10-30.png",
+    "sha256": "c2fb078084486cb50a4d1962c453ef6ed8d157417a314bfa1e05da72d970ab79",
+    "content_id": null
+  },
+  {
+    "sequence": 17,
+    "planned_date": "2026-10-31",
+    "title": "패딩 세탁",
+    "series": "겨울 고지서 해부",
+    "headline": "패딩 세탁\n보온력이 달라진다",
+    "file": "17_2026-10-31.png",
+    "sha256": "1b67a0420b28528129f545ed6ce3c3e8804aad73f435e195b85ff8d259fd469b",
+    "content_id": null
+  },
+  {
+    "sequence": 18,
+    "planned_date": "2026-11-01",
+    "title": "3주차 결산",
+    "series": "이번 주 돈값",
+    "headline": "겨울 지출\n무엇부터 줄일까?",
+    "file": "18_2026-11-01.png",
+    "sha256": "97bc02fd63920e177b8d03b84831ceb3d2cf894e8270bac40b0d4eef0b66198a",
+    "content_id": null
+  },
+  {
+    "sequence": 19,
+    "planned_date": "2026-11-02",
+    "title": "중소기업 청년 90%",
+    "series": "몰라서 못 받은 돈",
+    "headline": "중소기업 청년\n소득세 감면 확인",
+    "file": "19_2026-11-02.png",
+    "sha256": "cb70eeb05ffacd242d15fcfd6158cea9239e5cd98fb6bbd53efa85f29babe3a3",
+    "content_id": null
+  },
+  {
+    "sequence": 20,
+    "planned_date": "2026-11-03",
+    "title": "헬스장 공제",
+    "series": "연말정산 D-60",
+    "headline": "헬스장 결제도\n소득공제 확인",
+    "file": "20_2026-11-03.png",
+    "sha256": "7fb31f99aeae5a1a445a68da6e362234ea167d5b2f6544d7046a593a86b44619",
+    "content_id": null
+  },
+  {
+    "sequence": 21,
+    "planned_date": "2026-11-04",
+    "title": "난방비 절약 순위",
+    "series": "겨울 고지서 해부",
+    "headline": "난방비 절약\n무엇이 먼저일까?",
+    "file": "21_2026-11-04.png",
+    "sha256": "a5bbe870445049ca15f36c39dd7676266997c5223951dc83ce1416a52b88d0dc",
+    "content_id": null
+  },
+  {
+    "sequence": 22,
+    "planned_date": "2026-11-05",
+    "title": "연봉 5,500만원의 벽",
+    "series": "1분 차이 돈",
+    "headline": "연봉 경계에서\n공제율이 달라진다",
+    "file": "22_2026-11-05.png",
+    "sha256": "5aa25ebbd53e7d36fce57704644c81962a7021f1a47808dbeaa29f3e4e279fa9",
+    "content_id": null
+  },
+  {
+    "sequence": 23,
+    "planned_date": "2026-11-06",
+    "title": "월세 170만원",
+    "series": "연말정산 D-60",
+    "headline": "매달 낸 월세\n공제 챙기셨나요?",
+    "file": "23_2026-11-06.png",
+    "sha256": "256fdb1f98e99d142ee5c96a24aaeaf4f64cdb72e4ac6f05fdf6f711692456a2",
+    "content_id": null
+  },
+  {
+    "sequence": 24,
+    "planned_date": "2026-11-07",
+    "title": "고향사랑 10만원",
+    "series": "1분 차이 돈",
+    "headline": "고향사랑 기부\n답례품까지 챙기기",
+    "file": "24_2026-11-07.png",
+    "sha256": "509d0ba703e4e398dc3c9407a1279f5fa2f7a96a3d2bedb41538a775f5110d14",
+    "content_id": null
+  },
+  {
+    "sequence": 25,
+    "planned_date": "2026-11-08",
+    "title": "4주차 결산",
+    "series": "이번 주 돈값",
+    "headline": "연말 전에\n챙겨야 할 3가지",
+    "file": "25_2026-11-08.png",
+    "sha256": "23d65adbcad026f012b6c0522b4062e72b6886d8ebc18372ae5fe03da58b164c",
+    "content_id": null
+  },
+  {
+    "sequence": 26,
+    "planned_date": "2026-11-09",
+    "title": "안경 영수증의 진실",
+    "series": "연말정산 D-60",
+    "headline": "안경 영수증\n왜 공제가 안 될까?",
+    "file": "26_2026-11-09.png",
+    "sha256": "c7c97bf72c297fdc94b0d8048916ba889da14beb9956381ad4b7dfdf79d6c01a",
+    "content_id": null
+  },
+  {
+    "sequence": 27,
+    "planned_date": "2026-11-10",
+    "title": "보조금24",
+    "series": "몰라서 못 받은 돈",
+    "headline": "내가 놓친 지원금\n한 번에 찾아보기",
+    "file": "27_2026-11-10.png",
+    "sha256": "c2a7f5e019ff8fbea09e9f7c9714cc1f93938537ede45c4ca384234d29fb7b67",
+    "content_id": null
+  },
+  {
+    "sequence": 28,
+    "planned_date": "2026-11-11",
+    "title": "연금저축 148만원",
+    "series": "연말정산 D-60",
+    "headline": "연금저축·IRP\n연말 전에 확인",
+    "file": "28_2026-11-11.png",
+    "sha256": "9344222aebddd5382b1174bc1f69eac06d3d8693a1c685fcb413825cb92f5ec0",
+    "content_id": null
+  },
+  {
+    "sequence": 29,
+    "planned_date": "2026-11-12",
+    "title": "직장인 국비 카드",
+    "series": "몰라서 못 받은 돈",
+    "headline": "직장인도\n내일배움카드",
+    "file": "29_2026-11-12.png",
+    "sha256": "78e06ff3c39b857816753fc2c7c03bac5889f03469d9c8e963bfdaa112f4e1ed",
+    "content_id": null
+  },
+  {
+    "sequence": 30,
+    "planned_date": "2026-11-13",
+    "title": "12/31에 사라지는 돈",
+    "series": "연말정산 D-60",
+    "headline": "12월 31일 전에\n챙길 돈과 서류",
+    "file": "30_2026-11-13.png",
+    "sha256": "9183e89e7e76877898c9d7d0f38497c8ad31a58bbecb8ff06aa3e28e60c1c4a9",
+    "content_id": null
+  }
+]

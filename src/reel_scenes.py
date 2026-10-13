@@ -1,19 +1,5 @@
-"""
-릴스 9:16 화면 그리기.
-
-구성 의도
-  표지는 '멈추게 하는 화면', 본문부터는 '읽는 화면'이다. 둘은 규칙이 달라야 한다.
-
-    표지   어두운 히어로 배경 + 화면 밖으로 흘러넘치는 거대한 숫자 + 흰 대문짝 훅
-           (assets/covers/<id>.jpg 를 넣으면 그 사진이 배경이 된다)
-    본문~  밝은 종이 바탕으로 확 전환. 왼쪽 인덱스 레일, 하드 오프셋 패널, 얇은 괘선.
-
-  어두운 화면 → 밝은 화면으로 넘어가는 순간 자체가 '전환'이라 시선이 한 번 더 붙는다.
-  그리고 본문은 밝은 바탕이라 글자가 훨씬 잘 읽힌다.
-
-영상 조립·길이 계산·발행은 src/reel.py 가 맡고, 이 파일은 '한 장면 그리기'만 한다.
-출력 한 장: 1458x2592 PNG (인코딩 때 1080x1920 으로 축소된다)
-"""
+"""릴스 화면: 표지는 기존 사진, 본문·결론·CTA는 공유 짙은 톤 디자인.
+출력 크기와 기존 호출 규약은 그대로 유지한다."""
 from __future__ import annotations
 
 from PIL import Image, ImageDraw
@@ -181,140 +167,28 @@ def scene_hook(h: dict, brand: str, handle: str, reveal: int,
 
 
 # ---------------------------------------------------------------- 본문 화면
-def scene_stake(h: dict, brand: str, handle: str,
-                item: dict | None = None) -> Image.Image:
-    th = T.get_theme((item or {}).get("theme"))
-    img, d = _paper(brand, handle, 0.10, th)
-    f = fit(d, h["stake"], BLACK, TEXT_W, _s(760), _s(112), _s(62), 1.18)
-    hgt = block_h(d, h["stake"], f, TEXT_W, 1.18)
-    y = TOP_SAFE + (BOT_SAFE - TOP_SAFE - hgt) // 2
-    _label(d, "결론부터", PAD, y - _s(104), th, _s(34), th.accent)
-    d.rectangle((PAD, y - _s(52), PAD + _s(96), y - _s(44)), fill=th.accent)
-    block(d, h["stake"], f, PAD, y, TEXT_W, th.ink, 1.18)
-    return img
+def scene_stake(h, brand, handle, item=None):
+    from src import editorial_design as D
+    return D.stake(h['stake'],brand,handle).resize((RW,RH),Image.Resampling.LANCZOS)
 
 
-def scene_beat(idx: int, total: int, title: str, text: str, brand: str,
-               handle: str, ratio: float, card: dict | None = None,
-               item: dict | None = None) -> Image.Image:
-    th = T.get_theme((item or {}).get("theme"))
-    img, d = _paper(brand, handle, ratio, th)
-    card = card or {}
-    figure = str(card.get("figure") or "").strip()
-    fig_label = str(card.get("figure_label") or "").strip()
-
-    tf = fit(d, title, BLACK, TEXT_W, _s(300), _s(100), _s(58), 1.14)
-    bf = fit(d, text, MED, TEXT_W, _s(560), _s(62), _s(42), 1.5)
-
-    fig_h = 0
-    if figure:
-        ff = fit(d, figure, BLACK, TEXT_W - _s(96), _s(190), _s(120), _s(56), 1.05)
-        fig_h = _s(56) + (_s(44) if fig_label else 0) + int(ff.size * 1.1) + _s(56)
-
-    hgt = _s(92) + block_h(d, title, tf, TEXT_W, 1.14) + _s(46) + fig_h \
-        + (_s(40) if figure else 0) + block_h(d, text, bf, TEXT_W, 1.5)
-    y = TOP_SAFE + max(0, (BOT_SAFE - TOP_SAFE - hgt) // 2)
-
-    nf = font(BLACK, _s(44))
-    d.text((PAD, y), f"{idx:02d}", font=nf, fill=th.accent)
-    nw = d.textlength(f"{idx:02d}", font=nf)
-    d.text((PAD + nw + _s(10), y + _s(6)), f"/{total:02d}", font=font(BOLD, _s(32)),
-           fill=th.ink_faint)
-    y += _s(92)
-
-    y = block(d, title, tf, PAD, y, TEXT_W, th.ink, 1.14) + _s(46)
-
-    if figure:
-        box = (PAD, y, PAD + TEXT_W, y + fig_h)
-        T.panel(d, box, th, radius=_s(22), offset=_s(12), width=_s(3))
-        yy = y + _s(30)
-        if fig_label:
-            _label(d, fig_label, PAD + _s(44), yy, th, _s(26), th.ink_faint)
-            yy += _s(44)
-        d.text((PAD + _s(44), yy), figure, font=ff, fill=th.accent)
-        y += fig_h + _s(40)
-
-    block(d, text, bf, PAD, y, TEXT_W, th.ink_soft, 1.5)
-    return img
+def scene_beat(idx, total, title, text, brand, handle, ratio, card=None, item=None):
+    from src import editorial_design as D
+    card=card or {}
+    detail='\n'.join(str(x) for x in (card.get('figure_label'),text) if x)
+    im=D.body(title,card.get('figure',''),detail,idx-1,total,
+              comparison=card.get('comparison'),note=card.get('note','상세 조건과 출처는 캡션'),brand=brand,handle=handle)
+    return im.resize((RW,RH),Image.Resampling.LANCZOS)
 
 
-def scene_verdict(item: dict, brand: str, handle: str, voice: str = "") -> Image.Image:
-    th = T.get_theme(item.get("theme"))
-    img, d = _paper(brand, handle, 0.94, th)
-    score = max(0, min(5, int(item.get("verdict", 3))))
-    text = str(item.get("verdict_text", ""))
-
-    vf = fit(d, text, MED, TEXT_W, _s(620), _s(62), _s(42), 1.45)
-    v_h = block_h(d, text, vf, TEXT_W, 1.45)
-    voice_h = _s(80) if voice else 0
-    hgt = _s(150) + _s(130) + _s(70) + v_h + voice_h
-    y = TOP_SAFE + max(0, (BOT_SAFE - TOP_SAFE - hgt) // 2)
-
-    _label(d, "결론", PAD, y, th, _s(34), th.accent)
-    y += _s(70)
-
-    # 점수 — 큰 숫자 + 칸. 숫자를 크게 둬야 한눈에 읽힌다
-    sf = font(BLACK, _s(130))
-    d.text((PAD, y - _s(26)), str(score), font=sf, fill=th.ink)
-    sw = d.textlength(str(score), font=sf)
-    d.text((PAD + sw + _s(10), y + _s(52)), "/5", font=font(BOLD, _s(48)),
-           fill=th.ink_faint)
-    bx = PAD + sw + _s(130)
-    bw = (TEXT_W - (bx - PAD) - _s(4 * 14)) // 5
-    for i in range(5):
-        x = bx + i * (bw + _s(14))
-        d.rounded_rectangle((x, y + _s(24), x + bw, y + _s(62)), radius=_s(8),
-                            fill=th.accent if i < score else th.rule)
-    y += _s(150)
-
-    y = block(d, text, vf, PAD, y, TEXT_W, th.ink, 1.45)
-
-    if voice:
-        y += _s(44)
-        d.line((PAD, y, PAD + _s(52), y), fill=th.accent, width=_s(4))
-        block(d, voice, font(REG, _s(42)), PAD + _s(72), y - _s(26),
-              TEXT_W - _s(72), th.ink_faint, 1.3)
-    return img
+def scene_verdict(item, brand, handle, voice=''):
+    from src import editorial_design as D
+    value=str(item.get('verdict_text',''))
+    if voice: value+='\n'+voice
+    return D.conclusion(value,brand,handle).resize((RW,RH),Image.Resampling.LANCZOS)
 
 
-def scene_loop(h: dict, brand: str, handle: str,
-               item: dict | None = None) -> Image.Image:
-    """마지막 화면. 표지와 같은 어두운 톤으로 돌아가 자연스럽게 루프된다."""
-    th = T.get_theme((item or {}).get("theme"))
-    item = item or {}
-    img = T.load_cover(".", item.get("id", "cover"), RW, RH,
-                       item.get("id", "cover"), T.motif_from(item, h))
-    img = T.scrim(img, start=0.10, strength=0.94)
-    d = ImageDraw.Draw(img)
-    white, faint = "#FFFFFF", "#C9C9CE"
-
-    d.rectangle((PAD, TOP_SAFE - _s(96), PAD + _s(26), TOP_SAFE - _s(70)),
-                fill=th.accent)
-    _label(d, brand, PAD + _s(42), TOP_SAFE - _s(98), th, _s(30), white)
-    _label(d, handle, PAD, BOT_SAFE + _s(58), th, _s(28), faint)
-
-    # 2026-09-29: 마지막 화면은 좋아요·팔로우(유튜브는 구독) 유도. 문구는 hooks 에서 한 번만 정의.
-    from src import hooks as hooks_mod
-    first, _, rest = hooks_mod.END_BIG.partition(" · ")
-    y = TOP_SAFE + _s(180)
-    f = font(BLACK, _s(150))
-    d.text((PAD, y), first, font=f, fill=th.accent)
-    if rest:
-        aw = d.textlength(first, font=f)
-        d.text((PAD + aw + _s(30), y + _s(48)), "· " + rest, font=font(BLACK, _s(86)),
-               fill=white)
-    y += _s(250)
-    block(d, hooks_mod.END_SUB, font(MED, _s(52)), PAD, y, TEXT_W, faint, 1.45)
-
-    lf = fit(d, h["loop"], BLACK, TEXT_W, _s(300), _s(112), _s(62), 1.14)
-    ly = BOT_SAFE - block_h(d, h["loop"], lf, TEXT_W, 1.14) - _s(20)
-    # 2026-09-29: 질문이 두 줄로 넘어가면 예전엔 첫 줄에만 형광펜이 깔려 둘째 줄이
-    # 어두운 배경에 어두운 글자로 사라졌다. 줄마다 형광펜을 깐다.
-    lh = int(lf.size * 1.14)
-    for i, ln in enumerate(wrap(d, h["loop"], lf, TEXT_W)):
-        y_ln = ly + i * lh
-        tw = d.textlength(ln, font=lf)
-        T.marker(d, PAD - _s(14), y_ln + int(lf.size * 0.16), int(tw) + _s(42),
-                 int(lf.size * 1.02), th, slant=_s(6))
-        d.text((PAD, y_ln), ln, font=lf, fill=th.marker_on)
-    return img
+def scene_loop(h, brand, handle, item=None):
+    from src import editorial_design as D
+    item=item or {}
+    return D.cta(h['loop'],item.get('platform','both'),brand,handle).resize((RW,RH),Image.Resampling.LANCZOS)
