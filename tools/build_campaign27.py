@@ -66,7 +66,7 @@ def render(e,folder):
     manifest=[]
     for name,img,speech in frames:
         img.save(folder/(name+'.png'))
-        manifest.append(dict(name=name,file=name+'.png',narration=speech,width=W,height=H,design='editorial-v2'))
+        manifest.append(dict(name=name,file=name+'.png',narration=speech,width=W,height=H,design='editorial-v3'))
     BOXES.extend(D.BOUNDS); D.BOUNDS.clear()
     return manifest
 
@@ -176,14 +176,21 @@ def synth_one(job):
     wav.unlink()
     return dict(name=s['name'],duration=duration,audio=path.name)
 
+def scene_filter(duration, name):
+    """Short entrance on graphic scenes; cover remains fully visible immediately."""
+    base='scale=1080:1920,setsar=1'
+    if name=='01-cover': return base
+    return base+",fade=t=in:st=0:d=0.18:color=0x101E21"
+
+
 def encode_one(job):
     folder,s,a=job; target=folder/(s['name']+'.mp4')
     dur=math.ceil((a['duration']+.65)*24)/24
-    digest=hashlib.sha256((folder/s['file']).read_bytes()+(folder/a['audio']).read_bytes()+str(dur).encode()).hexdigest()
+    digest=hashlib.sha256((folder/s['file']).read_bytes()+(folder/a['audio']).read_bytes()+str(dur).encode()+b'editorial-v3-motion-1').hexdigest()
     stamp=target.with_suffix('.sha256')
     if not target.exists() or not stamp.exists() or stamp.read_text()!=digest:
         run([ffmpeg(),'-y','-v','error','-loop','1','-framerate','24','-i',str(folder/s['file']),'-i',str(folder/a['audio']),
-             '-t',str(dur),'-vf','scale=1080:1920,setsar=1','-af','adelay=120,apad',
+             '-t',str(dur),'-vf',scene_filter(dur,s['name']),'-af','adelay=120,apad',
              '-c:v','libx264','-preset','veryfast','-tune','stillimage','-crf','23','-pix_fmt','yuv420p','-r','24','-threads','2',
              '-c:a','aac','-ar','48000','-ac','2','-b:a','128k',str(target)])
         stamp.write_text(digest)
