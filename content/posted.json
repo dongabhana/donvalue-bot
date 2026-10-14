@@ -301,5 +301,17 @@
       "threads": "18343002403248295"
     },
     "errors": []
+  },
+  {
+    "id": "p14-wait-discount",
+    "product": "1만원 할인받으려고 1시간 기다리기",
+    "campaign": "campaign27",
+    "posted_at": "2026-10-14T22:19:46+09:00",
+    "results": {
+      "instagram_reel": "17897614362405673",
+      "youtube": "TZk4qJNgBCI",
+      "threads": "18641972599011581"
+    },
+    "errors": []
   }
 ]
