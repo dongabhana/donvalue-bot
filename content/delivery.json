@@ -618,7 +618,9 @@
   },
   "p14-wait-discount": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17897614362405673",
+      "at": "2026-10-14T22:08:48+09:00"
     }
   }
 }
