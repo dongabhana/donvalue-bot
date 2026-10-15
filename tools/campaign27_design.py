@@ -66,7 +66,7 @@ def render_body(e,i):
         # 2026-10-15 추천템 편: 직접 찍은 제품 사진 장면(파일이 있을 때만 — 없으면 아래 글자 장면)
         from pathlib import Path
         root=Path(__file__).resolve().parents[1]
-        im=D.product(c['title'],root/ph['file'],ph['name'],ph['price'],ph['meta'],i,
+        im=D.product(c['title'],root/ph['file'],ph['name'],ph['price'],ph['meta'],i,focus=ph.get('focus',0.5),
                      note=e.get('note') or '구매 전 소개 · 사용 후기 아님')
         BOUNDS.extend(D.BOUNDS); D.BOUNDS.clear()
         return im

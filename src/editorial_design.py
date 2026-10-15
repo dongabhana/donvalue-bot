@@ -174,7 +174,34 @@ def body(title, figure, detail, index=0, total=4, comparison=None,
     return im
 
 
-def product(title, photo, name, price, meta, index=0, total=4,
+def _product_fit(src, w, h, focus=0.5):
+    """제품 사진을 카드에 담는다.
+
+    · 단색 바탕 상품 사진(테두리가 한 색) → 바탕 여백을 걷어내고 물건을 통째로 넣는다(잘림 없음).
+    · 배경까지 찍힌 연출 사진(테두리 색이 고르지 않음) → 카드를 채우고, 세로 위치는 focus(0=위, 1=아래)로 맞춘다.
+    """
+    from PIL import ImageChops, ImageOps, ImageStat
+    edge = [src.crop(b) for b in ((0, 0, src.width, 4), (0, src.height - 4, src.width, src.height),
+                                  (0, 0, 4, src.height), (src.width - 4, 0, src.width, src.height))]
+    spread = max(max(ImageStat.Stat(e).stddev) for e in edge)
+    means = [ImageStat.Stat(e).mean for e in edge]
+    gap = max(abs(a[k] - b[k]) for a in means for b in means for k in range(3))
+    if spread > 6 or gap > 8:
+        return ImageOps.fit(src, (w, h), method=Image.Resampling.LANCZOS, centering=(0.5, focus))
+    bg = tuple(round(sum(m[k] for m in means) / 4) for k in range(3))
+    diff = ImageChops.difference(src, Image.new('RGB', src.size, bg)).convert('L').point(lambda v: 255 if v > 24 else 0)
+    box = diff.getbbox()
+    if box:
+        mx, my = int((box[2] - box[0]) * .08), int((box[3] - box[1]) * .08)
+        src = src.crop((max(0, box[0] - mx), max(0, box[1] - my),
+                        min(src.width, box[2] + mx), min(src.height, box[3] + my)))
+    out = Image.new('RGB', (w, h), bg)
+    pic = ImageOps.contain(src, (w, h), method=Image.Resampling.LANCZOS)
+    out.paste(pic, ((w - pic.width) // 2, (h - pic.height) // 2))
+    return out
+
+
+def product(title, photo, name, price, meta, index=0, total=4, focus=0.5,
             note='구매 전 소개 · 사용 후기 아님', brand='돈값하나', handle='@dongabhana'):
     """2026-10-15 소유자 요청: 추천템 편에 실제 제품 사진을 보기 좋게(딱딱하지 않게).
 
@@ -198,7 +225,7 @@ def product(title, photo, name, price, meta, index=0, total=4,
     src=Image.open(photo).convert('RGB')
     from PIL import ImageOps
     src=ImageOps.exif_transpose(src) if hasattr(ImageOps,'exif_transpose') else src
-    pic=ImageOps.fit(src,(iw,ih),method=Image.Resampling.LANCZOS,centering=(0.5,0.5))
+    pic=_product_fit(src,iw,ih,focus)
     mask=Image.new('L',(iw,ih),0); ImageDraw.Draw(mask).rounded_rectangle((0,0,iw,ih),radius=30,fill=255)
     im.paste(pic,(inner[0],inner[1]),mask); d=ImageDraw.Draw(im)
     # 가격 스티커(오른쪽 위로 살짝 기울인 태그)

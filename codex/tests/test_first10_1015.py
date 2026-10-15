@@ -206,8 +206,14 @@ class First10RenderTests(unittest.TestCase):
                 copy = ' '.join(x['text'] for x in D.BOUNDS)
                 self.assertIn(e['key']['figure'], copy)          # 결론 = 핵심 숫자(2026-09-29)
                 self.assertIn('좋아요 + 구독', copy)             # 유튜브 끝(2026-10-06 A안)
-                for s in e['screen']:
-                    self.assertIn(s.split('\n')[0][:6], copy)
+                for i, s in enumerate(e['screen']):
+                    ph = e['photos'].get(i)
+                    if ph:                                    # 사진 장면: 글자 대신 제품명·가격·출처
+                        self.assertIn(ph['name'], copy)
+                        self.assertIn(ph['price'], copy)
+                        self.assertIn('다이소몰', copy)
+                    else:
+                        self.assertIn(s.split('\n')[0][:6], copy)
         D.BOUNDS.clear()
 
 

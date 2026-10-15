@@ -165,12 +165,12 @@ HOOK_TEXT = {
 PHOTO_CREDIT = '제품 사진: 다이소몰'
 PHOTOS = {
     '01': dict(card=1, file='assets/products/f01-door-gap.jpg', name='E형 문틈막이 2줄 (2.5m×5m)',
-               price='3,000원', meta='품번 66327 · 사진·가격 다이소몰(10/15)',
+               price='3,000원', meta='품번 66327 · 사진 다이소몰',
                source_page='https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=66327',
                source_url='https://cdn.daisomall.co.kr/file/resize/PD/20231130/thumbnail/850/'
                           '5ghFjZMx97Bhyh2sSJCl66327_00_005ghFjZMx97Bhyh2sSJCl.jpg'),
     '07': dict(card=0, file='assets/products/f07-ramen-bowl.jpg', name='전자레인지 라면 용기 1.4L',
-               price='3,000원', meta='품번 1059209 · 사진·가격 다이소몰(10/15)',
+               price='3,000원', meta='품번 1059209 · 사진 다이소몰', focus=0.42,
                source_page='https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=1059209',
                source_url='https://cdn.daisomall.co.kr/file/resize/PD/20250331/thumbnail/850/'
                           'pgJE88v8RpXtOn2eUu5A1059209_00_00pgJE88v8RpXtOn2eUu5A.jpg'),
