@@ -1,0 +1,32 @@
+name: 발행 시계 감시
+
+# 발행 시계(publish-clock.yml) 체인이 끊겼을 때만 다시 켠다. 이미 돌고 있으면 아무것도 안 한다.
+# 예약 실행은 밀리거나 빠질 수 있지만, 여러 번 중 한 번만 돌아도 체인이 살아난다.
+# 정각은 GitHub 부하가 가장 큰 시간이라 피한다(GitHub 문서 권장).
+
+on:
+  schedule:
+    - cron: "23 * * * *"
+    - cron: "53 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: 시계가 없으면 켜기
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          alive=$(gh run list -R "$REPO" --workflow publish-clock.yml -L 10 --json status \
+                  --jq '[.[]|select(.status!="completed")]|length')
+          echo "돌고 있는 시계: $alive"
+          if [ "$alive" = "0" ]; then
+            gh workflow run publish-clock.yml -R "$REPO" --ref main
+            echo "시계를 다시 켰습니다"
+          fi

@@ -1,0 +1,32 @@
+name: 발행 시계
+
+# 2026-10-15: GitHub 예약 실행(schedule)이 10/11부터 몇 시간씩 밀리거나 빠져서
+# 10/13·10/14 정기 발행이 시작조차 안 됐다. 이 워크플로는 schedule 을 쓰지 않는다.
+# 한 실행이 최대 320분 깨어 있다가 슬롯이 되면 post.yml 을 dispatch 하고,
+# 시간이 다 되면 자기 자신을 dispatch 해서 다음 실행에 넘긴다(workflow_dispatch 는
+# GITHUB_TOKEN 으로 보내도 항상 실행된다 — GitHub 문서). 자세한 규칙은 tools/publish_clock.py.
+# 체인이 끊기면 publish-clock-watchdog.yml 이 다시 켠다. 손으로 켜도 된다(Run workflow).
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: write
+
+concurrency:
+  group: publish-clock
+  cancel-in-progress: false
+
+jobs:
+  clock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: 슬롯까지 기다렸다가 발행 실행 → 다음 시계로 넘김
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/publish_clock.py
