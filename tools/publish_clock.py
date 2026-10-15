@@ -31,30 +31,40 @@ KST = timezone(timedelta(hours=9))
 # src/run.py 의 SLOTS 와 같아야 한다(테스트가 검사).
 SLOTS = {0: (21, 20), 1: (21, 20), 2: (21, 20), 3: (21, 20),
          4: (15, 30), 5: (15, 30), 6: (15, 30)}
+# 2026-10-15: 쓰레드 스하리 글(threads-micro.yml, 매일 21:40)도 같은 예약 누락을 겪어서 시계가 함께 챙긴다.
+SOFT_SLOTS = {d: (21, 40) for d in range(7)}
 CATCHUP_MIN = 180          # 슬롯 뒤 이 시간 안에 안 나갔으면 따라잡는다
 BUDGET_MIN = 320           # 한 실행이 깨어 있는 최대 시간(잡 제한 360분 안쪽)
 POLL_MIN = 5               # post.yml 이 돌고 있을 때 다시 볼 간격
 REPO = os.getenv("GITHUB_REPOSITORY", "dongabhana/donvalue-bot")
 
 
-def slot_for(day: datetime) -> datetime:
-    h, m = SLOTS[day.weekday()]
+def slot_for(day: datetime, slots: dict = SLOTS) -> datetime:
+    h, m = slots[day.weekday()]
     return day.replace(hour=h, minute=m, second=0, microsecond=0)
 
 
-def decide(now: datetime, posted_today: bool, post_running: bool, fired_slot: str | None):
+def decide(now: datetime, posted_today: bool, post_running: bool, fired_slot: str | None,
+           slots: dict = SLOTS):
     """(행동, 대기 초). 행동: 'post' | 'wait' | 'sleep_until_slot'.
 
     fired_slot: 이번 실행이 이미 dispatch 한 슬롯(ISO). 같은 슬롯에 두 번 쏘지 않는다.
     """
-    slot = slot_for(now)
+    slot = slot_for(now, slots)
     in_window = slot <= now < slot + timedelta(minutes=CATCHUP_MIN)
     if in_window and not posted_today:
         if post_running or fired_slot == slot.isoformat():
             return "wait", POLL_MIN * 60
         return "post", 0
-    target = slot if now < slot else slot_for(now + timedelta(days=1))
+    target = slot if now < slot else slot_for(now + timedelta(days=1), slots)
     return "sleep_until_slot", max(1, int((target - now).total_seconds()))
+
+
+# (이름, 워크플로, 슬롯, 게시 원장) — 원장에 오늘 KST 날짜 posted_at 이 있으면 '오늘 나감'
+JOBS = (
+    ("본편", "post.yml", SLOTS, "content/posted.json"),
+    ("스하리", "threads-micro.yml", SOFT_SLOTS, "content/microposts_posted.json"),
+)
 
 
 def sh(*args: str) -> str:
@@ -64,15 +74,15 @@ def sh(*args: str) -> str:
     return r.stdout
 
 
-def posted_today(now: datetime) -> bool:
+def posted_today(now: datetime, ledger: str = "content/posted.json") -> bool:
     sh("git", "fetch", "-q", "origin", "main")
-    rows = json.loads(sh("git", "show", "origin/main:content/posted.json"))
+    rows = json.loads(sh("git", "show", f"origin/main:{ledger}"))
     today = now.date().isoformat()
     return any(str(r.get("posted_at", "")).startswith(today) for r in rows)
 
 
-def post_running() -> bool:
-    out = sh("gh", "run", "list", "-R", REPO, "--workflow", "post.yml", "-L", "5",
+def post_running(workflow: str = "post.yml") -> bool:
+    out = sh("gh", "run", "list", "-R", REPO, "--workflow", workflow, "-L", "5",
              "--json", "status", "--jq", "[.[]|select(.status!=\"completed\")]|length")
     return int(out.strip() or 0) > 0
 
@@ -85,16 +95,19 @@ def dispatch(workflow: str) -> None:
 def main() -> int:
     start = time.monotonic()
     deadline = start + BUDGET_MIN * 60
-    fired: str | None = None
+    fired: dict[str, str] = {}
     while True:
         now = datetime.now(KST)
-        act, wait = decide(now, posted_today(now), post_running(), fired)
-        print(f"[clock] {now:%m/%d %H:%M} → {act} ({wait // 60}분)", flush=True)
-        if act == "post":
-            dispatch("post.yml")
-            fired = slot_for(now).isoformat()
-            time.sleep(90)               # 새 실행이 목록에 잡힐 시간
-            continue
+        waits = []
+        for name, wf, slots, ledger in JOBS:
+            act, wait = decide(now, posted_today(now, ledger), post_running(wf), fired.get(wf), slots)
+            print(f"[clock] {now:%m/%d %H:%M} {name} → {act} ({wait // 60}분)", flush=True)
+            if act == "post":
+                dispatch(wf)
+                fired[wf] = slot_for(now, slots).isoformat()
+                wait = 90                  # 새 실행이 목록에 잡힐 시간
+            waits.append(wait)
+        wait = min(waits)
         left = deadline - time.monotonic()
         if wait >= left:
             time.sleep(max(0, left))

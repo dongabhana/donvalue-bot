@@ -22,6 +22,10 @@ class DecideTests(unittest.TestCase):
     def test_slots_match_publisher(self):
         from src import run
         self.assertEqual(C.SLOTS, run.SLOTS)
+        # 스하리 21:40 은 threads-micro.yml 첫 예약(12:40 UTC)과 같아야 한다
+        wf = (ROOT / ".github/workflows/threads-micro.yml").read_text(encoding="utf-8")
+        self.assertIn('cron: "40 12 * * *"', wf)
+        self.assertEqual(set(C.SOFT_SLOTS.values()), {(21, 40)})
 
     def test_sleeps_until_today_slot(self):
         act, wait = C.decide(at(2026, 10, 15, 9, 0), False, False, None)      # 목 21:20
@@ -55,12 +59,13 @@ class DecideTests(unittest.TestCase):
 
 
 class LoopTests(unittest.TestCase):
-    """main(): 슬롯에 post.yml 을 한 번 쏘고, 시간이 다 되면 자기 자신을 넘긴다."""
+    """main(): 슬롯마다 본편(post.yml)·스하리(threads-micro.yml)를 한 번씩 쏘고, 시간이 다 되면 넘긴다."""
 
     def run_loop(self, start, posted_after_dispatch=True):
         clock = {"t": 0.0}
         now = {"dt": start}
-        state = {"posted": False}
+        posted = {"content/posted.json": False, "content/microposts_posted.json": False}
+        ledger_of = {wf: led for _, wf, _, led in C.JOBS}
         fired = []
 
         def sleep(s):
@@ -74,14 +79,14 @@ class LoopTests(unittest.TestCase):
 
         def dispatch(wf):
             fired.append((wf, now["dt"]))
-            if wf == "post.yml" and posted_after_dispatch:
-                state["posted"] = True
+            if wf in ledger_of and posted_after_dispatch:
+                posted[ledger_of[wf]] = True
 
         with mock.patch.object(C.time, "monotonic", lambda: clock["t"]), \
              mock.patch.object(C.time, "sleep", sleep), \
              mock.patch.object(C, "datetime", FakeDT), \
-             mock.patch.object(C, "posted_today", lambda n: state["posted"]), \
-             mock.patch.object(C, "post_running", lambda: False), \
+             mock.patch.object(C, "posted_today", lambda n, led="content/posted.json": posted[led]), \
+             mock.patch.object(C, "post_running", lambda wf="post.yml": False), \
              mock.patch.object(C, "dispatch", dispatch):
             self.assertEqual(C.main(), 0)
         return fired
@@ -91,14 +96,24 @@ class LoopTests(unittest.TestCase):
         self.assertEqual([w for w, _ in fired], ["publish-clock.yml"])
         self.assertEqual(fired[0][1], at(2026, 10, 15, 9, 0) + timedelta(minutes=C.BUDGET_MIN))
 
-    def test_fires_post_at_slot_then_hands_off(self):
+    def test_fires_post_and_soft_at_their_slots_then_hands_off(self):
         fired = self.run_loop(at(2026, 10, 15, 19, 0))
-        self.assertEqual([w for w, _ in fired], ["post.yml", "publish-clock.yml"])
+        self.assertEqual([w for w, _ in fired], ["post.yml", "threads-micro.yml", "publish-clock.yml"])
         self.assertEqual(fired[0][1], at(2026, 10, 15, 21, 20))
+        self.assertEqual(fired[1][1], at(2026, 10, 15, 21, 40))
+
+    def test_weekend_soft_still_at_night(self):
+        fired = self.run_loop(at(2026, 10, 17, 14, 0))
+        names = [w for w, _ in fired]
+        self.assertEqual(names[0], "post.yml")
+        self.assertEqual(fired[0][1], at(2026, 10, 17, 15, 30))
+        self.assertNotIn("threads-micro.yml", names)          # 21:40 은 이 실행 예산 밖 → 다음 시계가 맡음
 
     def test_failed_post_is_not_refired_by_same_run(self):
         fired = self.run_loop(at(2026, 10, 15, 21, 0), posted_after_dispatch=False)
-        self.assertEqual([w for w, _ in fired].count("post.yml"), 1)
+        names = [w for w, _ in fired]
+        self.assertEqual(names.count("post.yml"), 1)
+        self.assertEqual(names.count("threads-micro.yml"), 1)
 
 
 class WorkflowFileTests(unittest.TestCase):
