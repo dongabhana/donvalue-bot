@@ -249,3 +249,20 @@ class ProductPhotoSceneTests(unittest.TestCase):
         self.assertIn('66327', F.PHOTOS['01']['meta'])
         self.assertIn('1059209', F.PHOTOS['07']['meta'])
         self.assertEqual({p['price'] for p in F.PHOTOS.values()}, {'3,000원'})
+
+
+class ProductPhotoCreditTests(unittest.TestCase):
+    """2026-10-15 소유자 결정: 다이소몰 대표 이미지 사용 → 화면·캡션에 출처."""
+
+    def test_credit_on_screen_and_caption_when_photo_used(self):
+        for sp in F.PHOTOS.values():
+            self.assertIn('다이소몰', sp['meta'])
+            self.assertTrue(sp['source_url'].startswith('https://cdn.daisomall.co.kr/'))
+            self.assertNotIn('/review/', sp['source_url'])           # 고객 리뷰 사진 금지
+        for e in F.package()['items']:
+            with self.subTest(e=e['id']):
+                if e['photos']:
+                    self.assertIn(F.PHOTO_CREDIT, e['caption'])
+                    self.assertIn(F.PHOTO_CREDIT, e['youtube_description'])
+                else:
+                    self.assertNotIn(F.PHOTO_CREDIT, e['caption'])

@@ -159,12 +159,21 @@ HOOK_TEXT = {
 
 # 추천템 편의 '실제 후보' 장면에 넣을 실제 제품 사진(2026-10-15 소유자 요청).
 # 파일이 있을 때만 사진 장면(editorial_design.product)으로 바뀌고, 없으면 기존 글자 장면 그대로 나간다.
-# 사진은 직접 찍은 것만 쓴다(다이소몰 상품 이미지는 다이소 저작물 · AI 이미지는 실제 물건과 달라 '실제 후보'로 못 씀).
+# 2026-10-15 소유자 결정: 다이소몰 상품 '대표 이미지'를 쓰고 화면·캡션에 출처를 적는다
+# (고객 리뷰 사진은 작성자 것이라 쓰지 않음 · AI 이미지는 실제 물건과 달라 '실제 후보'로 못 씀).
+# 받기: tools/fetch_product_photos.py (GitHub Actions 'product-photos.yml' 수동 실행)
+PHOTO_CREDIT = '제품 사진: 다이소몰'
 PHOTOS = {
     '01': dict(card=1, file='assets/products/f01-door-gap.jpg', name='E형 문틈막이 2줄 (2.5m×5m)',
-               price='3,000원', meta='다이소몰 품번 66327 · 10/15 조회'),
+               price='3,000원', meta='품번 66327 · 사진·가격 다이소몰(10/15)',
+               source_page='https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=66327',
+               source_url='https://cdn.daisomall.co.kr/file/resize/PD/20231130/thumbnail/850/'
+                          '5ghFjZMx97Bhyh2sSJCl66327_00_005ghFjZMx97Bhyh2sSJCl.jpg'),
     '07': dict(card=0, file='assets/products/f07-ramen-bowl.jpg', name='전자레인지 라면 용기 1.4L',
-               price='3,000원', meta='다이소몰 품번 1059209 · 10/15 조회'),
+               price='3,000원', meta='품번 1059209 · 사진·가격 다이소몰(10/15)',
+               source_page='https://www.daisomall.co.kr/pd/pdr/SCR_PDR_0001?pdNo=1059209',
+               source_url='https://cdn.daisomall.co.kr/file/resize/PD/20250331/thumbnail/850/'
+                          'pgJE88v8RpXtOn2eUu5A1059209_00_00pgJE88v8RpXtOn2eUu5A.jpg'),
 }
 
 # 유튜브 제목에서 GPT 제목 두 덩어리를 잇는 말(표지에선 두 줄이라 붙여 쓰면 어색함)
@@ -248,6 +257,8 @@ def package():
         yt_tags = ' '.join('#' + t for t in (['Shorts'] + e['ig_tags'][:4]))
         refs = '\n'.join(f"{l}: {u}" for l, u in zip(e['source_labels'], e['sources']))
         core = f"{one_line(e['hook'])}\n\n{caption_body(e['body_caption'])}"
+        if e['photos']:
+            core += f"\n{PHOTO_CREDIT}"
         e['caption'] = f"{core}\n\n💬 {e['question']}\n{IG_CTA}\n\n{ig_tags}"
         e['youtube_description'] = (f"{core}" + (f"\n\n출처(확인일 {DATE}):\n{refs}" if refs else '')
                                     + f"\n\n💬 {e['question']}\n{YT_CTA}\n\n{yt_tags}")

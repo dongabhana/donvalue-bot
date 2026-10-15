@@ -1,0 +1,46 @@
+# 추천템 편 제품 사진(다이소몰 대표 이미지) 받기 — 손으로 한 번 돌리는 작업.
+# tools/fetch_product_photos.py 참고. 이미 있는 사진은 건너뛴다.
+name: 추천템 제품 사진 받기
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "이미 있는 사진도 다시 받기"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: product-photos
+  cancel-in-progress: false
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: 사진 받기
+        run: python tools/fetch_product_photos.py ${{ github.event.inputs.force == 'true' && '--force' || '' }}
+      - name: 커밋
+        run: |
+          git add assets/products
+          if git diff --cached --quiet; then echo "바뀐 사진 없음"; exit 0; fi
+          git -c user.name=donvalue-bot -c user.email=bot@users.noreply.github.com \
+            commit -m "추천템 제품 사진 받기(다이소몰 대표 이미지)"
+          for i in 1 2 3 4 5; do
+            git push && exit 0
+            git -c user.name=donvalue-bot -c user.email=bot@users.noreply.github.com pull --rebase
+            sleep $((i*3))
+          done
+          exit 1
