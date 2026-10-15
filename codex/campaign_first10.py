@@ -157,6 +157,16 @@ HOOK_TEXT = {
     '09': '중고로 1만 원에 팔아도, 손에 남는 건 8천 원일 수 있어. 시간은 따로고.',
 }
 
+# 추천템 편의 '실제 후보' 장면에 넣을 실제 제품 사진(2026-10-15 소유자 요청).
+# 파일이 있을 때만 사진 장면(editorial_design.product)으로 바뀌고, 없으면 기존 글자 장면 그대로 나간다.
+# 사진은 직접 찍은 것만 쓴다(다이소몰 상품 이미지는 다이소 저작물 · AI 이미지는 실제 물건과 달라 '실제 후보'로 못 씀).
+PHOTOS = {
+    '01': dict(card=1, file='assets/products/f01-door-gap.jpg', name='E형 문틈막이 2줄 (2.5m×5m)',
+               price='3,000원', meta='다이소몰 품번 66327 · 10/15 조회'),
+    '07': dict(card=0, file='assets/products/f07-ramen-bowl.jpg', name='전자레인지 라면 용기 1.4L',
+               price='3,000원', meta='다이소몰 품번 1059209 · 10/15 조회'),
+}
+
 # 유튜브 제목에서 GPT 제목 두 덩어리를 잇는 말(표지에선 두 줄이라 붙여 쓰면 어색함)
 YT_TITLE_TEXT = {'10': '싸게 사고 방치 vs 비싸게 사고 매일'}
 
@@ -186,7 +196,8 @@ def _load():
             disclosure=src['disclosure'], gpt_hook=src['hook'],
             sources=[s['url'] for s in src.get('sources') or []],
             source_labels=[s['label'] for s in src.get('sources') or []],
-            assumptions=src['disclosure'], as_of=DATE, pack_cover=src['cover']['file']))
+            assumptions=src['disclosure'], as_of=DATE, pack_cover=src['cover']['file'],
+            photo_spec=PHOTOS.get(src['id'])))
 
 
 _load()
@@ -225,6 +236,8 @@ def package():
         e['cover_complete'] = True
         ready, why = cover_status(e)
         e['cover_ready'], e['cover_note'], e['hold'] = ready, why, not ready
+        sp = e.get('photo_spec')
+        e['photos'] = ({sp['card']: dict(sp)} if sp and (ROOT / sp['file']).is_file() else {})
         e['reel_cards'] = [1, 2, 3, 4]
         e['reel'] = {'big': [e['title']], 'badge': e['product'], 'sub': e['series'], 'stake': '',
                      'beats': [c['body'] for c in e['cards']], 'loop': e['question']}

@@ -61,6 +61,15 @@ COMPARE={
 def render_body(e,i):
     from src import editorial_design as D
     c=e['cards'][i]; n=e['order']
+    ph=(e.get('photos') or {}).get(i)
+    if ph:
+        # 2026-10-15 추천템 편: 직접 찍은 제품 사진 장면(파일이 있을 때만 — 없으면 아래 글자 장면)
+        from pathlib import Path
+        root=Path(__file__).resolve().parents[1]
+        im=D.product(c['title'],root/ph['file'],ph['name'],ph['price'],ph['meta'],i,
+                     note=e.get('note') or '구매 전 소개 · 사용 후기 아님')
+        BOUNDS.extend(D.BOUNDS); D.BOUNDS.clear()
+        return im
     if e.get('screen'):
         # 2026-10-13 새 30편(codex/campaign30.py): 화면 문장·비교 막대·하단 문구를 편 원고가 직접 들고 온다.
         # 27편 전용 표(SCREEN·COMPARE)는 편 번호로 찾으므로 다른 캠페인에 쓰면 엉뚱한 편 문장이 나온다.

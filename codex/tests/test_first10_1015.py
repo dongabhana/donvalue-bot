@@ -213,3 +213,39 @@ class First10RenderTests(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+
+class ProductPhotoSceneTests(unittest.TestCase):
+    """2026-10-15: 추천템(01·07) '실제 후보' 장면 — 직접 찍은 사진이 있으면 사진 장면, 없으면 글자 장면."""
+
+    def test_photo_scene_only_when_file_exists(self):
+        import shutil
+        import tempfile
+        from PIL import Image
+        D = design()
+        for key, cid in (('01', 'f01-door-gap'), ('07', 'f07-ramen-bowl')):
+            sp = F.PHOTOS[key]
+            e = next(x for x in F.package()['items'] if x['id'] == cid)
+            if not (ROOT / sp['file']).is_file():
+                self.assertEqual(e['photos'], {})                   # 사진 없으면 기존 장면
+            tmp = Path(tempfile.mkdtemp())
+            try:
+                Image.new('RGB', (1600, 1200), '#C8B89A').save(tmp / 'p.jpg')
+                e = dict(e, photos={sp['card']: dict(sp, file=str(tmp / 'p.jpg'))})
+                D.BOUNDS.clear()
+                im = D.render_body(e, sp['card'])                   # 절대경로는 root / file 이 그대로 둔다
+                self.assertEqual(im.size, (1080, 1920))
+                copy = ' '.join(x['text'] for x in D.BOUNDS)
+                self.assertIn(sp['price'], copy)
+                self.assertIn(sp['meta'].split('·')[0].strip(), copy)
+                for x in D.BOUNDS:                                   # 글자는 릴스 버튼 자리(오른쪽) 밖으로
+                    if x['text'] != sp['price']:
+                        self.assertLessEqual(x['bounds'][2], 958, x)
+            finally:
+                shutil.rmtree(tmp)
+                D.BOUNDS.clear()
+
+    def test_photo_specs_match_checked_facts(self):
+        self.assertIn('66327', F.PHOTOS['01']['meta'])
+        self.assertIn('1059209', F.PHOTOS['07']['meta'])
+        self.assertEqual({p['price'] for p in F.PHOTOS.values()}, {'3,000원'})

@@ -174,6 +174,49 @@ def body(title, figure, detail, index=0, total=4, comparison=None,
     return im
 
 
+def product(title, photo, name, price, meta, index=0, total=4,
+            note='구매 전 소개 · 사용 후기 아님', brand='돈값하나', handle='@dongabhana'):
+    """2026-10-15 소유자 요청: 추천템 편에 실제 제품 사진을 보기 좋게(딱딱하지 않게).
+
+    밝은 크림색 사진 카드 + 가격 스티커 + 제품명. 사진은 직접 찍은 원본을 그대로 쓰고
+    가장자리만 맞춘다(색 보정·합성 없음 — 실제 물건과 달라 보이면 안 된다).
+    """
+    labels=['조건 확인','숫자로 비교','핵심 기준','실행 체크']
+    im,d=frame(labels[min(index,3)], index+1,total,brand,handle)
+    text(d,f'{index+1:02d}',(78,285,140,115),80,LIME,850)
+    text(d,title,(78,421,865,110),76,WHITE,850)
+    # 사진 카드: 따뜻한 크림 바탕 + 살짝 띄운 그림자
+    box=(78,560,946,1185)   # 오른쪽은 릴스 버튼 자리라 다른 카드처럼 946 에서 끊는다
+    shadow=Image.new('RGBA',(W,H),(0,0,0,0)); sd=ImageDraw.Draw(shadow)
+    sd.rounded_rectangle((box[0]+10,box[1]+18,box[2]+10,box[3]+18),radius=44,fill=(0,0,0,90))
+    from PIL import ImageFilter
+    shadow=shadow.filter(ImageFilter.GaussianBlur(18))
+    im.paste(shadow,(0,0),shadow); d=ImageDraw.Draw(im)
+    d.rounded_rectangle(box,radius=44,fill='#F4EEE2')
+    inner=(box[0]+26,box[1]+26,box[2]-26,box[3]-26)
+    iw,ih=inner[2]-inner[0],inner[3]-inner[1]
+    src=Image.open(photo).convert('RGB')
+    from PIL import ImageOps
+    src=ImageOps.exif_transpose(src) if hasattr(ImageOps,'exif_transpose') else src
+    pic=ImageOps.fit(src,(iw,ih),method=Image.Resampling.LANCZOS,centering=(0.5,0.5))
+    mask=Image.new('L',(iw,ih),0); ImageDraw.Draw(mask).rounded_rectangle((0,0,iw,ih),radius=30,fill=255)
+    im.paste(pic,(inner[0],inner[1]),mask); d=ImageDraw.Draw(im)
+    # 가격 스티커(오른쪽 위로 살짝 기울인 태그)
+    tag=Image.new('RGBA',(330,150),(0,0,0,0)); td=ImageDraw.Draw(tag)
+    td.rounded_rectangle((8,8,322,142),radius=36,fill=ORANGE)
+    td.ellipse((26,62,46,82),fill='#F4EEE2')
+    f=font(68,900)
+    while td.textlength(price,font=f)>240 and f.size>40: f=font(f.size-2,900)
+    td.text((62+(250-td.textlength(price,font=f))/2,75),price,font=f,fill=WHITE,anchor='lm')
+    tag=tag.rotate(-6,resample=Image.Resampling.BICUBIC,expand=True)
+    im.paste(tag,(box[2]-tag.width+14,box[1]-58),tag); d=ImageDraw.Draw(im)
+    BOUNDS.append({'text':price,'bounds':(box[2]-tag.width+14,box[1]-58,box[2]+14,box[1]-58+tag.height),'font':f.size})
+    text(d,name,(80,1222,866,130),56,WHITE,850,minimum=34)
+    text(d,meta,(80,1362,866,60),30,LIME,600,minimum=22)
+    text(d,note,(80,1450,864,60),25,MUTED,450,minimum=22)
+    return im
+
+
 def stake(value,brand='돈값하나',handle='@dongabhana'):
     im,d=frame('오늘의 기준',0,4,brand,handle)
     icon(d,'calculator',80,355,LIME,1.15)
