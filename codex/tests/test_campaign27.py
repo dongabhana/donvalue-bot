@@ -91,10 +91,13 @@ class Campaign27Tests(unittest.TestCase):
         self.assertTrue(waiting <= C.NEW_COVER_NEEDED)
 
     def test_next_ready_follows_order_and_skips_waiting_covers(self):
-        item, waiting = campaign.next_ready(set())
+        # 2026-10-15: 새 30편(campaign30)이 START 부터 27편보다 먼저 나간다. 이 테스트는 27편의
+        # 순서만 보므로 새 30편은 '이미 나감'으로 두고 본다(날짜가 바뀌어도 깨지지 않게).
+        others = {e['id'] for e in campaign.load() if e['campaign'] != 'campaign27'}
+        item, waiting = campaign.next_ready(set(others))
         first = next(e for e in self.items if e['cover_ready'])
         self.assertEqual(item['id'], first['id'])
-        posted = {e['id'] for e in self.items if e['cover_ready']}
+        posted = {e['id'] for e in self.items if e['cover_ready']} | others
         item, waiting = campaign.next_ready(posted)
         self.assertIsNone(item)
         self.assertEqual(set(waiting), {e['id'] for e in self.items if not e['cover_ready']})
