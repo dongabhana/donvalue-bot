@@ -130,17 +130,21 @@ class Campaign30PackageTests(unittest.TestCase):
 
 class Campaign30RoutingTests(unittest.TestCase):
     def test_start_gate_then_sequence(self):
-        before, _ = campaign.next_ready(set(), today='2026-10-14')
+        # 2026-10-15: GPT '첫 10편'(campaign_first10)이 새 30편보다 먼저 나간다.
+        # 이 테스트는 새 30편의 순서만 보므로 첫 10편은 '이미 나감'으로 둔다.
+        from codex import campaign_first10 as F
+        f10 = {e['id'] for e in F.EPISODES}
+        before, _ = campaign.next_ready(set(f10), today='2026-10-14')
         self.assertEqual(before['campaign'], 'campaign27')
-        first, _ = campaign.next_ready(set(), today=C.START)
+        first, _ = campaign.next_ready(set(f10), today=C.START)
         self.assertEqual(first['id'], C.EPISODES[0]['id'])
-        second, _ = campaign.next_ready({first['id']}, today='2026-10-15')
+        second, _ = campaign.next_ready(f10 | {first['id']}, today='2026-10-15')
         self.assertEqual(second['id'], C.EPISODES[1]['id'])
         # 날짜 고정이 아니다: 하루 밀려도 다음 편이 이어서 나간다
-        later, _ = campaign.next_ready({C.EPISODES[0]['id']}, today='2026-11-30')
+        later, _ = campaign.next_ready(f10 | {C.EPISODES[0]['id']}, today='2026-11-30')
         self.assertEqual(later['id'], C.EPISODES[1]['id'])
         # 30편을 다 내면 27편 남은 편으로 넘어간다
-        done = {e['id'] for e in C.EPISODES}
+        done = f10 | {e['id'] for e in C.EPISODES}
         after, _ = campaign.next_ready(done, today='2026-11-30')
         self.assertEqual(after['campaign'], 'campaign27')
 

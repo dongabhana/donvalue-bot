@@ -42,10 +42,11 @@ def builder():
     return _module("build_campaign27", ROOT / "tools" / "build_campaign27.py")
 
 
-# 발행 우선순위대로. 2026-10-13 소유자 결정: 새 30편(campaign30)을 27편 캠페인보다 먼저 낸다.
+# 발행 우선순위대로. 2026-10-15 소유자 결정: GPT '첫 10편'(campaign_first10)을 가장 먼저,
+# 그다음 새 30편(campaign30), 27편 캠페인 순. (2026-10-13: 새 30편을 27편보다 먼저)
 # 새 30편은 START 날짜(KST)부터 나가고, 그 뒤로는 날짜 고정 없이 앞 편이 나가면 다음 편이 잇는다
 # (2026-09-22 '순번제' 방침). START 전에는 27편의 남은 편이 슬롯을 채운다.
-CAMPAIGNS = ("campaign30", "campaign27")
+CAMPAIGNS = ("campaign_first10", "campaign30", "campaign27")
 
 
 def _mod(name: str):

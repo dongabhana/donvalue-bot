@@ -30,11 +30,13 @@ python -m unittest discover -s codex/tests -q
 | 해시태그 | `src/tags.py` 한 곳. 인스타 5개까지, 검색되지 않는 태그(`#분기점` `#돈값하나` `#비교분석` `#몰라서내는돈`)는 자동 제거 | `tags.BLOCKED`, `tags.CORE` |
 | 행동 유도 | 인스타 캡션·유튜브 설명·영상 마지막 화면·나레이션 끝에 좋아요·팔로우(유튜브는 구독) | `src/hooks.py` 의 `IG_CTA` `YT_CTA` `END_BIG` `VOICE_CTA` |
 | 27편 캠페인 | `codex/campaign27.py` 원고를 번호 순서로 **큐보다 먼저** 발행(`src/campaign.py`). 표지 대기 12편은 새 표지 파일이 들어와야 풀림 | `docs/campaign27.md` |
+| 첫 10편 (10/15 추가) | GPT 패키지 `codex/campaign_first10.py`(f01~f10)를 **새 30편보다 먼저**, 10/15부터 번호 순서로 발행. 원본은 `assets/cover-packs/2026-10-15_first10/`, 운영 표지 `assets/covers/f*.editorial-v3.jpg`. 나레이션 첫 줄은 한글 수사(`EDIT[..]['hook']`), 캡션·제목 훅은 숫자(`HOOK_TEXT`) — 둘의 숫자를 같이 고친다 | `src/campaign.py` 의 `CAMPAIGNS` |
 | 새 30편 (10/13 추가) | `codex/campaign30.py`(n01~n30)를 **27편보다 먼저**, `START`(2026-10-15)부터 번호 순서로 발행. 날짜 고정 아님(밀리면 다음 편이 잇는다) | `src/campaign.py` 의 `CAMPAIGNS`, `campaign30.START` |
 | 쓰레드 | 본편 글 1개 + **스하리(soft) 글 하루 1번(21:40)**. 단문 콘텐츠 글·답글 체인 끔 | `microposts.yaml` 의 `tracks`, `THREADS_CHAIN=1` |
 
 - 새 편을 쓸 때: `yt_title`(유튜브 제목), `hashtags`(주제 태그 3개 이하, 게시물 수 수만~수십만), 가정값이면 `sources`·캡션·쓰레드 본문에 "가정"을 적는다.
-- 회귀 테스트: `codex/tests/test_daily_reels_0929.py`
+- 회귀 테스트: `codex/tests/test_daily_reels_0929.py`, 첫 10편 `codex/tests/test_first10_1015.py`, 발행 시계 `codex/tests/test_publish_clock_1015.py`
+- 발행 시계(10/15): GitHub 예약 실행이 빠져도 슬롯을 지키도록 `publish-clock.yml` 이 dispatch 릴레이로 `post.yml`(본편)·`threads-micro.yml`(스하리 21:40)을 쏜다. `publish-clock-watchdog.yml` 이 시계가 끊기면 다시 띄운다. 슬롯은 `src/run.py` 의 `SLOTS` 와 같아야 한다.
 
 ## 1. 두 트랙은 서로 건드리지 않는다
 

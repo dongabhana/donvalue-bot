@@ -140,7 +140,7 @@ class CampaignRoutingTests(unittest.TestCase):
         # 2026-10-13: 새 30편(campaign30, n01~)이 START(10/15)부터 27편보다 먼저 나간다.
         # 날짜에 따라 어느 캠페인 편이든 캠페인 편이면 된다(테스트가 날짜 때문에 깨지면 발행이 멈춘다).
         self.assertIn(item.get('campaign'), campaign.CAMPAIGNS)
-        self.assertTrue(item['id'][0] in 'pn')
+        self.assertTrue(item['id'][0] in 'pnf')            # 27편 p · 새 30편 n · 첫 10편 f(2026-10-15)
         self.assertTrue(item['cover_ready'])
 
     def test_waiting_cover_episode_cannot_be_forced(self):
