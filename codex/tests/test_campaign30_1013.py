@@ -55,6 +55,20 @@ class Campaign30PackageTests(unittest.TestCase):
                 for t in e['ig_tags']:
                     self.assertFalse(tags.is_blocked(t), t)
 
+    def test_hashtags_are_measured_mid_size(self):
+        """2026-10-15 소유자 지적: 아무도 안 찾는 태그 금지. 실측 게시물 수 1.5만~70만만."""
+        from src.tags import CORE
+        core = dict(CORE)
+        for e in self.items:
+            with self.subTest(e=e['id']):
+                self.assertEqual(len(e['ig_tags']), 5)
+                self.assertLessEqual(len(e['hashtags']), 3)
+                for t in e['ig_tags']:
+                    n = C.TAG_COUNTS.get(t, core.get(t))
+                    self.assertIsNotNone(n, f'{t}: 게시물 수 기록 없음 — 조회 후 TAG_COUNTS 에 적을 것')
+                    self.assertTrue(C.TAG_MIN <= n <= C.TAG_MAX, (t, n))
+                self.assertEqual(e['threads_tag'], e['hashtags'][0])
+
     def test_ids_do_not_collide_with_other_tracks(self):
         others = {e['id'] for e in campaign.load() if e['campaign'] != 'campaign30'}
         posted = {p['id'] for p in json.loads((ROOT / 'content/posted.json').read_text(encoding='utf-8'))}
