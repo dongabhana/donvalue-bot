@@ -643,6 +643,9 @@
       "status": "done",
       "id": "K3MfL4V_OSk",
       "at": "2026-10-15T21:23:17+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
