@@ -162,7 +162,10 @@ class First10PackageTests(unittest.TestCase):
 
     def test_ids_do_not_collide(self):
         others = {e['id'] for e in campaign.load() if e['campaign'] != 'campaign_first10'}
-        posted = {p['id'] for p in json.loads((ROOT / 'content/posted.json').read_text(encoding='utf-8'))}
+        # 이 캠페인 편이 발행되면 posted.json 에 같은 id 로 남는 게 정상 → 다른 캠페인·예전 편과만 비교
+        # (2026-10-16: f01 발행 뒤 이 검사가 자기 자신과 겹쳐 codex-approval 이 멈췄음)
+        posted = {p['id'] for p in json.loads((ROOT / 'content/posted.json').read_text(encoding='utf-8'))
+                  if p.get('campaign') != 'campaign_first10'}
         mine = {e['id'] for e in self.items}
         self.assertFalse(mine & others)
         self.assertFalse(mine & posted)
