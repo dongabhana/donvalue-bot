@@ -660,6 +660,9 @@
       "status": "done",
       "id": "gOn2gd18mmk",
       "at": "2026-10-16T15:32:21+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
