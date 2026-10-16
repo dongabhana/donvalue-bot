@@ -649,5 +649,10 @@
       "id": "18100881605646879",
       "at": "2026-10-15T21:34:03+09:00"
     }
+  },
+  "f02-cancel-offer": {
+    "instagram_reel": {
+      "status": "in_flight"
+    }
   }
 }
