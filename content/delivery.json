@@ -652,7 +652,9 @@
   },
   "f02-cancel-offer": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "18089160185679954",
+      "at": "2026-10-16T15:32:17+09:00"
     }
   }
 }
