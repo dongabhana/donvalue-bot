@@ -839,12 +839,9 @@ def main() -> int:
 
     stale = "" if (args.dry_run or args.ask_tomorrow) else stale_schedule(datetime.now(KST))
     if stale:
+        # 2026-10-16 소유자 요청: 텔레그램은 '올렸다/못 올렸다'만. 밀린 예비 예약(하루 3개)이 새벽에 몰려
+        # 와 같은 '건너뜀' 알림이 3번 왔다 — 정상 동작이라 로그만 남긴다. 실제 발행 누락은 발행 시계·점검이 알린다.
         print(f"[skip] {stale}")
-        try:
-            if notify.enabled():
-                notify.send_message(f"⏭ 자동 발행 건너뜀\n{stale}\n오늘 슬롯에 정상 발행합니다.")
-        except Exception as e:                                    # noqa: BLE001
-            print(f"[telegram] 알림 실패: {e}")
         return 0
 
     rc = 0

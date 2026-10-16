@@ -42,12 +42,15 @@ class StaleScheduleTests(unittest.TestCase):
         now = datetime(2026, 10, 14, 3, 0, tzinfo=KST)
         with patch.object(run, "datetime") as dt, \
              patch.dict("os.environ", {"GITHUB_EVENT_NAME": "schedule"}), \
-             patch.object(run.notify, "enabled", return_value=False), \
+             patch.object(run.notify, "enabled", return_value=True), \
+             patch.object(run.notify, "send_message") as sent, \
              patch.object(run, "run_once") as once, \
              patch("sys.argv", ["run.py"]):
             dt.now.return_value = now
             self.assertEqual(run.main(), 0)
         once.assert_not_called()
+        # 2026-10-16 소유자 요청: 밀린 예비 예약은 조용히 넘긴다(하룻밤 3번 알림 방지)
+        sent.assert_not_called()
 
 
 if __name__ == "__main__":
