@@ -657,7 +657,9 @@
       "at": "2026-10-16T15:32:17+09:00"
     },
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "gOn2gd18mmk",
+      "at": "2026-10-16T15:32:21+09:00"
     }
   }
 }
