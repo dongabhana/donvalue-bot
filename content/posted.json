@@ -337,5 +337,17 @@
       "threads": "18482915992114310"
     },
     "errors": []
+  },
+  {
+    "id": "f03-used-phone",
+    "product": "중고폰 최고가 견적",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-17T15:44:01+09:00",
+    "results": {
+      "instagram_reel": "17958870945015679",
+      "youtube": "lwKKAq_EVkg",
+      "threads": "17948376348346550"
+    },
+    "errors": []
   }
 ]
