@@ -669,7 +669,9 @@
   },
   "f03-used-phone": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17958870945015679",
+      "at": "2026-10-17T15:33:07+09:00"
     }
   }
 }
