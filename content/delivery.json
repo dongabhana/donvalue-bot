@@ -677,6 +677,9 @@
       "status": "done",
       "id": "lwKKAq_EVkg",
       "at": "2026-10-17T15:33:11+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
