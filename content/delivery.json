@@ -694,6 +694,9 @@
       "status": "done",
       "id": "cGV3sMPP39s",
       "at": "2026-10-18T15:33:09+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
