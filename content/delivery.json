@@ -686,7 +686,9 @@
   },
   "f04-delivery-vs-cook": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "18141720862613141",
+      "at": "2026-10-18T15:33:04+09:00"
     }
   }
 }
