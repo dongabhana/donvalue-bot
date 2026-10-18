@@ -691,7 +691,9 @@
       "at": "2026-10-18T15:33:04+09:00"
     },
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "cGV3sMPP39s",
+      "at": "2026-10-18T15:33:09+09:00"
     }
   }
 }
