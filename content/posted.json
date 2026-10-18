@@ -349,5 +349,17 @@
       "threads": "17948376348346550"
     },
     "errors": []
+  },
+  {
+    "id": "f04-delivery-vs-cook",
+    "product": "배달 대신 먹는 비용",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-18T15:44:01+09:00",
+    "results": {
+      "instagram_reel": "18141720862613141",
+      "youtube": "cGV3sMPP39s",
+      "threads": "18135700702656840"
+    },
+    "errors": []
   }
 ]
