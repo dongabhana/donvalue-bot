@@ -711,6 +711,9 @@
       "status": "done",
       "id": "Z5VLxfqJTFA",
       "at": "2026-10-19T21:23:21+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
