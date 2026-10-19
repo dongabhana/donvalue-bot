@@ -361,5 +361,17 @@
       "threads": "18135700702656840"
     },
     "errors": []
+  },
+  {
+    "id": "f05-membership-saving",
+    "product": "멤버십 절약액 점검",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-19T21:34:13+09:00",
+    "results": {
+      "instagram_reel": "18116067002101766",
+      "youtube": "Z5VLxfqJTFA",
+      "threads": "17931470856165943"
+    },
+    "errors": []
   }
 ]
