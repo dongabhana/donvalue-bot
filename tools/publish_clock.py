@@ -36,6 +36,14 @@ SOFT_SLOTS = {d: (21, 40) for d in range(7)}
 CATCHUP_MIN = 180          # 슬롯 뒤 이 시간 안에 안 나갔으면 따라잡는다
 BUDGET_MIN = 320           # 한 실행이 깨어 있는 최대 시간(잡 제한 360분 안쪽)
 POLL_MIN = 5               # post.yml 이 돌고 있을 때 다시 볼 간격
+# 2026-10-21: 10/20 발행이 TTS 429 로 실패했는데 같은 실행은 다시 쏘지 않아 그날을 놓쳤다.
+# 실패하면 RETRY_MIN 뒤 다시 쏜다(한 슬롯 최대 MAX_TRIES 번). 이미 나간 플랫폼은 발행 원장
+# (delivery.json)이 건너뛰고, 반쯤 나간 건 post.yml 이 멈추므로 다시 쏴도 중복 게시는 없다.
+RETRY_MIN = 40
+MAX_TRIES = 3
+# 슬롯 몇 분 전에 다음 편 나레이션을 미리 만든다(tts-prewarm.yml). 이미 만들어져 있으면 금방 끝난다.
+PREWARM_BEFORE_MIN = (180, 90, 40)
+PREWARM_WINDOW_MIN = 20
 REPO = os.getenv("GITHUB_REPOSITORY", "dongabhana/donvalue-bot")
 
 
@@ -45,19 +53,40 @@ def slot_for(day: datetime, slots: dict = SLOTS) -> datetime:
 
 
 def decide(now: datetime, posted_today: bool, post_running: bool, fired_slot: str | None,
-           slots: dict = SLOTS):
+           slots: dict = SLOTS, fired_at: datetime | None = None, tries: int = 0):
     """(행동, 대기 초). 행동: 'post' | 'wait' | 'sleep_until_slot'.
 
-    fired_slot: 이번 실행이 이미 dispatch 한 슬롯(ISO). 같은 슬롯에 두 번 쏘지 않는다.
+    fired_slot: 이번 실행이 이미 dispatch 한 슬롯(ISO). fired_at: 마지막으로 쏜 시각, tries: 쏜 횟수.
+    같은 슬롯은 RETRY_MIN 이 지나야 다시 쏘고, MAX_TRIES 번까지만 쏜다.
     """
     slot = slot_for(now, slots)
     in_window = slot <= now < slot + timedelta(minutes=CATCHUP_MIN)
     if in_window and not posted_today:
-        if post_running or fired_slot == slot.isoformat():
+        if post_running:
             return "wait", POLL_MIN * 60
+        if fired_slot == slot.isoformat():
+            if tries >= MAX_TRIES or fired_at is None or now - fired_at < timedelta(minutes=RETRY_MIN):
+                if tries >= MAX_TRIES:
+                    target = slot_for(now + timedelta(days=1), slots)
+                    return "sleep_until_slot", max(1, int((target - now).total_seconds()))
+                return "wait", POLL_MIN * 60
         return "post", 0
     target = slot if now < slot else slot_for(now + timedelta(days=1), slots)
     return "sleep_until_slot", max(1, int((target - now).total_seconds()))
+
+
+def prewarm_due(now: datetime, posted_today: bool, done: set, slots: dict = SLOTS) -> list[str]:
+    """지금 쏴야 할 나레이션 미리 만들기 키 목록(슬롯 ISO|분). 오늘 이미 나갔으면 없음."""
+    if posted_today:
+        return []
+    slot = slot_for(now, slots)
+    due = []
+    for before in PREWARM_BEFORE_MIN:
+        start = slot - timedelta(minutes=before)
+        key = f"{slot.isoformat()}|{before}"
+        if start <= now < start + timedelta(minutes=PREWARM_WINDOW_MIN) and key not in done:
+            due.append(key)
+    return due
 
 
 # (이름, 워크플로, 슬롯, 게시 원장) — 원장에 오늘 KST 날짜 posted_at 이 있으면 '오늘 나감'
@@ -95,17 +124,37 @@ def dispatch(workflow: str) -> None:
 def main() -> int:
     start = time.monotonic()
     deadline = start + BUDGET_MIN * 60
-    fired: dict[str, str] = {}
+    fired: dict[str, tuple[str, datetime, int]] = {}
+    prewarmed: set[str] = set()
     while True:
         now = datetime.now(KST)
         waits = []
         for name, wf, slots, ledger in JOBS:
-            act, wait = decide(now, posted_today(now, ledger), post_running(wf), fired.get(wf), slots)
+            done_today = posted_today(now, ledger)
+            slot_iso, at, tries = fired.get(wf, (None, None, 0))
+            act, wait = decide(now, done_today, post_running(wf), slot_iso, slots, at, tries)
             print(f"[clock] {now:%m/%d %H:%M} {name} → {act} ({wait // 60}분)", flush=True)
             if act == "post":
+                cur = slot_for(now, slots).isoformat()
+                n = tries + 1 if slot_iso == cur else 1
+                if n > 1:
+                    print(f"[clock] {name} 앞 실행이 게시 기록을 못 남김 → {n}번째 시도", flush=True)
                 dispatch(wf)
-                fired[wf] = slot_for(now, slots).isoformat()
+                fired[wf] = (cur, now, n)
                 wait = 90                  # 새 실행이 목록에 잡힐 시간
+            if wf == "post.yml":
+                for key in prewarm_due(now, done_today, prewarmed, slots):
+                    try:
+                        dispatch("tts-prewarm.yml")
+                    except Exception as e:              # noqa: BLE001 — 미리 만들기는 실패해도 발행은 계속
+                        print(f"[clock] 나레이션 미리 만들기 dispatch 실패: {e}", flush=True)
+                    prewarmed.add(key)
+                # 다음 미리 만들기 시각까지만 잔다
+                slot = slot_for(now, slots)
+                for before in PREWARM_BEFORE_MIN:
+                    t = slot - timedelta(minutes=before)
+                    if t > now:
+                        wait = min(wait, max(60, int((t - now).total_seconds())))
             waits.append(wait)
         wait = min(waits)
         left = deadline - time.monotonic()

@@ -1,0 +1,50 @@
+# 다음 편 나레이션 음성을 미리 만들어 저장소(assets/tts-cache)에 넣는다 — 발행 시계가 슬롯 전에 부른다.
+# 2026-10-21: TTS 429 로 정기 발행이 실패한 뒤 추가. tools/prewarm_tts.py 참고.
+name: 나레이션 미리 만들기
+
+on:
+  workflow_dispatch:
+    inputs:
+      count:
+        description: "다음 몇 편"
+        default: "2"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: tts-prewarm
+  cancel-in-progress: false
+
+jobs:
+  prewarm:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - name: 한글 폰트 · ffmpeg 설치
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq fonts-noto-cjk ffmpeg
+      - run: pip install -r requirements.txt
+      - name: 음성 만들기
+        run: python tools/prewarm_tts.py --count "${{ github.event.inputs.count || '2' }}"
+      - name: 커밋
+        if: always()
+        run: |
+          git add assets/tts-cache || true
+          if git diff --cached --quiet; then echo "새 음성 없음"; exit 0; fi
+          git -c user.name=donvalue-bot -c user.email=bot@users.noreply.github.com \
+            commit -m "tts-cache: 다음 편 나레이션 미리 만들기"
+          for i in 1 2 3 4 5; do
+            git push && exit 0
+            git -c user.name=donvalue-bot -c user.email=bot@users.noreply.github.com pull --rebase
+            sleep $((i*3))
+          done
+          exit 1

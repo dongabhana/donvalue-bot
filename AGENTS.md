@@ -37,6 +37,7 @@ python -m unittest discover -s codex/tests -q
 - 새 편을 쓸 때: `yt_title`(유튜브 제목), `hashtags`(주제 태그 3개 이하, 게시물 수 수만~수십만), 가정값이면 `sources`·캡션·쓰레드 본문에 "가정"을 적는다.
 - 회귀 테스트: `codex/tests/test_daily_reels_0929.py`, 첫 10편 `codex/tests/test_first10_1015.py`, 발행 시계 `codex/tests/test_publish_clock_1015.py`
 - 발행 시계(10/15): GitHub 예약 실행이 빠져도 슬롯을 지키도록 `publish-clock.yml` 이 dispatch 릴레이로 `post.yml`(본편)·`threads-micro.yml`(스하리 21:40)을 쏜다. `publish-clock-watchdog.yml` 이 시계가 끊기면 다시 띄운다. 슬롯은 `src/run.py` 의 `SLOTS` 와 같아야 한다.
+- TTS 429 대비(10/21): 나레이션은 `assets/tts-cache/`(문장 해시 mp3, 커밋됨)를 먼저 쓴다. 시계가 슬롯 180·90·40분 전에 `tts-prewarm.yml`(tools/prewarm_tts.py)로 다음 2편 음성을 미리 만든다. 429 면 15·30·60·90초 기다려 재시도, 발행이 실패하면 시계가 40분 뒤 다시 쏜다(한 슬롯 3번까지). 회귀 테스트 `codex/tests/test_tts_429_1021.py`.
 
 ## 1. 두 트랙은 서로 건드리지 않는다
 

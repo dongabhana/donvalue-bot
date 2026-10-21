@@ -150,6 +150,10 @@ def run(args):
     if r.returncode: raise RuntimeError(r.stderr[-1800:])
     return r
 
+# 저장소에 커밋되는 음성 캐시(문장·목소리·속도 해시 → mp3). 발행 때 TTS 서버가 막혀도 미리 만든 음성으로 나간다.
+TTS_CACHE=Path(__file__).resolve().parents[1]/'assets'/'tts-cache'
+TTS_WAITS=(15,30,60,90)   # 429/503 때 기다리는 초(합 약 3분 15초)
+
 def synth_one(job):
     import edge_tts
     from src import tts_endpoint
@@ -159,16 +163,35 @@ def synth_one(job):
     digest=hashlib.sha256(f'{VOICE}|{RATE}|{speech}'.encode()).hexdigest()
     stamp=path.with_suffix('.sha256')
     if not path.exists() or path.stat().st_size<1000 or not stamp.exists() or stamp.read_text()!=digest:
-        last=None
-        for attempt in range(3):
-            try:
-                async def go():
-                    await edge_tts.Communicate(speech, VOICE, rate=RATE).save(str(path))
-                asyncio.run(go()); break
-            except Exception as exc:  # 네트워크 일시 오류만 재시도, 3번 실패하면 멈춘다(무음 발행 금지)
-                last=exc; import time; time.sleep(2*(attempt+1))
+        # 2026-10-21: 10/20 21:20·22:39 발행이 마이크로소프트 TTS 429(요청 과다)로 연달아 실패.
+        #  ① 저장소에 남는 음성 캐시(assets/tts-cache, 발행 전에 tools/prewarm_tts.py 가 미리 채움)를 먼저 쓴다.
+        #  ② 429 면 몇 분까지 기다렸다 다시 한다(예전엔 2·4초 뒤 3번 만에 포기).
+        cached=TTS_CACHE/f'{digest[:32]}.mp3'
+        if cached.is_file() and cached.stat().st_size>=1000:
+            shutil.copyfile(cached,path)
         else:
-            raise RuntimeError(f'TTS 실패 {s["name"]}: {last}')
+            last=None; ok=False
+            for attempt in range(len(TTS_WAITS)+1):
+                try:
+                    async def go():
+                        await edge_tts.Communicate(speech, VOICE, rate=RATE).save(str(path))
+                    asyncio.run(go())
+                    if path.stat().st_size<1000: raise RuntimeError('빈 음성')
+                    ok=True; break
+                except Exception as exc:  # 3분 넘게 막히면 멈춘다(무음 발행 금지) — 시계가 나중에 다시 돌린다
+                    last=exc
+                    path.unlink(missing_ok=True)   # 반쯤 받은 음성은 버린다
+                    if attempt==len(TTS_WAITS): break
+                    busy='429' in str(exc) or '503' in str(exc)
+                    wait=TTS_WAITS[attempt] if busy else 3*(attempt+1)
+                    print(f'[tts] {s["name"]} 재시도 {attempt+1}/{len(TTS_WAITS)} — {wait}초 뒤 ({str(exc)[:60]})',flush=True)
+                    import time; time.sleep(wait)
+            if not ok:
+                raise RuntimeError(f'TTS 실패 {s["name"]}: {last}')
+            try:
+                TTS_CACHE.mkdir(parents=True,exist_ok=True); shutil.copyfile(path,cached)
+            except OSError:
+                pass
         if path.stat().st_size<1000: raise RuntimeError(f'TTS 결과가 비었습니다: {path}')
         stamp.write_text(digest)
     wav=folder/(s['name']+'.wav')
@@ -290,7 +313,8 @@ def build(out,only=None,audio=False,video=False,ready=False,keep_cache=False,cam
         print('Rendered',e['id'],flush=True)
     (out/'text-bounds.json').write_text(json.dumps(BOXES,ensure_ascii=False),encoding='utf8')
     if audio or video:
-        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+        # 동시에 3개씩 보내던 걸 1개씩으로(429 줄이기 — 8문장이라 순서대로 해도 20~30초)
+        with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
             audios=list(pool.map(synth_one,jobs))
         print('Audio complete',len(audios),flush=True)
         if video:

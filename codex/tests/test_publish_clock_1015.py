@@ -96,24 +96,42 @@ class LoopTests(unittest.TestCase):
         self.assertEqual([w for w, _ in fired], ["publish-clock.yml"])
         self.assertEqual(fired[0][1], at(2026, 10, 15, 9, 0) + timedelta(minutes=C.BUDGET_MIN))
 
+    def test_prewarm_before_slot(self):
+        """2026-10-21: 슬롯 3시간·1시간 반·40분 전에 나레이션을 미리 만든다(TTS 429 대비)."""
+        fired = self.run_loop(at(2026, 10, 15, 17, 0))           # 목 21:20 슬롯
+        pre = [t for w, t in fired if w == "tts-prewarm.yml"]
+        self.assertEqual(pre, [at(2026, 10, 15, 18, 20), at(2026, 10, 15, 19, 50), at(2026, 10, 15, 20, 40)])
+        post = [t for w, t in fired if w == "post.yml"]
+        self.assertEqual(post, [at(2026, 10, 15, 21, 20)])
+
     def test_fires_post_and_soft_at_their_slots_then_hands_off(self):
-        fired = self.run_loop(at(2026, 10, 15, 19, 0))
+        fired = [f for f in self.run_loop(at(2026, 10, 15, 19, 0)) if f[0] != "tts-prewarm.yml"]
         self.assertEqual([w for w, _ in fired], ["post.yml", "threads-micro.yml", "publish-clock.yml"])
         self.assertEqual(fired[0][1], at(2026, 10, 15, 21, 20))
         self.assertEqual(fired[1][1], at(2026, 10, 15, 21, 40))
 
     def test_weekend_soft_still_at_night(self):
-        fired = self.run_loop(at(2026, 10, 17, 14, 0))
+        fired = [f for f in self.run_loop(at(2026, 10, 17, 14, 0)) if f[0] != "tts-prewarm.yml"]
         names = [w for w, _ in fired]
         self.assertEqual(names[0], "post.yml")
         self.assertEqual(fired[0][1], at(2026, 10, 17, 15, 30))
         self.assertNotIn("threads-micro.yml", names)          # 21:40 은 이 실행 예산 밖 → 다음 시계가 맡음
 
-    def test_failed_post_is_not_refired_by_same_run(self):
+    def test_failed_post_is_retried_then_gives_up(self):
+        """2026-10-21: 실패하면 RETRY_MIN 뒤 다시 쏘되 한 슬롯 MAX_TRIES 번까지(텔레그램 실패 알림 폭주 방지)."""
         fired = self.run_loop(at(2026, 10, 15, 21, 0), posted_after_dispatch=False)
+        posts = [t for w, t in fired if w == "post.yml"]
+        self.assertEqual(len(posts), C.MAX_TRIES)
+        self.assertEqual(posts[0], at(2026, 10, 15, 21, 20))
+        for a, b in zip(posts, posts[1:]):
+            self.assertGreaterEqual(b - a, timedelta(minutes=C.RETRY_MIN))
+        self.assertTrue(all(t < at(2026, 10, 15, 21, 20) + timedelta(minutes=C.CATCHUP_MIN) for t in posts))
         names = [w for w, _ in fired]
-        self.assertEqual(names.count("post.yml"), 1)
-        self.assertEqual(names.count("threads-micro.yml"), 1)
+        self.assertEqual(names.count("threads-micro.yml"), C.MAX_TRIES)
+
+    def test_no_prewarm_when_already_posted(self):
+        self.assertEqual(C.prewarm_due(at(2026, 10, 15, 18, 25), True, set()), [])
+        self.assertEqual(len(C.prewarm_due(at(2026, 10, 15, 18, 25), False, set())), 1)
 
 
 class WorkflowFileTests(unittest.TestCase):
@@ -125,6 +143,17 @@ class WorkflowFileTests(unittest.TestCase):
         self.assertEqual(wf["permissions"]["actions"], "write")
         self.assertFalse(wf["concurrency"]["cancel-in-progress"])
         self.assertGreater(wf["jobs"]["clock"]["timeout-minutes"], C.BUDGET_MIN + 10)
+
+    def test_prewarm_workflow_commits_cache(self):
+        import yaml
+        wf = yaml.safe_load((ROOT / ".github/workflows/tts-prewarm.yml").read_text(encoding="utf-8"))
+        on = wf.get("on", wf.get(True))
+        self.assertIn("workflow_dispatch", on)
+        self.assertEqual(wf["permissions"]["contents"], "write")
+        steps = " ".join(str(x.get("run", "")) for x in wf["jobs"]["prewarm"]["steps"])
+        self.assertIn("tools/prewarm_tts.py", steps)
+        self.assertIn("assets/tts-cache", steps)
+        self.assertIn("ffmpeg", steps)
 
     def test_watchdog_avoids_top_of_hour(self):
         import yaml
