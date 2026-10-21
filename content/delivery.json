@@ -717,5 +717,10 @@
       "id": "17931470856165943",
       "at": "2026-10-19T21:34:12+09:00"
     }
+  },
+  "f06-direct-buy-total": {
+    "instagram_reel": {
+      "status": "in_flight"
+    }
   }
 }
