@@ -728,6 +728,9 @@
       "status": "done",
       "id": "JCdAFdOKpr8",
       "at": "2026-10-21T21:22:47+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
