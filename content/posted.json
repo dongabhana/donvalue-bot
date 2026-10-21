@@ -373,5 +373,17 @@
       "threads": "17931470856165943"
     },
     "errors": []
+  },
+  {
+    "id": "f06-direct-buy-total",
+    "product": "해외직구 최종 비용",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-21T21:33:36+09:00",
+    "results": {
+      "instagram_reel": "18100181144081566",
+      "youtube": "JCdAFdOKpr8",
+      "threads": "18112555127226274"
+    },
+    "errors": []
   }
 ]
