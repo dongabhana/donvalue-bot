@@ -745,6 +745,9 @@
       "status": "done",
       "id": "AjLgvbUhUH4",
       "at": "2026-10-22T21:23:12+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
