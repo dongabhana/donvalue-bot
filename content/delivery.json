@@ -762,6 +762,9 @@
       "status": "done",
       "id": "7_GcM5nWY14",
       "at": "2026-10-23T15:32:20+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
