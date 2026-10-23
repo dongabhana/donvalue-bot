@@ -397,5 +397,17 @@
       "threads": "18136121623659514"
     },
     "errors": []
+  },
+  {
+    "id": "f08-paid-ai-worth",
+    "product": "AI 무료·유료 돈값 판단",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-23T15:43:08+09:00",
+    "results": {
+      "instagram_reel": "18624920260034780",
+      "youtube": "7_GcM5nWY14",
+      "threads": "18109545566349000"
+    },
+    "errors": []
   }
 ]
