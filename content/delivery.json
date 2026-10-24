@@ -776,7 +776,9 @@
       "at": "2026-10-24T15:32:23+09:00"
     },
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "p7YdY9PTIwQ",
+      "at": "2026-10-24T15:32:27+09:00"
     }
   }
 }
