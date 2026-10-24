@@ -409,5 +409,17 @@
       "threads": "18109545566349000"
     },
     "errors": []
+  },
+  {
+    "id": "f09-resale-net",
+    "product": "중고 판매 수고와 수익",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-24T15:43:21+09:00",
+    "results": {
+      "instagram_reel": "18373142392244440",
+      "youtube": "p7YdY9PTIwQ",
+      "threads": "17872139247642967"
+    },
+    "errors": []
   }
 ]
