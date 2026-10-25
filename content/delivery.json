@@ -788,7 +788,9 @@
   },
   "f10-cheap-vs-daily": {
     "instagram_reel": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "17992406925107968",
+      "at": "2026-10-25T15:32:26+09:00"
     }
   }
 }
