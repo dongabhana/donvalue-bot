@@ -421,5 +421,17 @@
       "threads": "17872139247642967"
     },
     "errors": []
+  },
+  {
+    "id": "f10-cheap-vs-daily",
+    "product": "싸서 산 물건 vs 계속 쓰는 물건",
+    "campaign": "campaign_first10",
+    "posted_at": "2026-10-25T15:43:22+09:00",
+    "results": {
+      "instagram_reel": "17992406925107968",
+      "youtube": "sTYe9Idg1hY",
+      "threads": "18162880645447826"
+    },
+    "errors": []
   }
 ]
