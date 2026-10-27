@@ -445,5 +445,17 @@
       "threads": "18101151365552827"
     },
     "errors": []
+  },
+  {
+    "id": "n02-repair-fund",
+    "product": "이사할 때 두고 나오는 돈",
+    "campaign": "campaign30",
+    "posted_at": "2026-10-27T21:33:08+09:00",
+    "results": {
+      "instagram_reel": "18125340808694707",
+      "youtube": "f37qcZQU1wA",
+      "threads": "18040121846649201"
+    },
+    "errors": []
   }
 ]
