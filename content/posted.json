@@ -457,5 +457,17 @@
       "threads": "18040121846649201"
     },
     "errors": []
+  },
+  {
+    "id": "n03-ktx-delay",
+    "product": "KTX 19분 vs 20분",
+    "campaign": "campaign30",
+    "posted_at": "2026-10-28T21:33:06+09:00",
+    "results": {
+      "instagram_reel": "17890479771623263",
+      "youtube": "ilc6qV1qpQ4",
+      "threads": "18646056631007082"
+    },
+    "errors": []
   }
 ]
