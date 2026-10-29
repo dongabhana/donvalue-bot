@@ -864,6 +864,9 @@
       "status": "done",
       "id": "mMuG40uS_WM",
       "at": "2026-10-29T21:21:58+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
