@@ -861,7 +861,9 @@
       "at": "2026-10-29T21:21:54+09:00"
     },
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "mMuG40uS_WM",
+      "at": "2026-10-29T21:21:58+09:00"
     }
   }
 }
