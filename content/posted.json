@@ -469,5 +469,17 @@
       "threads": "18646056631007082"
     },
     "errors": []
+  },
+  {
+    "id": "n04-week1",
+    "product": "1주차 결산: 택시·이사·KTX",
+    "campaign": "campaign30",
+    "posted_at": "2026-10-29T21:32:45+09:00",
+    "results": {
+      "instagram_reel": "18117524773824038",
+      "youtube": "mMuG40uS_WM",
+      "threads": "17869100088667162"
+    },
+    "errors": []
   }
 ]
