@@ -481,5 +481,17 @@
       "threads": "17869100088667162"
     },
     "errors": []
+  },
+  {
+    "id": "n05-boiler-1c",
+    "product": "보일러 1도의 값",
+    "campaign": "campaign30",
+    "posted_at": "2026-10-30T15:43:02+09:00",
+    "results": {
+      "instagram_reel": "18132045400691065",
+      "youtube": "lXiM8DrSNfo",
+      "threads": "18099743405402413"
+    },
+    "errors": []
   }
 ]
