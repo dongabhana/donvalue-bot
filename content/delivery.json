@@ -878,7 +878,9 @@
       "at": "2026-10-30T15:32:03+09:00"
     },
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "lXiM8DrSNfo",
+      "at": "2026-10-30T15:32:08+09:00"
     }
   }
 }
