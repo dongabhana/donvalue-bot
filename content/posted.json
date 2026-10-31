@@ -493,5 +493,17 @@
       "threads": "18099743405402413"
     },
     "errors": []
+  },
+  {
+    "id": "n06-city-insurance",
+    "product": "이미 가입된 보험",
+    "campaign": "campaign30",
+    "posted_at": "2026-10-31T15:43:36+09:00",
+    "results": {
+      "instagram_reel": "17939696883122148",
+      "youtube": "Oef4okYlDE0",
+      "threads": "17939027493391014"
+    },
+    "errors": []
   }
 ]
