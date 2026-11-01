@@ -505,5 +505,17 @@
       "threads": "17939027493391014"
     },
     "errors": []
+  },
+  {
+    "id": "n07-fine-vs-ticket",
+    "product": "과태료 vs 범칙금",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-01T15:42:57+09:00",
+    "results": {
+      "instagram_reel": "18027663920705705",
+      "youtube": "jS4-pcF5W3o",
+      "threads": "18118848332000830"
+    },
+    "errors": []
   }
 ]
