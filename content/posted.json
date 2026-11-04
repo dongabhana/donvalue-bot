@@ -541,5 +541,17 @@
       "threads": "18082976183364099"
     },
     "errors": []
+  },
+  {
+    "id": "n10-night-transfer",
+    "product": "밤 9시 환승 규칙",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-04T21:33:51+09:00",
+    "results": {
+      "instagram_reel": "18109317719295608",
+      "youtube": "nkUZ6rApT5E",
+      "threads": "18434989465150782"
+    },
+    "errors": []
   }
 ]
