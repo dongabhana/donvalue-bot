@@ -983,6 +983,9 @@
       "status": "done",
       "id": "6PIbz5wzazY",
       "at": "2026-11-05T21:22:33+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
