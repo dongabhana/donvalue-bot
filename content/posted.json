@@ -565,5 +565,17 @@
       "threads": "18159590824505160"
     },
     "errors": []
+  },
+  {
+    "id": "n12-hidden-insurance",
+    "product": "안 찾아간 보험금",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-06T15:44:16+09:00",
+    "results": {
+      "instagram_reel": "18028470839879696",
+      "youtube": "6a4a2dMkO7I",
+      "threads": "18077959604497004"
+    },
+    "errors": []
   }
 ]
