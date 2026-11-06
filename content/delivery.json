@@ -1000,6 +1000,9 @@
       "status": "done",
       "id": "6a4a2dMkO7I",
       "at": "2026-11-06T15:33:23+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
