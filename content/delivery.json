@@ -1017,6 +1017,9 @@
       "status": "done",
       "id": "lwl06hYamL0",
       "at": "2026-11-07T15:32:09+09:00"
+    },
+    "threads": {
+      "status": "in_flight"
     }
   }
 }
