@@ -577,5 +577,17 @@
       "threads": "18077959604497004"
     },
     "errors": []
+  },
+  {
+    "id": "n13-boiler-away",
+    "product": "보일러 끄고 외출",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-07T15:43:26+09:00",
+    "results": {
+      "instagram_reel": "17929991574184665",
+      "youtube": "lwl06hYamL0",
+      "threads": "18140736553622126"
+    },
+    "errors": []
   }
 ]
