@@ -589,5 +589,17 @@
       "threads": "18140736553622126"
     },
     "errors": []
+  },
+  {
+    "id": "n14-flight-delay",
+    "product": "비행기 59분 지연",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-08T15:43:16+09:00",
+    "results": {
+      "instagram_reel": "18181286707435448",
+      "youtube": "soGxQUfI4Ho",
+      "threads": "18099700100660671"
+    },
+    "errors": []
   }
 ]
