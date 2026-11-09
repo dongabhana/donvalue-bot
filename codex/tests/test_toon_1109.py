@@ -117,6 +117,30 @@ class FolderRules(unittest.TestCase):
         self.assertNotIn("옆으로 넘겨", cap)            # 캐러셀이 아니라 릴스
 
 
+class LaterEpisodes(unittest.TestCase):
+    """2026-11-09 저녁 추가: 2·3화 캡션·장별 시간, 효과음 crack(딱)·hiss(치익)."""
+
+    def test_episodes_two_and_three_ready_except_images(self):
+        for name, total, sfx in (("ep02", 50, {10: ["crack"], 11: ["hiss", "hiss"]}),
+                                 ("ep03", 53, {2: ["click", "click"], 8: ["crack"]})):
+            ep = ROOT / "toon" / name
+            durs, got = toon.timing_of(ep, 15)
+            self.assertEqual(sum(durs), total, name)
+            self.assertEqual(got, sfx, name)
+            cap = toon.caption_of(ep)
+            self.assertIn(f"「0년」 {int(name[2:])}화", cap)
+            self.assertNotIn("유튜브", cap)
+
+    def test_new_sound_effects_are_audible(self):
+        import numpy as np
+        rng = np.random.default_rng(0)
+        for kind in ("crack", "hiss"):
+            self.assertIn(kind, toon.SFX_KINDS)
+            self.assertGreater(float(abs(toon.SFX[kind](rng)).max()), 0.3, kind)
+        mix = toon.soundtrack([2, 2], {2: ["crack", "hiss"]})
+        self.assertGreater(float(abs(mix).max()), 0.3)
+
+
 class Schedule(unittest.TestCase):
     def test_only_mon_wed_fri_from_schedule(self):
         self.assertEqual(toon.schedule_skip(at(2026, 11, 10, 21, 20), "schedule")[:2], "오늘")   # 화

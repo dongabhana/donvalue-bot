@@ -57,7 +57,7 @@ DEFAULT_SEC = 3.0
 MIN_SEC, MAX_SEC = 1.0, 10.0
 IMG_EXT = (".png", ".jpg", ".jpeg", ".webp")
 EP_RE = re.compile(r"^ep(\d{2,3})$")
-SFX_KINDS = ("click", "shutter")
+SFX_KINDS = ("click", "shutter", "crack", "hiss")
 
 # 월·수·금 21:20 KST (tools/publish_clock.py 의 TOON_SLOTS 와 같아야 한다)
 SLOTS = {0: (21, 20), 2: (21, 20), 4: (21, 20)}
@@ -212,6 +212,31 @@ def _shutter(rng: np.random.Generator) -> np.ndarray:
     return out
 
 
+def _crack(rng: np.random.Generator) -> np.ndarray:
+    """돌이 터지거나 끈이 끊어지는 '딱'. 딸깍보다 낮고 크다."""
+    n = int(0.14 * SR)
+    noise = np.cumsum(rng.standard_normal(n).astype(np.float32))
+    noise -= np.linspace(noise[0], noise[-1], n, dtype=np.float32)
+    noise /= (np.max(np.abs(noise)) or 1.0)
+    env = np.exp(-np.arange(n) / (0.02 * SR)).astype(np.float32)
+    out = noise * env * 1.4
+    c = _click(rng)
+    out[: c.size] += c
+    return out
+
+
+def _hiss(rng: np.random.Generator) -> np.ndarray:
+    """달군 돌이 물에 들어가는 '치익'."""
+    n = int(0.9 * SR)
+    noise = np.diff(rng.standard_normal(n + 1).astype(np.float32))
+    t = np.arange(n) / SR
+    env = (np.minimum(1.0, t / 0.04) * np.exp(-t / 0.35)).astype(np.float32)
+    return noise * env * 0.12
+
+
+SFX = {"click": _click, "shutter": _shutter, "crack": _crack, "hiss": _hiss}
+
+
 def soundtrack(durs: list[float], sfx: dict[int, list[str]], seed: int = 0) -> np.ndarray:
     """저작권이 생기지 않는 합성음: 낮은 드론 + 바람 소리 + 효과음."""
     rng = np.random.default_rng(seed)
@@ -234,7 +259,7 @@ def soundtrack(durs: list[float], sfx: dict[int, list[str]], seed: int = 0) -> n
     starts = np.concatenate([[0.0], np.cumsum(durs)[:-1]])
     for idx, kinds in sfx.items():
         for j, kind in enumerate(kinds):
-            buf = _click(rng) if kind == "click" else _shutter(rng)
+            buf = SFX[kind](rng)
             at = int((starts[idx - 1] + 0.6 + 0.9 * j) * SR)
             end = min(n, at + buf.size)
             if at < n:
