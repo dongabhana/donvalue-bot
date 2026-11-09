@@ -601,5 +601,15 @@
       "threads": "18099700100660671"
     },
     "errors": []
+  },
+  {
+    "id": "n15-dual-silson",
+    "product": "실손 이중 납부",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-09T21:21:32+09:00",
+    "results": {
+      "youtube": "Z7vWKldsMWQ"
+    },
+    "errors": []
   }
 ]
