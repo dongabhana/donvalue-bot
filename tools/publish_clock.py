@@ -33,6 +33,9 @@ SLOTS = {0: (21, 20), 1: (21, 20), 2: (21, 20), 3: (21, 20),
          4: (15, 30), 5: (15, 30), 6: (15, 30)}
 # 2026-10-15: 쓰레드 스하리 글(threads-micro.yml, 매일 21:40)도 같은 예약 누락을 겪어서 시계가 함께 챙긴다.
 SOFT_SLOTS = {d: (21, 40) for d in range(7)}
+# 2026-11-09: 인스타가 「0년」 컷툰 계정으로 바뀌어 스하리(쓰레드)는 멈추고(microposts.yaml enabled: false),
+# 시계는 대신 컷툰(toon.yml)을 월·수·금 21:20 에 챙긴다. src/toon.py 의 SLOTS 와 같아야 한다(테스트가 검사).
+TOON_SLOTS = {0: (21, 20), 2: (21, 20), 4: (21, 20)}
 CATCHUP_MIN = 180          # 슬롯 뒤 이 시간 안에 안 나갔으면 따라잡는다
 BUDGET_MIN = 320           # 한 실행이 깨어 있는 최대 시간(잡 제한 360분 안쪽)
 POLL_MIN = 5               # post.yml 이 돌고 있을 때 다시 볼 간격
@@ -52,6 +55,15 @@ def slot_for(day: datetime, slots: dict = SLOTS) -> datetime:
     return day.replace(hour=h, minute=m, second=0, microsecond=0)
 
 
+def next_slot_after(now: datetime, slots: dict = SLOTS) -> datetime:
+    """내일부터 7일 안에서 슬롯이 있는 첫 날의 슬롯. 매일 슬롯이면 내일 슬롯과 같다."""
+    for d in range(1, 8):
+        day = now + timedelta(days=d)
+        if day.weekday() in slots:
+            return slot_for(day, slots)
+    raise ValueError("슬롯이 하나도 없습니다")
+
+
 def decide(now: datetime, posted_today: bool, post_running: bool, fired_slot: str | None,
            slots: dict = SLOTS, fired_at: datetime | None = None, tries: int = 0):
     """(행동, 대기 초). 행동: 'post' | 'wait' | 'sleep_until_slot'.
@@ -59,6 +71,8 @@ def decide(now: datetime, posted_today: bool, post_running: bool, fired_slot: st
     fired_slot: 이번 실행이 이미 dispatch 한 슬롯(ISO). fired_at: 마지막으로 쏜 시각, tries: 쏜 횟수.
     같은 슬롯은 RETRY_MIN 이 지나야 다시 쏘고, MAX_TRIES 번까지만 쏜다.
     """
+    if now.weekday() not in slots:                    # 게시 요일이 아닌 날(컷툰: 월·수·금만)
+        return "sleep_until_slot", max(1, int((next_slot_after(now, slots) - now).total_seconds()))
     slot = slot_for(now, slots)
     in_window = slot <= now < slot + timedelta(minutes=CATCHUP_MIN)
     if in_window and not posted_today:
@@ -67,17 +81,17 @@ def decide(now: datetime, posted_today: bool, post_running: bool, fired_slot: st
         if fired_slot == slot.isoformat():
             if tries >= MAX_TRIES or fired_at is None or now - fired_at < timedelta(minutes=RETRY_MIN):
                 if tries >= MAX_TRIES:
-                    target = slot_for(now + timedelta(days=1), slots)
+                    target = next_slot_after(now, slots)
                     return "sleep_until_slot", max(1, int((target - now).total_seconds()))
                 return "wait", POLL_MIN * 60
         return "post", 0
-    target = slot if now < slot else slot_for(now + timedelta(days=1), slots)
+    target = slot if now < slot else next_slot_after(now, slots)
     return "sleep_until_slot", max(1, int((target - now).total_seconds()))
 
 
 def prewarm_due(now: datetime, posted_today: bool, done: set, slots: dict = SLOTS) -> list[str]:
     """지금 쏴야 할 나레이션 미리 만들기 키 목록(슬롯 ISO|분). 오늘 이미 나갔으면 없음."""
-    if posted_today:
+    if posted_today or now.weekday() not in slots:
         return []
     slot = slot_for(now, slots)
     due = []
@@ -92,7 +106,9 @@ def prewarm_due(now: datetime, posted_today: bool, done: set, slots: dict = SLOT
 # (이름, 워크플로, 슬롯, 게시 원장) — 원장에 오늘 KST 날짜 posted_at 이 있으면 '오늘 나감'
 JOBS = (
     ("본편", "post.yml", SLOTS, "content/posted.json"),
-    ("스하리", "threads-micro.yml", SOFT_SLOTS, "content/microposts_posted.json"),
+    ("컷툰", "toon.yml", TOON_SLOTS, "toon/posted.json"),
+    # 2026-11-09 스하리(threads-micro.yml)는 멈춤 — 다시 켜면 아래 줄을 되살린다.
+    # ("스하리", "threads-micro.yml", SOFT_SLOTS, "content/microposts_posted.json"),
 )
 
 

@@ -1,4 +1,4 @@
-name: 돈값하나 자동 발행
+name: 돈값하나 자동 발행 (유튜브)
 
 on:
   schedule:
@@ -45,7 +45,7 @@ on:
         required: false
         default: "false"
       skip_threads:
-        description: "true 면 쓰레드는 건너뛰고 인스타에만 발행"
+        description: "(2026-11-09부터 쓰레드·인스타는 항상 건너뜀 — 이 값은 쓰이지 않음)"
         required: false
         default: "false"
       tts:
@@ -130,7 +130,11 @@ jobs:
           #   카드뉴스 편(mp4 없음)과 GPT 트랙은 여전히 youtube-shorts.yml 이 따라 올린다.
           YT_AUTO: "1"
           THEME: ${{ github.event.inputs.theme }}
-          SKIP_THREADS: ${{ github.event.inputs.skip_threads }}
+          # 2026-11-09 소유자 결정: 인스타(@dongabhana)를 「0년」 컷툰 계정으로 바꿨다(toon.yml).
+          #   돈값하나 본편은 유튜브에만 낸다. 쓰레드는 인스타 아이디와 묶여 있어 같이 멈춘다.
+          #   다시 켜려면 두 값을 "0" 으로.
+          SKIP_INSTAGRAM: "1"
+          SKIP_THREADS: "1"
         run: |
           ARGS=""
           if [ -n "${{ github.event.inputs.item_id }}" ]; then

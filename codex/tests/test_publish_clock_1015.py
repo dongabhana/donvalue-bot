@@ -26,6 +26,18 @@ class DecideTests(unittest.TestCase):
         wf = (ROOT / ".github/workflows/threads-micro.yml").read_text(encoding="utf-8")
         self.assertIn('cron: "40 12 * * *"', wf)
         self.assertEqual(set(C.SOFT_SLOTS.values()), {(21, 40)})
+        from src import toon
+        self.assertEqual(C.TOON_SLOTS, toon.SLOTS)
+        self.assertEqual([wf for _, wf, _, _ in C.JOBS], ["post.yml", "toon.yml"])
+
+    def test_toon_sleeps_through_non_posting_days(self):
+        # 목 22:00 → 다음 컷툰 슬롯은 금 21:20, 토 아침 → 월 21:20
+        act, wait = C.decide(at(2026, 10, 15, 22, 0), False, False, None, C.TOON_SLOTS)
+        self.assertEqual(act, "sleep_until_slot")
+        self.assertEqual(wait, int((at(2026, 10, 16, 21, 20) - at(2026, 10, 15, 22, 0)).total_seconds()))
+        act, wait = C.decide(at(2026, 10, 17, 9, 0), False, False, None, C.TOON_SLOTS)
+        self.assertEqual(wait, int((at(2026, 10, 19, 21, 20) - at(2026, 10, 17, 9, 0)).total_seconds()))
+        self.assertEqual(C.decide(at(2026, 10, 19, 21, 25), False, False, None, C.TOON_SLOTS)[0], "post")
 
     def test_sleeps_until_today_slot(self):
         act, wait = C.decide(at(2026, 10, 15, 9, 0), False, False, None)      # 목 21:20
@@ -59,12 +71,14 @@ class DecideTests(unittest.TestCase):
 
 
 class LoopTests(unittest.TestCase):
-    """main(): 슬롯마다 본편(post.yml)·스하리(threads-micro.yml)를 한 번씩 쏘고, 시간이 다 되면 넘긴다."""
+    """main(): 슬롯마다 본편(post.yml)·컷툰(toon.yml, 월·수·금)을 한 번씩 쏘고, 시간이 다 되면 넘긴다.
+
+    2026-11-09: 스하리(threads-micro.yml)는 시계에서 뺐다(인스타·쓰레드가 0년 컷툰 계정으로 바뀜)."""
 
     def run_loop(self, start, posted_after_dispatch=True):
         clock = {"t": 0.0}
         now = {"dt": start}
-        posted = {"content/posted.json": False, "content/microposts_posted.json": False}
+        posted = {"content/posted.json": False, "toon/posted.json": False}
         ledger_of = {wf: led for _, wf, _, led in C.JOBS}
         fired = []
 
@@ -104,18 +118,21 @@ class LoopTests(unittest.TestCase):
         post = [t for w, t in fired if w == "post.yml"]
         self.assertEqual(post, [at(2026, 10, 15, 21, 20)])
 
-    def test_fires_post_and_soft_at_their_slots_then_hands_off(self):
+    def test_thursday_fires_post_only_then_hands_off(self):
         fired = [f for f in self.run_loop(at(2026, 10, 15, 19, 0)) if f[0] != "tts-prewarm.yml"]
-        self.assertEqual([w for w, _ in fired], ["post.yml", "threads-micro.yml", "publish-clock.yml"])
+        self.assertEqual([w for w, _ in fired], ["post.yml", "publish-clock.yml"])   # 목요일은 컷툰 없음
         self.assertEqual(fired[0][1], at(2026, 10, 15, 21, 20))
-        self.assertEqual(fired[1][1], at(2026, 10, 15, 21, 40))
 
-    def test_weekend_soft_still_at_night(self):
-        fired = [f for f in self.run_loop(at(2026, 10, 17, 14, 0)) if f[0] != "tts-prewarm.yml"]
+    def test_friday_fires_post_then_toon(self):
+        fired = [f for f in self.run_loop(at(2026, 10, 16, 14, 0)) if f[0] != "tts-prewarm.yml"]
         names = [w for w, _ in fired]
         self.assertEqual(names[0], "post.yml")
-        self.assertEqual(fired[0][1], at(2026, 10, 17, 15, 30))
-        self.assertNotIn("threads-micro.yml", names)          # 21:40 은 이 실행 예산 밖 → 다음 시계가 맡음
+        self.assertEqual(fired[0][1], at(2026, 10, 16, 15, 30))
+        self.assertNotIn("threads-micro.yml", names)
+        self.assertNotIn("toon.yml", names)                    # 21:20 은 이 실행 예산 밖 → 다음 시계가 맡음
+        fired = [f for f in self.run_loop(at(2026, 10, 16, 19, 0)) if f[0] != "tts-prewarm.yml"]
+        self.assertEqual([w for w, _ in fired], ["toon.yml", "publish-clock.yml"])
+        self.assertEqual(fired[0][1], at(2026, 10, 16, 21, 20))
 
     def test_failed_post_is_retried_then_gives_up(self):
         """2026-10-21: 실패하면 RETRY_MIN 뒤 다시 쏘되 한 슬롯 MAX_TRIES 번까지(텔레그램 실패 알림 폭주 방지)."""
@@ -127,7 +144,7 @@ class LoopTests(unittest.TestCase):
             self.assertGreaterEqual(b - a, timedelta(minutes=C.RETRY_MIN))
         self.assertTrue(all(t < at(2026, 10, 15, 21, 20) + timedelta(minutes=C.CATCHUP_MIN) for t in posts))
         names = [w for w, _ in fired]
-        self.assertEqual(names.count("threads-micro.yml"), C.MAX_TRIES)
+        self.assertNotIn("threads-micro.yml", names)
 
     def test_no_prewarm_when_already_posted(self):
         self.assertEqual(C.prewarm_due(at(2026, 10, 15, 18, 25), True, set()), [])

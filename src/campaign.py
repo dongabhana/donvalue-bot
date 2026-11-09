@@ -183,6 +183,9 @@ def publish(item: dict, ctx: dict, dry_run: bool = False) -> int:
     errors: list[str] = []
 
     ig_id, ig_tok = os.getenv("IG_USER_ID"), os.getenv("IG_ACCESS_TOKEN")
+    if os.getenv("SKIP_INSTAGRAM", "").lower() in ("1", "true", "yes"):   # 2026-11-09 인스타는 0년 컷툰 전용
+        ig_id = ig_tok = None
+        print("[instagram] SKIP_INSTAGRAM 설정 → 건너뜀")
     if ig_id and ig_tok:
         try:
             results["instagram_reel"] = deliver_once(item["id"], "instagram_reel", lambda: pub.publish_instagram_reel(

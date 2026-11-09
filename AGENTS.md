@@ -18,6 +18,22 @@ python -m unittest discover -s codex/tests -q
 | 2026-09-14 22:26 | 회귀 테스트를 추가하면서 정규식 오타 + 기존 금액 규칙과 충돌 | 약 20시간 정지 |
 | 2026-09-15 19:02 | 이미 찬 슬롯(9/16 20:00)에 편을 하나 더 넣음 | 즉시 정지 |
 
+## 0-0. 2026-11-09 인스타를 「0년」 컷툰 계정으로 전환 (소유자 결정 — 아래 모든 절보다 우선)
+
+| 항목 | 지금 규칙 | 스위치 |
+|---|---|---|
+| 인스타(@dongabhana) | **「0년」 컷툰 전용.** 돈값하나 본편·캠페인은 인스타에 안 올린다 | `post.yml` 의 `SKIP_INSTAGRAM: "1"` (`src/run.py` `skip_instagram()`, `src/campaign.py`) |
+| 쓰레드 | 돈값하나 본편 글·스하리 글 **멈춤**(쓰레드 아이디가 인스타와 묶여 있음) | `post.yml` 의 `SKIP_THREADS: "1"`, `content/microposts.yaml` 의 `enabled: false` |
+| 유튜브(돈값하나) | **그대로 계속.** 본편 mp4 를 쇼츠로 올리고 `youtube-shorts.yml` 따라올리기도 그대로 | 6절 |
+| 컷툰 게시 | `src/toon.py` + `toon.yml`. `toon/epNN/` 의 그림(최대 몇 장이든)을 세로 릴스로 이어 붙여 **월·수·금 21:20 KST** 에 한 화씩 | `src/toon.py` 의 `SLOTS` = `tools/publish_clock.py` 의 `TOON_SLOTS` |
+| 왜 릴스 | 공식 API 캐러셀이 10장까지라 15장 컷툰을 한 게시물로 못 올린다 | — |
+| 발행 시계 | `JOBS` = 본편(post.yml) + 컷툰(toon.yml). 스하리는 주석으로 빼 둠 | `tools/publish_clock.py` |
+
+- 컷툰 원장은 `toon/posted.json`, 외부 게시 원장은 `content/delivery.json` 의 `toon-epNN` / `instagram_reel`.
+- 그림이 없으면 게시하지 않고 텔레그램으로 사유를 보낸다. 오늘 이미 올렸으면 건너뛴다.
+- 회귀 테스트: `codex/tests/test_toon_1109.py`, `codex/tests/test_publish_clock_1015.py`.
+- 되돌리기: 위 스위치 세 개를 되돌리고 시계 `JOBS` 의 스하리 줄을 살린다. 코드는 지우지 않았다.
+
 ## 0-1. 2026-09-29 운영 전환 (소유자 결정 — 아래 1~3절보다 우선)
 
 | 항목 | 지금 규칙 | 스위치 |

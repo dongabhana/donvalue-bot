@@ -113,6 +113,11 @@ def stale_schedule(now: datetime, event: str | None = None) -> str:
     return ""
 
 
+def skip_instagram() -> bool:
+    """2026-11-09 소유자 결정: 인스타 계정을 0년 컷툰으로 바꿨다. 켜져 있으면 돈값하나는 인스타에 안 나간다."""
+    return os.getenv("SKIP_INSTAGRAM", "").lower() in ("1", "true", "yes")
+
+
 def load_posted() -> list[dict]:
     if POSTED.exists():
         return json.loads(POSTED.read_text(encoding="utf-8"))
@@ -629,6 +634,10 @@ def run_once(args) -> int:
 
     # ---------------- 인스타그램 (포맷은 위에서 이미 정해졌다)
     ig_id, ig_tok = os.getenv("IG_USER_ID"), os.getenv("IG_ACCESS_TOKEN")
+    # 2026-11-09: 인스타 계정이 「0년」 컷툰으로 바뀌어 돈값하나 본편은 인스타에 안 올린다(src/toon.py).
+    if skip_instagram():
+        ig_id = ig_tok = None
+        print("[instagram] SKIP_INSTAGRAM 설정 → 건너뜀(인스타는 0년 컷툰 전용)")
 
     if ig_id and ig_tok:
         did_reel = False
