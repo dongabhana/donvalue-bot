@@ -99,8 +99,9 @@ def caption_of(ep: Path) -> str:
         raise ToonError(f"{ep.name}: caption.txt 가 없거나 비어 있습니다")
     if len(text) > 2200:
         raise ToonError(f"{ep.name}: 캡션이 2,200자를 넘습니다({len(text)}자)")
-    if text.count("#") > 30:
-        raise ToonError(f"{ep.name}: 해시태그가 30개를 넘습니다")
+    tags = re.findall(r"#\S+", text)
+    if len(tags) > 5:   # 2025-12부터 인스타는 게시물당 해시태그 5개까지
+        raise ToonError(f"{ep.name}: 해시태그가 5개를 넘습니다({len(tags)}개)")
     return text
 
 

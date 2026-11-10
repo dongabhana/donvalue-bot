@@ -131,6 +131,18 @@ class LaterEpisodes(unittest.TestCase):
             self.assertIn(f"「0년」 {int(name[2:])}화", cap)
             self.assertNotIn("유튜브", cap)
 
+    def test_captions_use_five_researched_hashtags(self):
+        """2026-11-10: 실제 게시물 수를 보고 고른 5개(인스타 한도 5개)."""
+        import re as _re
+        for name in ("ep01", "ep02", "ep03"):
+            cap = toon.caption_of(ROOT / "toon" / name)
+            self.assertEqual(_re.findall(r"#\S+", cap),
+                             ["#인스타툰", "#인스타툰연재", "#웹툰추천", "#컷툰", "#미스터리"])
+        with TempToon() as root:
+            ep = make_ep(root, "ep01", 2, caption="a #1 #2 #3 #4 #5 #6")
+            with self.assertRaises(toon.ToonError):
+                toon.caption_of(ep)
+
     def test_new_sound_effects_are_audible(self):
         import numpy as np
         rng = np.random.default_rng(0)
