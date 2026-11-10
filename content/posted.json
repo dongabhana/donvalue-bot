@@ -611,5 +611,15 @@
       "youtube": "Z7vWKldsMWQ"
     },
     "errors": []
+  },
+  {
+    "id": "n16-kcar-refund",
+    "product": "경차 30만원",
+    "campaign": "campaign30",
+    "posted_at": "2026-11-10T21:32:44+09:00",
+    "results": {
+      "youtube": "D27iGxWkd0A"
+    },
+    "errors": []
   }
 ]
