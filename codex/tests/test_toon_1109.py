@@ -137,7 +137,7 @@ class LaterEpisodes(unittest.TestCase):
         for name in ("ep01", "ep02", "ep03"):
             cap = toon.caption_of(ROOT / "toon" / name)
             self.assertEqual(_re.findall(r"#\S+", cap),
-                             ["#인스타툰", "#인스타툰연재", "#웹툰추천", "#컷툰", "#미스터리"])
+                             ["#인스타툰", "#미스터리", "#서바이벌", "#캠핑", "#부시크래프트"])
         with TempToon() as root:
             ep = make_ep(root, "ep01", 2, caption="a #1 #2 #3 #4 #5 #6")
             with self.assertRaises(toon.ToonError):
