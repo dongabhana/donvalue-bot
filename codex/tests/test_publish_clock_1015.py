@@ -31,13 +31,13 @@ class DecideTests(unittest.TestCase):
         self.assertEqual([wf for _, wf, _, _ in C.JOBS], ["post.yml", "toon.yml"])
 
     def test_toon_sleeps_through_non_posting_days(self):
-        # 목 22:00 → 다음 컷툰 슬롯은 금 21:20, 토 아침 → 월 21:20
+        # 목 22:00 → 다음 컷툰 슬롯은 금 17:00, 토 아침 → 월 17:00 (2026-11-11 21:20 → 17:00)
         act, wait = C.decide(at(2026, 10, 15, 22, 0), False, False, None, C.TOON_SLOTS)
         self.assertEqual(act, "sleep_until_slot")
-        self.assertEqual(wait, int((at(2026, 10, 16, 21, 20) - at(2026, 10, 15, 22, 0)).total_seconds()))
+        self.assertEqual(wait, int((at(2026, 10, 16, 17, 0) - at(2026, 10, 15, 22, 0)).total_seconds()))
         act, wait = C.decide(at(2026, 10, 17, 9, 0), False, False, None, C.TOON_SLOTS)
-        self.assertEqual(wait, int((at(2026, 10, 19, 21, 20) - at(2026, 10, 17, 9, 0)).total_seconds()))
-        self.assertEqual(C.decide(at(2026, 10, 19, 21, 25), False, False, None, C.TOON_SLOTS)[0], "post")
+        self.assertEqual(wait, int((at(2026, 10, 19, 17, 0) - at(2026, 10, 17, 9, 0)).total_seconds()))
+        self.assertEqual(C.decide(at(2026, 10, 19, 17, 5), False, False, None, C.TOON_SLOTS)[0], "post")
 
     def test_sleeps_until_today_slot(self):
         act, wait = C.decide(at(2026, 10, 15, 9, 0), False, False, None)      # 목 21:20
@@ -129,10 +129,9 @@ class LoopTests(unittest.TestCase):
         self.assertEqual(names[0], "post.yml")
         self.assertEqual(fired[0][1], at(2026, 10, 16, 15, 30))
         self.assertNotIn("threads-micro.yml", names)
-        self.assertNotIn("toon.yml", names)                    # 21:20 은 이 실행 예산 밖 → 다음 시계가 맡음
-        fired = [f for f in self.run_loop(at(2026, 10, 16, 19, 0)) if f[0] != "tts-prewarm.yml"]
-        self.assertEqual([w for w, _ in fired], ["toon.yml", "publish-clock.yml"])
-        self.assertEqual(fired[0][1], at(2026, 10, 16, 21, 20))
+        # 2026-11-11: 컷툰이 17:00 으로 당겨져 같은 실행 안에서 본편(15:30) 다음에 쏜다.
+        self.assertEqual(names, ["post.yml", "toon.yml", "publish-clock.yml"])
+        self.assertEqual(fired[1][1], at(2026, 10, 16, 17, 0))
 
     def test_failed_post_is_retried_then_gives_up(self):
         """2026-10-21: 실패하면 RETRY_MIN 뒤 다시 쏘되 한 슬롯 MAX_TRIES 번까지(텔레그램 실패 알림 폭주 방지)."""

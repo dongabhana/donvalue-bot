@@ -59,8 +59,9 @@ IMG_EXT = (".png", ".jpg", ".jpeg", ".webp")
 EP_RE = re.compile(r"^ep(\d{2,3})$")
 SFX_KINDS = ("click", "shutter", "crack", "hiss")
 
-# 월·수·금 21:20 KST (tools/publish_clock.py 의 TOON_SLOTS 와 같아야 한다)
-SLOTS = {0: (21, 20), 2: (21, 20), 4: (21, 20)}
+# 월·수·금 17:00 KST (tools/publish_clock.py 의 TOON_SLOTS 와 같아야 한다)
+# 2026-11-11: 사용자 요청으로 21:20 → 17:00 (퇴근 전, 회사에 있을 때 확인할 수 있게).
+SLOTS = {0: (17, 0), 2: (17, 0), 4: (17, 0)}
 EARLY_SKIP_MIN = 60
 
 

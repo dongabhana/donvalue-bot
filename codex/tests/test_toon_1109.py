@@ -163,9 +163,9 @@ class Schedule(unittest.TestCase):
     def test_workflow_cron_matches_slots(self):
         wf = (ROOT / ".github/workflows/toon.yml").read_text(encoding="utf-8")
         crons = re.findall(r'cron: "([^"]+)"', wf)
-        self.assertEqual(crons[0], "20 12 * * 1,3,5")           # 21:20 KST = 12:20 UTC
+        self.assertEqual(crons[0], "0 8 * * 1,3,5")             # 17:00 KST = 08:00 UTC (2026-11-11)
         self.assertEqual(set(toon.SLOTS), {0, 2, 4})
-        self.assertEqual(set(toon.SLOTS.values()), {(21, 20)})
+        self.assertEqual(set(toon.SLOTS.values()), {(17, 0)})
 
     def test_one_episode_a_day(self):
         with TempToon() as root:
