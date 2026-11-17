@@ -61,7 +61,7 @@
 
 ## 6. PC 작업 환경 메모 (회사 Windows PC)
 
-- 작업 폴더는 `C:\Users\USER\Downloads\donvalue-bot` (2026-11-17 새로 clone). 예전에 쓰던 `Downloads\dv`는 PC에 더 이상 없다. 작업 전 항상 `git pull`.
+- 작업 폴더는 `C:\Users\USER\Downloads\AI 작업\donvalue-bot` (2026-11-17 새로 clone. 상위 `AI 작업` 폴더가 Code 탭 작업 폴더이고 AI 드림팀 규칙 CLAUDE.md가 있다). 예전에 쓰던 `Downloads\dv`는 PC에 더 이상 없다. 작업 전 항상 `git pull`.
 - 파이썬은 `py`로 실행한다 (`python`은 마이크로소프트 스토어 스텁).
 - `.git/*.lock`이 남아 git이 멈추면 lock 파일을 지운다.
 - 회사 PC라 DLP 보안이 있다. **회사 업무 자료는 이 레포에 넣지 않고, 다른 AI에도 보내지 않는다.**
