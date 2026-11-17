@@ -2,6 +2,7 @@
 
 이 저장소를 고치는 모든 에이전트(Codex/GPT·Claude)가 지킬 것. 사람이 매번 중재하지 않아도
 되도록, 아래는 테스트로도 막혀 있다.
+지금 운영 상태·진행 상황·소유자 결정은 `HANDOFF.md` 에 있다.
 
 ## 0. 푸시 전에 반드시
 
@@ -25,7 +26,7 @@ python -m unittest discover -s codex/tests -q
 | 인스타(@dongabhana) | **「0년」 컷툰 전용.** 돈값하나 본편·캠페인은 인스타에 안 올린다 | `post.yml` 의 `SKIP_INSTAGRAM: "1"` (`src/run.py` `skip_instagram()`, `src/campaign.py`) |
 | 쓰레드 | 돈값하나 본편 글·스하리 글 **멈춤**(쓰레드 아이디가 인스타와 묶여 있음) | `post.yml` 의 `SKIP_THREADS: "1"`, `content/microposts.yaml` 의 `enabled: false` |
 | 유튜브(돈값하나) | **그대로 계속.** 본편 mp4 를 쇼츠로 올리고 `youtube-shorts.yml` 따라올리기도 그대로 | 6절 |
-| 컷툰 게시 | `src/toon.py` + `toon.yml`. `toon/epNN/` 의 그림(최대 몇 장이든)을 세로 릴스로 이어 붙여 **월·수·금 21:20 KST** 에 한 화씩 | `src/toon.py` 의 `SLOTS` = `tools/publish_clock.py` 의 `TOON_SLOTS` |
+| 컷툰 게시 | `src/toon.py` + `toon.yml`. `toon/epNN/` 의 그림(최대 몇 장이든)을 세로 릴스로 이어 붙여 **월·수·금 17:00 KST**(2026-11-11 21:20 → 17:00) 에 한 화씩 | `src/toon.py` 의 `SLOTS` = `tools/publish_clock.py` 의 `TOON_SLOTS` |
 | 왜 릴스 | 공식 API 캐러셀이 10장까지라 15장 컷툰을 한 게시물로 못 올린다 | — |
 | 발행 시계 | `JOBS` = 본편(post.yml) + 컷툰(toon.yml). 스하리는 주석으로 빼 둠 | `tools/publish_clock.py` |
 
