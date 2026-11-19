@@ -56,7 +56,8 @@ SR = 44100
 DEFAULT_SEC = 3.0
 MIN_SEC, MAX_SEC = 1.0, 10.0
 IMG_EXT = (".png", ".jpg", ".jpeg", ".webp")
-EP_RE = re.compile(r"^ep(\d{2,3})$")
+# 외전은 앞 화 번호 뒤에 x 를 붙인다(ep13x = 13화 다음, 14화 앞). 2026-11-19 소유자 결정.
+EP_RE = re.compile(r"^ep(\d{2,3})(x)?$")
 SFX_KINDS = ("click", "shutter", "crack", "hiss")
 
 # 월·수·금 17:00 KST (tools/publish_clock.py 의 TOON_SLOTS 와 같아야 한다)
@@ -74,7 +75,12 @@ def episodes() -> list[Path]:
     if not TOON.exists():
         return []
     eps = [p for p in TOON.iterdir() if p.is_dir() and EP_RE.match(p.name)]
-    return sorted(eps, key=lambda p: int(EP_RE.match(p.name).group(1)))
+    return sorted(eps, key=ep_key)
+
+
+def ep_key(p: Path) -> tuple[int, int]:
+    m = EP_RE.match(p.name)
+    return int(m.group(1)), 1 if m.group(2) else 0
 
 
 def images_of(ep: Path) -> list[Path]:

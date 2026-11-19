@@ -71,6 +71,15 @@ class FolderRules(unittest.TestCase):
             self.assertIn("ep02", why)
             self.assertIn("그림", why)
 
+    def test_side_episode_goes_between_its_number_and_next(self):
+        # 2026-11-19: 외전 「선생님」 = ep13x → 13화 다음, 14화 앞
+        with TempToon() as root:
+            for name in ("ep14", "ep13x", "ep13", "ep09"):
+                make_ep(root, name, 1)
+            self.assertEqual([p.name for p in toon.episodes()], ["ep09", "ep13", "ep13x", "ep14"])
+            ep, _ = toon.next_episode([{"episode": "ep09"}, {"episode": "ep13"}])
+            self.assertEqual(ep.name, "ep13x")
+
     def test_numeric_order_not_text_order(self):
         with TempToon() as root:
             ep = root / "ep01"
