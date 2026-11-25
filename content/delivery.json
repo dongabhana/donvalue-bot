@@ -1225,7 +1225,9 @@
   },
   "p15-pickup": {
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "ax4dlhKRmAo",
+      "at": "2026-11-25T21:22:15+09:00"
     }
   }
 }
