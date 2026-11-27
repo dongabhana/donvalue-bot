@@ -1239,7 +1239,9 @@
   },
   "p17-earbuds": {
     "youtube": {
-      "status": "in_flight"
+      "status": "done",
+      "id": "Lxc6Q-I77CI",
+      "at": "2026-11-27T15:32:16+09:00"
     }
   }
 }
